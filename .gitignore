@@ -1,0 +1,43 @@
+# macOS
+.DS_Store
+
+# Obsidian — ignora estado por-máquina, conserva la config compartida del vault
+# (app.json sí se versiona para que todo el equipo herede los links en markdown)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+.obsidian/plugins/*/data.json
+
+# Extracción temporal del PRD
+/tmp/alazar_libox_prd_v11.txt
+
+# --- Node / Next.js (para cuando entre el código) ---
+node_modules/
+.pnp
+.pnp.*
+.next/
+out/
+build/
+dist/
+coverage/
+.turbo/
+
+# Variables de entorno (nunca versionar secretos)
+.env
+.env.*
+!.env.example
+
+# Logs y caché
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.eslintcache
+
+# Editores
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Claude Code — settings personales/locales (no compartir)
+.claude/settings.local.json
