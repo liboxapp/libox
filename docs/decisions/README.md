@@ -30,6 +30,7 @@ Esta carpeta guarda las decisiones cerradas del proyecto Sortibox, cada una en s
 | [Z.5](Z5-t8-live.md) | T8 LIVE — diferido a MVP-3 | Cerrada | 2026-06-05 |
 | [Z.6](Z6-stack-tecnologico.md) | Stack tecnológico — Next.js para todo (descarta Astro) | Cerrada en dirección; sub-decisiones al scaffold | 2026-06-06 |
 | [Z.7](Z7-versionamiento.md) | Versionamiento — semver + Conventional Commits + release-please | Cerrada | 2026-06-06 |
+| [Z.8](Z8-roles-memoria-contexto.md) | Roles de memoria y contexto — docs/MEMORY = verdad; context-mode/claude-mem/GSD encarrilados | Cerrada | 2026-06-06 |
 
 ## Cómo agregar una nueva decisión
 
