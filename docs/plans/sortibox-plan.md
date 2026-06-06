@@ -48,7 +48,7 @@ Decisión: **Modelo C — escrow conceptual**. Operativa de split directo vía P
 
 ### 2.2. PSP / Gateway de pagos — **CERRADA EN DIRECCIÓN (2026-06-05) → ver Anexo Z.2**
 
-Decisión: **Mercado Pago como PSP primario** con mecanismo de comisión **split en la fuente** (application fee / marketplace). **Culqi** queda como **segundo rail a implementar en una fase posterior del MVP** (qué fase exactamente = decisión de socios). Decisión final supeditada a verificación comercial: las preguntas eliminatorias son (1) ¿soporta split a múltiples beneficiarios? y (2) ¿ese split aplica a pagos **Yape**? Detalle, alternativas, insight Yape-dentro-del-checkout, y script de llamadas comerciales: ver **[Anexo Z.2](#z2--elección-de-psp-cerrada-en-dirección-el-2026-06-05)** y el ADR [`decisions/Z2-eleccion-psp.md`](decisions/Z2-eleccion-psp.md).
+Decisión: **Mercado Pago como PSP primario** con mecanismo de comisión **split en la fuente** (application fee / marketplace). **Culqi** queda como **segundo rail a implementar en una fase posterior del MVP** (qué fase exactamente = decisión de socios). Decisión final supeditada a verificación comercial: las preguntas eliminatorias son (1) ¿soporta split a múltiples beneficiarios? y (2) ¿ese split aplica a pagos **Yape**? Detalle, alternativas, insight Yape-dentro-del-checkout, y script de llamadas comerciales: ver **[Anexo Z.2](#z2--elección-de-psp-cerrada-en-dirección-el-2026-06-05)** y el ADR [`decisions/Z2-eleccion-psp.md`](../decisions/Z2-eleccion-psp.md).
 
 ### 2.3. PSE de facturación electrónica SUNAT
 
@@ -120,39 +120,48 @@ Antes de pensar en stack, mapeo los módulos lógicos. Esto guía la estructura 
 Optimizo por: velocidad de iteración en MVP, idiomas que un full stack engineer maneja, ecosistema con buenas integraciones locales, y baja fricción para sumar 1–2 devs después.
 
 ### Frontend
+
 - **Next.js (App Router) + TypeScript + Tailwind + shadcn/ui**
 - Server components para SEO de la landing de sorteos públicos.
 - Una sola codebase para landing pública, dashboard de organizador, dashboard de participante, y backoffice (con segmentación por rol).
 
 ### Backend
+
 Dos alternativas razonables:
 
 - **Opción 1 — Next.js full stack (API routes + Server Actions)**: una sola codebase, despliegue simple en Vercel o similar. Riesgo: pagos/webhooks/jobs requieren más cuidado al escalar. Bueno para validar.
 - **Opción 2 — Next.js (frontend) + API separada en NestJS o Fastify (TypeScript)**: separa concerns, más fácil de escalar, mejor para integrar workers y jobs. Más overhead inicial.
 
-**DECISIÓN CERRADA (Z.6): Next.js para todo (Opción 1).** Un solo framework cubre la superficie pública (SEO vía RSC/ISR) y la app autenticada (dashboards, checkout, backoffice). Sortibox **no es web estática** — es app transaccional con una superficie de contenido; por eso se descartó Astro. Se prevé extraer un servicio backend dedicado cuando los jobs/carga lo justifiquen. Detalle: **[Anexo Z.6](#z6--stack-tecnológico-cerrada-el-2026-06-06)** y ADR [`decisions/Z6-stack-tecnologico.md`](decisions/Z6-stack-tecnologico.md).
+**DECISIÓN CERRADA (Z.6): Next.js para todo (Opción 1).** Un solo framework cubre la superficie pública (SEO vía RSC/ISR) y la app autenticada (dashboards, checkout, backoffice). Sortibox **no es web estática** — es app transaccional con una superficie de contenido; por eso se descartó Astro. Se prevé extraer un servicio backend dedicado cuando los jobs/carga lo justifiquen. Detalle: **[Anexo Z.6](#z6--stack-tecnológico-cerrada-en-dirección-el-2026-06-06)** y ADR [`decisions/Z6-stack-tecnologico.md`](../decisions/Z6-stack-tecnologico.md).
 
 ### Base de datos
+
 - **PostgreSQL** (Supabase o Neon para acelerar el MVP, autogestionado en V1).
 - **Drizzle** (preferido) o Prisma como ORM — confirmar al scaffold.
 - Tabla `audit_events` append-only con `trace_id` + `payload_hash` (modelo del PRD).
 
 ### Jobs y colas
+
 - **Inngest** o **Trigger.dev** — **infraestructura crítica, no opcional**: ejecuta el outbox worker, el disparo de sorteo por umbral/deadline (Z.4) y la conciliación PSP. Evita Redis + worker propio en MVP.
 
 ### Auth
+
 - **Clerk** o **Supabase Auth** para arrancar. MFA obligatorio para organizadores y staff (lo exige el PRD para Admin).
 
 ### Pagos
+
 - **Mercado Pago** primario, **split en la fuente**, adaptador **multi-PSP** desde el inicio (Culqi 2º rail). Ver Z.2.
 
 ### Facturación SUNAT
+
 - PSE vía API REST (Nubefact/Bizlinks/…). El **organizador** (con RUC, Z.3) es merchant of record y emite el comprobante. Detalle fiscal pendiente con abogado (compliance-peru.md).
 
 ### Hosting
+
 - **Vercel** (frontend + API routes) + **Neon/Supabase** (DB). Migrar a infraestructura propia (AWS/GCP) cuando haya tracción y se necesite control fino de costos y compliance.
 
 ### Observabilidad
+
 - **Sentry** (errores), **Axiom** o **Better Stack** (logs estructurados), **PostHog** (producto/analítica).
 
 ---
@@ -194,6 +203,7 @@ AuditEvent (bitácora append-only)
 ## 6. Roadmap por fases
 
 ### Fase 0 — Pre-código (próximas 1–2 semanas)
+
 - Cerrar decisión de custodia con el abogado (2.1).
 - Comparar Culqi vs MercadoPago Marketplace con sus comerciales (2.2).
 - Elegir PSE de facturación electrónica (2.3).
@@ -201,6 +211,7 @@ AuditEvent (bitácora append-only)
 - Wireframes de los 5 flujos críticos: registro de organizador, creación de sorteo, compra de boleto, ejecución de sorteo, vista pública de auditoría.
 
 ### MVP-1 — Núcleo: comprar → sortear (8–12 semanas, 1 dev full-time)
+
 Refleja Z.1–Z.7. Alcance:
 - Onboarding + KYC de organizadores: **dos plantillas (jurídica / natural-con-RUC)**, validación contra padrón SUNAT (Z.3).
 - CRUD de sorteos con aprobación manual desde backoffice; `draw_config` versionado.
@@ -215,18 +226,21 @@ Refleja Z.1–Z.7. Alcance:
 - Onboarding manual de los primeros 3–5 organizadores.
 
 ### MVP-2 — Cierre del ciclo económico
+
 - **Delivery** (evidencia del organizador → confirmación del usuario).
 - **Settlement** con gates conceptuales + **disputas**.
 - Reembolsos y conciliación PSP más robustos.
 - Métricas y dashboards operativos.
 
 ### MVP-3 — Crecimiento y enterprise
+
 - **T8 LIVE** (Z.5): ejecución en vivo con autorización Admin + capa realtime.
 - **Multi-ganador (T6)** y **progresivo (T7)** como configuraciones del mismo motor.
 - **Culqi como 2º rail PSP** (fase exacta = decisión socios, Z.2).
 - APIs enterprise + observabilidad ampliada + reportes automáticos.
 
 ### Post-MVP — Escala
+
 - Reevaluar custodia → **Modelo B (escrow real)** con partnership EEDE (Z.1).
 - App móvil si la analítica lo justifica.
 - Expansión LATAM (multi-moneda, multi-PSP, multi-país).
@@ -366,7 +380,7 @@ Si los socios cuestionan la decisión, estos son los pivotes de discusión:
 
 ### Z.2 — Elección de PSP (cerrada en dirección el 2026-06-05)
 
-**Decisión**: **Mercado Pago como PSP primario**, mecanismo de comisión **split en la fuente** (application fee / marketplace). **Culqi** como **segundo rail a implementar en una fase posterior del MVP** — qué fase exactamente queda como **decisión de socios**. Decisión final supeditada a verificación comercial (ver Z.2.5). ADR canónico autocontenido: [`decisions/Z2-eleccion-psp.md`](decisions/Z2-eleccion-psp.md).
+**Decisión**: **Mercado Pago como PSP primario**, mecanismo de comisión **split en la fuente** (application fee / marketplace). **Culqi** como **segundo rail a implementar en una fase posterior del MVP** — qué fase exactamente queda como **decisión de socios**. Decisión final supeditada a verificación comercial (ver Z.2.5). ADR canónico autocontenido: [`decisions/Z2-eleccion-psp.md`](../decisions/Z2-eleccion-psp.md).
 
 #### Z.2.1 — Por qué el PSP se volvió un problema (no era preferencia)
 
@@ -416,7 +430,7 @@ El PRD ya asume Mercado Pago y webhooks `mercadopago` (Parte III, Anexo D). La d
 
 ### Z.3 — Tipo de organizador (cerrada el 2026-06-05)
 
-**Decisión**: organizador en MVP = **cualquier persona, natural o jurídica, con RUC activo** (Opción 2). Incluye empresas/ONGs/instituciones **y** personas naturales con negocio / RUC activo. Se **descarta** la persona solo-DNI sin RUC (Opción 3). ADR canónico autocontenido: [`decisions/Z3-tipo-de-organizador.md`](decisions/Z3-tipo-de-organizador.md).
+**Decisión**: organizador en MVP = **cualquier persona, natural o jurídica, con RUC activo** (Opción 2). Incluye empresas/ONGs/instituciones **y** personas naturales con negocio / RUC activo. Se **descarta** la persona solo-DNI sin RUC (Opción 3). ADR canónico autocontenido: [`decisions/Z3-tipo-de-organizador.md`](../decisions/Z3-tipo-de-organizador.md).
 
 #### Z.3.1 — No era contradicción, sino un corte a elegir
 
@@ -448,7 +462,7 @@ Target incluye **individuos formalizados con RUC**; postura **máximo alcance le
 
 ### Z.4 — Tipos de sorteo en MVP-1 (cerrada el 2026-06-05)
 
-**Decisión**: el MVP-1 construye **un solo motor de sorteo configurable**, de **1 ganador**, modo **AUTO + Admin**, con dos disparadores combinables — **umbral opcional + fecha opcional** — y **ruta de fallo-y-refund**. Esto entrega **T1, T2, T3 y T4 como presets** del mismo motor. Se **difiere**: T5 (UX flash), T6 (multi-ganador), T7 (progresivo), T8 (LIVE → [Z.5]). ADR canónico: [`decisions/Z4-tipos-de-sorteo.md`](decisions/Z4-tipos-de-sorteo.md).
+**Decisión**: el MVP-1 construye **un solo motor de sorteo configurable**, de **1 ganador**, modo **AUTO + Admin**, con dos disparadores combinables — **umbral opcional + fecha opcional** — y **ruta de fallo-y-refund**. Esto entrega **T1, T2, T3 y T4 como presets** del mismo motor. Se **difiere**: T5 (UX flash), T6 (multi-ganador), T7 (progresivo), T8 (LIVE → [Z.5]). ADR canónico: [`decisions/Z4-tipos-de-sorteo.md`](../decisions/Z4-tipos-de-sorteo.md).
 
 #### Z.4.1 — Reframe: los tipos son presets, no motores
 
@@ -456,7 +470,7 @@ Los 8 tipos del PRD se descomponen en 3 ejes ortogonales: **disparo** (sold-out 
 
 #### Z.4.2 — El acople con el refund (Modelo C)
 
-Soportar umbral/fecha obliga a definir qué pasa si el sorteo no se completa → **falla y se devuelve a todos**. Bajo Modelo C ([Z.1](decisions/Z1-custodia-del-dinero.md)) los refunds los ejecuta el organizador/PSP, así que construir umbral/fecha **arrastra la ruta de fallo-y-refund** (toca el módulo de pagos). T1 puro lo evitaría pero arriesga deadlock; T3 puro lo evitaría pero arriesga sortear con pool diminuto. Un MVP creíble necesita umbral + fecha + refund.
+Soportar umbral/fecha obliga a definir qué pasa si el sorteo no se completa → **falla y se devuelve a todos**. Bajo Modelo C ([Z.1](../decisions/Z1-custodia-del-dinero.md)) los refunds los ejecuta el organizador/PSP, así que construir umbral/fecha **arrastra la ruta de fallo-y-refund** (toca el módulo de pagos). T1 puro lo evitaría pero arriesga deadlock; T3 puro lo evitaría pero arriesga sortear con pool diminuto. Un MVP creíble necesita umbral + fecha + refund.
 
 #### Z.4.3 — Inputs de Diego (2026-06-05)
 
@@ -477,11 +491,11 @@ Se respeta el diseño "tipos = `draw_config` versionado". MVP-1 implementa el su
 
 ### Z.5 — T8 LIVE (cerrada el 2026-06-05)
 
-**Decisión**: **T8 LIVE se difiere a MVP-3**. En MVP-1/2 el sorteo se ejecuta solo en modo AUTO (sistema) y Admin. ADR canónico: [`decisions/Z5-t8-live.md`](decisions/Z5-t8-live.md).
+**Decisión**: **T8 LIVE se difiere a MVP-3**. En MVP-1/2 el sorteo se ejecuta solo en modo AUTO (sistema) y Admin. ADR canónico: [`decisions/Z5-t8-live.md`](../decisions/Z5-t8-live.md).
 
 #### Z.5.1 — Qué agrega LIVE (y qué no)
 
-LIVE es el eje "modo" de [Z.4](decisions/Z4-tipos-de-sorteo.md): el **organizador ejecuta el sorteo en vivo** (streaming), solo con autorización previa de Admin. **No cambia el algoritmo** — pool_hash, entropía externa, seed y proof son idénticos al modo AUTO. Lo que agrega es capa de experiencia y control: streaming/tiempo real, flujo de autorización (`LIVE_AUTHORIZED` / `LIVE_TRIGGER_REJECTED`), y controles anti-manipulación percibida.
+LIVE es el eje "modo" de [Z.4](../decisions/Z4-tipos-de-sorteo.md): el **organizador ejecuta el sorteo en vivo** (streaming), solo con autorización previa de Admin. **No cambia el algoritmo** — pool_hash, entropía externa, seed y proof son idénticos al modo AUTO. Lo que agrega es capa de experiencia y control: streaming/tiempo real, flujo de autorización (`LIVE_AUTHORIZED` / `LIVE_TRIGGER_REJECTED`), y controles anti-manipulación percibida.
 
 #### Z.5.2 — Por qué diferir, y por qué a MVP-3
 
@@ -492,21 +506,21 @@ LIVE es el eje "modo" de [Z.4](decisions/Z4-tipos-de-sorteo.md): el **organizado
 
 #### Z.5.3 — Implicación de build
 
-El motor de [Z.4](decisions/Z4-tipos-de-sorteo.md) ya modela `mode ∈ {AUTO, ADMIN}`. LIVE es **un tercer valor del mismo enum** que reutiliza el algoritmo; sumarlo en MVP-3 es additivo (autorización + capa realtime), no reescritura. Mantener el campo `mode` desde MVP-1 evita refactor.
+El motor de [Z.4](../decisions/Z4-tipos-de-sorteo.md) ya modela `mode ∈ {AUTO, ADMIN}`. LIVE es **un tercer valor del mismo enum** que reutiliza el algoritmo; sumarlo en MVP-3 es additivo (autorización + capa realtime), no reescritura. Mantener el campo `mode` desde MVP-1 evita refactor.
 
 ---
 
 ### Z.6 — Stack tecnológico (cerrada en dirección el 2026-06-06)
 
-**Decisión**: **Next.js (App Router) para todo**. Sortibox **no es web estática** (solo 2-3 de 8 superficies lo son; el core comprar→sortear→entregar→liquidar es dinámico y transaccional), por lo que se descartó Astro — optimizado para el caso inverso (contenido + islas). Next cubre la superficie pública (SEO vía RSC/ISR) y la app autenticada con un solo framework maduro. Stack: Next.js+TS, Tailwind+shadcn/ui, PostgreSQL, Drizzle (preferido), job runner gestionado (Inngest/Trigger), auth con MFA (Clerk/Supabase), Mercado Pago multi-PSP, Vercel, Sentry+PostHog. El job runner es **crítico** (outbox, disparo de sorteo, conciliación). ADR canónico: [`decisions/Z6-stack-tecnologico.md`](decisions/Z6-stack-tecnologico.md). Sub-decisiones al scaffold: ORM, job runner, auth, DB host.
+**Decisión**: **Next.js (App Router) para todo**. Sortibox **no es web estática** (solo 2-3 de 8 superficies lo son; el core comprar→sortear→entregar→liquidar es dinámico y transaccional), por lo que se descartó Astro — optimizado para el caso inverso (contenido + islas). Next cubre la superficie pública (SEO vía RSC/ISR) y la app autenticada con un solo framework maduro. Stack: Next.js+TS, Tailwind+shadcn/ui, PostgreSQL, Drizzle (preferido), job runner gestionado (Inngest/Trigger), auth con MFA (Clerk/Supabase), Mercado Pago multi-PSP, Vercel, Sentry+PostHog. El job runner es **crítico** (outbox, disparo de sorteo, conciliación). ADR canónico: [`decisions/Z6-stack-tecnologico.md`](../decisions/Z6-stack-tecnologico.md). Sub-decisiones al scaffold: ORM, job runner, auth, DB host.
 
 ### Z.7 — Versionamiento y flujo de repositorio (cerrada el 2026-06-06)
 
-**Decisión**: desde ya (pre-código) — **Semantic Versioning** (arranca `0.1.0`), **Conventional Commits**, **release-please** (versión + CHANGELOG automáticos), **CHANGELOG.md** Keep a Changelog, **`main` protegida** + PRs, y **GitHub Actions** de alcance creciente (hoy: commitlint + lint/links de docs; con código: typecheck/test/build). Matiz: el repo es hoy solo-docs, así que se adoptan las convenciones ahora y el semver formal madura con el código (`release-type: simple` → `node`). Branch protection y creación del remoto las hace Diego en GitHub (pasos en `CONTRIBUTING.md`). ADR canónico: [`decisions/Z7-versionamiento.md`](decisions/Z7-versionamiento.md).
+**Decisión**: desde ya (pre-código) — **Semantic Versioning** (arranca `0.1.0`), **Conventional Commits**, **release-please** (versión + CHANGELOG automáticos), **CHANGELOG.md** Keep a Changelog, **`main` protegida** + PRs, y **GitHub Actions** de alcance creciente (hoy: commitlint + lint/links de docs; con código: typecheck/test/build). Matiz: el repo es hoy solo-docs, así que se adoptan las convenciones ahora y el semver formal madura con el código (`release-type: simple` → `node`). Branch protection y creación del remoto las hace Diego en GitHub (pasos en `CONTRIBUTING.md`). ADR canónico: [`decisions/Z7-versionamiento.md`](../decisions/Z7-versionamiento.md).
 
 ### Z.8 — Roles de memoria y contexto (cerrada el 2026-06-06)
 
-**Decisión**: tras instalar plugins (context-mode, claude-mem, get-shit-done…), se asignan **carriles** para que los mecanismos de memoria/contexto no compitan: **`docs/` + `MEMORY.md`** = fuente curada y compartible (la verdad del proyecto, versionada); **`context-mode`** = procesar outputs grandes sin gastar contexto; **`claude-mem`** = captura cross-sesión secundaria (a prueba; se desactiva si duplica sin aportar); **GSD** = framework de workflow, no memoria. Regla de oro: toda decisión cerrada se documenta como ADR + Anexo Z, nunca se delega a la captura automática; la memoria auto-capturada no es autoritativa. ADR canónico: [`decisions/Z8-roles-memoria-contexto.md`](decisions/Z8-roles-memoria-contexto.md). Versión operativa en [`CLAUDE.md`](../../CLAUDE.md).
+**Decisión**: tras instalar plugins (context-mode, claude-mem, get-shit-done…), se asignan **carriles** para que los mecanismos de memoria/contexto no compitan: **`docs/` + `MEMORY.md`** = fuente curada y compartible (la verdad del proyecto, versionada); **`context-mode`** = procesar outputs grandes sin gastar contexto; **`claude-mem`** = captura cross-sesión secundaria (a prueba; se desactiva si duplica sin aportar); **GSD** = framework de workflow, no memoria. Regla de oro: toda decisión cerrada se documenta como ADR + Anexo Z, nunca se delega a la captura automática; la memoria auto-capturada no es autoritativa. ADR canónico: [`decisions/Z8-roles-memoria-contexto.md`](../decisions/Z8-roles-memoria-contexto.md). Versión operativa en [`CLAUDE.md`](../../CLAUDE.md).
 
 ---
 
