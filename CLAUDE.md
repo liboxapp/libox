@@ -54,6 +54,17 @@ ADR structure: Decision · Alternatives evaluated · Why each was rejected · Im
 - **Markdown links** are relative to the `docs/` root so the wiki renders both in-editor and in any Markdown viewer.
 - Persistent project context lives in auto-memory under `~/.claude/projects/-Users-diegocotrina-Desktop-sortibox/memory/` (loaded automatically); the in-repo wiki is the shareable source of truth.
 
+## Memory & context tooling (roles — see ADR Z.8)
+
+Several memory/context plugins run in parallel (context-mode, claude-mem, get-shit-done) alongside the curated wiki. To prevent overlap and drift, each has a lane:
+
+- **`docs/` + auto-memory `MEMORY.md` = the authoritative, shareable source of truth.** Decisions (Z.1–Z.8), plan, glossary, compliance live here, version-controlled. Never let the project's truth live only in an auto-capture store.
+- **`context-mode`** = process large tool outputs in its sandbox to save context window (logs, builds, big files). A compute aid, not the record.
+- **`claude-mem`** = optional cross-session capture; secondary. On probation — may be disabled if it duplicates `MEMORY.md` without added value. Not authoritative.
+- **`get-shit-done` (GSD)** = workflow framework (planning/execution skills + guard hooks), not memory.
+
+Rules: every closed decision is still documented as an ADR in `docs/decisions/` + Anexo Z mirror — never delegated to auto-capture. Auto-captured memory is not authoritative; ADRs/plan win on any discrepancy.
+
 ## Key product facts (closed with Diego, 2026-06-05)
 
 - MVP scope: **paid-ticket raffles only** (no free promotional sweepstakes).

@@ -504,6 +504,10 @@ El motor de [Z.4](decisions/Z4-tipos-de-sorteo.md) ya modela `mode ∈ {AUTO, AD
 
 **Decisión**: desde ya (pre-código) — **Semantic Versioning** (arranca `0.1.0`), **Conventional Commits**, **release-please** (versión + CHANGELOG automáticos), **CHANGELOG.md** Keep a Changelog, **`main` protegida** + PRs, y **GitHub Actions** de alcance creciente (hoy: commitlint + lint/links de docs; con código: typecheck/test/build). Matiz: el repo es hoy solo-docs, así que se adoptan las convenciones ahora y el semver formal madura con el código (`release-type: simple` → `node`). Branch protection y creación del remoto las hace Diego en GitHub (pasos en `CONTRIBUTING.md`). ADR canónico: [`decisions/Z7-versionamiento.md`](decisions/Z7-versionamiento.md).
 
+### Z.8 — Roles de memoria y contexto (cerrada el 2026-06-06)
+
+**Decisión**: tras instalar plugins (context-mode, claude-mem, get-shit-done…), se asignan **carriles** para que los mecanismos de memoria/contexto no compitan: **`docs/` + `MEMORY.md`** = fuente curada y compartible (la verdad del proyecto, versionada); **`context-mode`** = procesar outputs grandes sin gastar contexto; **`claude-mem`** = captura cross-sesión secundaria (a prueba; se desactiva si duplica sin aportar); **GSD** = framework de workflow, no memoria. Regla de oro: toda decisión cerrada se documenta como ADR + Anexo Z, nunca se delega a la captura automática; la memoria auto-capturada no es autoritativa. ADR canónico: [`decisions/Z8-roles-memoria-contexto.md`](decisions/Z8-roles-memoria-contexto.md). Versión operativa en [`CLAUDE.md`](../../CLAUDE.md).
+
 ---
 
 ## 8. Verificación de este plan
