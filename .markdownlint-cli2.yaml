@@ -1,11 +1,18 @@
-# Configuración relajada para el wiki: evita ruido de reglas estilísticas
-# sin renunciar a la detección de errores estructurales reales.
+# Configuración para el wiki: markdownlint como chequeo estructural ligero.
+# Se desactivan reglas puramente estilísticas o que dan falsos positivos con
+# nuestra estructura (frontmatter YAML + un H1 por archivo). La integridad de
+# los links la valida el job `links` (lychee), que es el chequeo de alto valor.
 config:
-  MD013: false   # longitud de línea (los docs tienen prosa larga)
+  MD013: false   # longitud de línea (prosa larga)
   MD024:
-    siblings_only: true   # permite encabezados repetidos en distintas secciones
+    siblings_only: true   # encabezados repetidos en distintas secciones (ADRs)
+  MD025:
+    front_matter_title: ""   # no tratar el `title:` del frontmatter como H1
+  MD032: false   # listas sin línea en blanco alrededor
   MD033: false   # HTML inline permitido
-  MD041: false   # primera línea no necesita ser H1 (hay frontmatter YAML)
+  MD040: false   # fenced code sin lenguaje (árboles de directorios, etc.)
+  MD041: false   # primera línea no necesita ser H1 (hay frontmatter)
+  MD060: false   # estilo de columnas de tabla (regla nueva; el CI ni la tiene)
 globs:
   - "**/*.md"
 ignores:
