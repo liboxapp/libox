@@ -1,9 +1,9 @@
 ---
 title: Z.5 — T8 LIVE
 status: cerrada
-tags: [sortibox, decision, sorteo, live, roadmap, mvp]
+tags: [libox, decision, sorteo, live, roadmap, mvp]
 decided: 2026-06-05
-relates: [docs/decisions/Z4-tipos-de-sorteo.md, docs/glosario.md, docs/plans/sortibox-plan.md]
+relates: [docs/decisions/Z4-tipos-de-sorteo.md, docs/glosario.md, docs/plans/libox-plan.md]
 updated: 2026-06-05
 ---
 
@@ -11,7 +11,7 @@ updated: 2026-06-05
 
 **Estado**: Cerrada (2026-06-05).
 **Decisor**: Diego.
-**Documento canónico**: este archivo. Mirror en [`docs/plans/sortibox-plan.md`](../plans/sortibox-plan.md#z5--t8-live-cerrada-el-2026-06-05) (Anexo Z.5).
+**Documento canónico**: este archivo. Mirror en [`docs/plans/libox-plan.md`](../plans/libox-plan.md#z5--t8-live-cerrada-el-2026-06-05) (Anexo Z.5).
 **Relacionada**: continúa el eje "modo" de [Z.4](Z4-tipos-de-sorteo.md).
 
 ---
@@ -53,7 +53,7 @@ El motor de [Z.4](Z4-tipos-de-sorteo.md) ya modela `mode ∈ {AUTO, ADMIN}`. **L
 
 ---
 
-## Impacto sobre el PRD ALAZAR v11
+## Impacto sobre el PRD Libox v11
 
 El PRD presenta T8 LIVE como un diferenciador relevante y dedica sección a su anti-manipulación. La decisión **no lo descarta**: lo **secuencia** en el roadmap (MVP-3), respetando la regla del PRD de "expandir sin destruir". El diseño del PRD (mismo algoritmo para AUTO y LIVE) es justamente lo que hace barato diferirlo.
 

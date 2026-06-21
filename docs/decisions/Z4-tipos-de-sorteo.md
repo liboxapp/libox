@@ -1,9 +1,9 @@
 ---
 title: Z.4 — Tipos de sorteo en MVP-1
 status: cerrada
-tags: [sortibox, decision, sorteo, draw-engine, mvp]
+tags: [libox, decision, sorteo, draw-engine, mvp]
 decided: 2026-06-05
-relates: [docs/decisions/Z1-custodia-del-dinero.md, docs/glosario.md, docs/plans/sortibox-plan.md]
+relates: [docs/decisions/Z1-custodia-del-dinero.md, docs/glosario.md, docs/plans/libox-plan.md]
 updated: 2026-06-05
 ---
 
@@ -11,7 +11,7 @@ updated: 2026-06-05
 
 **Estado**: Cerrada (2026-06-05).
 **Decisor**: Diego.
-**Documento canónico**: este archivo. Mirror en [`docs/plans/sortibox-plan.md`](../plans/sortibox-plan.md#z4--tipos-de-sorteo-en-mvp-1-cerrada-el-2026-06-05) (Anexo Z.4).
+**Documento canónico**: este archivo. Mirror en [`docs/plans/libox-plan.md`](../plans/libox-plan.md#z4--tipos-de-sorteo-en-mvp-1-cerrada-el-2026-06-05) (Anexo Z.4).
 **Glosario**: la definición de T1–T8 y de los términos de fairness está en [glosario.md](../glosario.md).
 **Relacionada**: T8 (LIVE) se decide aparte en [Z.5](Z5-t8-live.md).
 
@@ -60,7 +60,7 @@ Por eso la pregunta correcta fue **"¿qué posiciones de cada eje soporta el MVP
 
 Permitir umbral o fecha obliga a responder **qué pasa si el sorteo no se completa** (no llega al umbral antes de la fecha). La respuesta sana: el sorteo **falla y se devuelve a todos**.
 
-Bajo el [Modelo C](Z1-custodia-del-dinero.md), los refunds los ejecuta el organizador/PSP, no Sortibox. Por lo tanto, construir umbral/fecha **arrastra construir la ruta de fallo-y-refund**, que toca el módulo de pagos.
+Bajo el [Modelo C](Z1-custodia-del-dinero.md), los refunds los ejecuta el organizador/PSP, no Libox. Por lo tanto, construir umbral/fecha **arrastra construir la ruta de fallo-y-refund**, que toca el módulo de pagos.
 
 Alternativas que la evitarían, y por qué no convencen:
 
@@ -90,7 +90,7 @@ Un MVP creíble necesita umbral + fecha + refund: ningún organizador real acept
 
 ---
 
-## Impacto sobre el PRD ALAZAR v11
+## Impacto sobre el PRD Libox v11
 
 Se respeta el diseño del PRD ("tipos = `draw_config` versionado consumido por el Draw Engine"). MVP-1 implementa el subconjunto **{T1–T4, 1 ganador, AUTO/Admin}**. T5/T6/T7/T8 quedan como **configuraciones futuras del mismo motor**, no como reescrituras. Esto mantiene la coherencia con la regla del PRD de "expandir sin destruir".
 
@@ -101,4 +101,4 @@ Se respeta el diseño del PRD ("tipos = `draw_config` versionado consumido por e
 1. ¿La **ruta de refund** (sorteo fallido → devolver a todos) es aceptable operativamente bajo Modelo C en MVP-1, sabiendo que depende del PSP para ejecutar las devoluciones?
 2. ¿Hay algún caso de negocio temprano que **exija multi-ganador (T6)** y obligue a adelantarlo? (Ej. sorteos con varios premios.)
 3. ¿La **UX de "flash" (T5)** aporta diferenciación temprana suficiente para adelantarla, o espera?
-4. Política de refund: si el sorteo falla, ¿se devuelve el 100% al participante incluyendo lo que habría sido comisión de Sortibox, o Sortibox retiene algo? (Tiene implicación contable en el ledger.)
+4. Política de refund: si el sorteo falla, ¿se devuelve el 100% al participante incluyendo lo que habría sido comisión de Libox, o Libox retiene algo? (Tiene implicación contable en el ledger.)

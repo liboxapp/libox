@@ -1,9 +1,9 @@
 ---
 title: Z.2 — Elección de PSP
 status: cerrada-en-direccion
-tags: [sortibox, decision, psp, pagos, mercadopago, culqi, yape]
+tags: [libox, decision, psp, pagos, mercadopago, culqi, yape]
 decided: 2026-06-05
-relates: [docs/decisions/Z1-custodia-del-dinero.md, docs/plans/sortibox-plan.md, docs/compliance-peru.md]
+relates: [docs/decisions/Z1-custodia-del-dinero.md, docs/plans/libox-plan.md, docs/compliance-peru.md]
 updated: 2026-06-05
 ---
 
@@ -11,7 +11,7 @@ updated: 2026-06-05
 
 **Estado**: Cerrada en dirección (2026-06-05). Decisión final supeditada a verificación comercial (ver más abajo).
 **Decisor**: Diego (con conformidad pendiente de socios para la fase de entrada de Culqi).
-**Documento canónico**: este archivo. Mirror corto en [`docs/plans/sortibox-plan.md`](../plans/sortibox-plan.md#z2--elección-de-psp-cerrada-en-dirección-el-2026-06-05) (Anexo Z.2).
+**Documento canónico**: este archivo. Mirror corto en [`docs/plans/libox-plan.md`](../plans/libox-plan.md#z2--elección-de-psp-cerrada-en-dirección-el-2026-06-05) (Anexo Z.2).
 **Depende de**: [Z.1 — Custodia del dinero](Z1-custodia-del-dinero.md) (Modelo C es la causa de la restricción de split).
 
 > ⚠️ Los puntos marcados `[VERIFICAR→COMERCIAL]` son conocimiento general de mercado que puede estar desactualizado y deben confirmarse con el comercial del PSP antes de comprometer integración.
@@ -21,7 +21,7 @@ updated: 2026-06-05
 ## Decisión
 
 - **PSP primario**: **Mercado Pago**.
-- **Mecanismo de comisión**: **split en la fuente** (application fee / marketplace). El pago del participante se divide en la misma transacción: ~80% a la cuenta del organizador, ~20% a Sortibox. Sortibox nunca custodia el dinero (coherente con [Modelo C](Z1-custodia-del-dinero.md)).
+- **Mecanismo de comisión**: **split en la fuente** (application fee / marketplace). El pago del participante se divide en la misma transacción: ~80% a la cuenta del organizador, ~20% a Libox. Libox nunca custodia el dinero (coherente con [Modelo C](Z1-custodia-del-dinero.md)).
 - **Segundo rail**: **Culqi**, a implementar en una **fase posterior del MVP**. Qué fase exactamente = **decisión de socios**. No bloquea MVP-1.
 - **Compuerta**: la decisión final está supeditada a verificación comercial; las preguntas 1 y 2 del cuestionario (ver abajo) son **eliminatorias**.
 
@@ -31,13 +31,13 @@ updated: 2026-06-05
 
 En la superficie el conflicto era trivial: el PRD dice "Mercado Pago", el plan decía "comparemos". Parecía preferencia. No lo era.
 
-El cierre de [Z.1](Z1-custodia-del-dinero.md) (custodia = Modelo C) impuso una restricción dura: **Sortibox nunca toca el dinero, pero igual cobra su 20%**. Eso solo es posible si el pago se **divide en la fuente** (split / application fee), una capacidad técnica que **no todos los PSP peruanos tienen** — la mayoría son acquirers de un solo comercio.
+El cierre de [Z.1](Z1-custodia-del-dinero.md) (custodia = Modelo C) impuso una restricción dura: **Libox nunca toca el dinero, pero igual cobra su 20%**. Eso solo es posible si el pago se **divide en la fuente** (split / application fee), una capacidad técnica que **no todos los PSP peruanos tienen** — la mayoría son acquirers de un solo comercio.
 
 Por eso la elección dejó de ser preferencia de DX y pasó a ser **satisfacción de una restricción**. La "Mercado Pago" del PRD podía ser correcta, pero por una razón que el PRD no enuncia: es de los pocos con producto marketplace maduro.
 
 Si se eligiera un PSP sin split nativo, solo quedarían dos salidas, ambas malas:
-1. Sortibox recibe el 100% y luego paga al organizador → eso **es** Modelo B (escrow real) → reactiva el riesgo SBS/captación de fondos que evitamos.
-2. El organizador recibe el 100% y Sortibox le factura la comisión después → riesgo de cobranza + peor cashflow.
+1. Libox recibe el 100% y luego paga al organizador → eso **es** Modelo B (escrow real) → reactiva el riesgo SBS/captación de fondos que evitamos.
+2. El organizador recibe el 100% y Libox le factura la comisión después → riesgo de cobranza + peor cashflow.
 
 ---
 
@@ -105,12 +105,12 @@ Misma batería a **Mercado Pago Perú** y a **Culqi**. Las preguntas 1 y 2 son *
 ## Implicaciones que los socios deben aceptar
 
 1. **Cada organizador deberá crear cuenta y pasar KYC con el PSP** (MP) para cobrar. Es el punto más débil del modelo marketplace: fricción de onboarding del lado del organizador. Aceptable para organizadores RUC, pero hay que diseñarlo explícitamente en el flujo de alta.
-2. El dinero del organizador **aterriza primero en su wallet del PSP**, no directo en su banco; él retira después. Sortibox no controla ese paso.
+2. El dinero del organizador **aterriza primero en su wallet del PSP**, no directo en su banco; él retira después. Libox no controla ese paso.
 3. La **fecha/fase de entrada de Culqi** queda abierta y es **decisión de socios**; no bloquea el MVP-1.
 
 ---
 
-## Impacto sobre el PRD ALAZAR v11
+## Impacto sobre el PRD Libox v11
 
 El PRD ya asume Mercado Pago y nombra webhooks `mercadopago` (Parte III, Anexo D). Esta decisión **confirma y aterriza** esa asunción, añadiendo:
 

@@ -1,19 +1,19 @@
 ---
 title: Índice de decisiones (ADRs)
 status: vivo
-tags: [sortibox, decisiones, indice]
+tags: [libox, decisiones, indice]
 updated: 2026-06-05
 ---
 
 # Decisiones (ADRs)
 
-Esta carpeta guarda las decisiones cerradas del proyecto Sortibox, cada una en su propio archivo, en formato **ADR (Architecture Decision Record)**.
+Esta carpeta guarda las decisiones cerradas del proyecto Libox, cada una en su propio archivo, en formato **ADR (Architecture Decision Record)**.
 
 ## Propósito
 
 - **Compartibilidad**: cada ADR es autocontenido y puede compartirse con socios, inversionistas, abogado o nuevos miembros del equipo sin necesidad de leer el plan completo.
 - **Trazabilidad**: el _por qué_ de una decisión queda registrado en el momento en que se tomó, con las alternativas que se evaluaron y las restricciones vigentes.
-- **No-divergencia**: cada ADR aclara cuál es su versión canónica (este archivo, o el Anexo Z correspondiente en [`../plans/sortibox-plan.md`](../plans/sortibox-plan.md)).
+- **No-divergencia**: cada ADR aclara cuál es su versión canónica (este archivo, o el Anexo Z correspondiente en [`../plans/libox-plan.md`](../plans/libox-plan.md)).
 
 ## Convención de nombres
 
@@ -37,5 +37,5 @@ Esta carpeta guarda las decisiones cerradas del proyecto Sortibox, cada una en s
 1. Confirmar con Diego que la decisión está lista para cerrarse.
 2. Crear archivo nuevo con el formato `Z<n>-<slug>.md`.
 3. Estructura sugerida: **Decisión** · **Alternativas evaluadas** · **Por qué se descartó cada una** · **Implicaciones que el equipo debe aceptar** · **Impacto sobre el PRD** · **Validaciones externas pendientes** · **Preguntas para socios**.
-4. Mirror corto en el Anexo Z del [plan](../plans/sortibox-plan.md), apuntando al ADR como canónico.
+4. Mirror corto en el Anexo Z del [plan](../plans/libox-plan.md), apuntando al ADR como canónico.
 5. Actualizar este índice.

@@ -16,8 +16,8 @@ Hito: wiki de planificación y decisiones de producto cerradas (etapa pre-códig
 ### Added
 
 - Wiki del proyecto en `docs/` con índice (`docs/README.md`).
-- PRD del socio ALAZAR v11 en `docs/prd/`.
-- Plan vivo de producto y arquitectura (`docs/plans/sortibox-plan.md`) con Anexo Z (bitácora de decisiones).
+- PRD del socio Libox v11 en `docs/prd/`.
+- Plan vivo de producto y arquitectura (`docs/plans/libox-plan.md`) con Anexo Z (bitácora de decisiones).
 - Glosario de términos (`docs/glosario.md`).
 - Documento de trabajo de compliance Perú (`docs/compliance-peru.md`).
 - Registros de decisión (ADRs):
@@ -31,5 +31,5 @@ Hito: wiki de planificación y decisiones de producto cerradas (etapa pre-códig
 - Vault de Obsidian (`.obsidian/app.json`) con links en markdown estándar.
 - Infraestructura de versionamiento: Conventional Commits, CHANGELOG, CI de docs, release-please.
 
-[Unreleased]: https://github.com/OWNER/sortibox/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/OWNER/sortibox/releases/tag/v0.1.0
+[Unreleased]: https://github.com/OWNER/libox/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/OWNER/libox/releases/tag/v0.1.0

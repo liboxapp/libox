@@ -1,13 +1,13 @@
 ---
 title: Glosario de términos
 status: vivo
-tags: [sortibox, glosario, referencia]
+tags: [libox, glosario, referencia]
 updated: 2026-06-05
 ---
 
 # Glosario de términos
 
-Referencia de los términos técnicos, de producto y regulatorios que aparecen en el [PRD](prd/), el [plan](plans/sortibox-plan.md) y las [decisiones](decisions/). Pensado para consultar cuando un término no se entienda. Se actualiza a medida que aparecen términos nuevos.
+Referencia de los términos técnicos, de producto y regulatorios que aparecen en el [PRD](prd/), el [plan](plans/libox-plan.md) y las [decisiones](decisions/). Pensado para consultar cuando un término no se entienda. Se actualiza a medida que aparecen términos nuevos.
 
 ---
 
@@ -38,7 +38,7 @@ El PRD modela 8 "tipos" de sorteo. **No son 8 motores distintos**: son **presets
 - **`draw_config`** — la configuración versionada que define cómo se comporta un sorteo (condición, ganadores, modo). El motor de sorteo **solo** ejecuta lo que dice el config; no tiene comportamiento implícito.
 - **`canonical_pool`** — la lista de boletos válidos, ordenada de forma determinística (canónica) justo antes del sorteo. Que sea canónica garantiza que cualquiera que la reconstruya obtenga el mismo orden.
 - **`pool_hash`** — huella criptográfica (SHA-256) del `canonical_pool`. Prueba qué boletos entraron al sorteo sin poder alterarlos después.
-- **`external_entropy`** (entropía externa) — un valor aleatorio de una **fuente pública verificable** (ej. drand, beacon NIST, hash de un bloque futuro de blockchain) que nadie controla. Evita que Sortibox o el organizador "elijan" el ganador.
+- **`external_entropy`** (entropía externa) — un valor aleatorio de una **fuente pública verificable** (ej. drand, beacon NIST, hash de un bloque futuro de blockchain) que nadie controla. Evita que Libox o el organizador "elijan" el ganador.
 - **`seed_material`** — material derivado: `sha256(pool_hash + external_entropy + raffle_id)`. Mezcla el pool con la entropía externa.
 - **`random_value`** — el valor final de cálculo: `sha256(seed_material + pool_hash)`. De aquí sale el ganador.
 - **`winner_index`** — la posición del ganador: `random_value (como número) % cantidad_de_boletos`.
@@ -66,18 +66,18 @@ El PRD modela 8 "tipos" de sorteo. **No son 8 motores distintos**: son **presets
 ## 4. Pagos, custodia y contabilidad
 
 - **PSP (Payment Service Provider)** — proveedor que procesa los pagos (ej. Mercado Pago, Culqi). Ver [Z.2](decisions/Z2-eleccion-psp.md).
-- **split payment / application fee** — capacidad del PSP de **dividir un pago** entre varios beneficiarios en una sola transacción (ej. 80% al organizador, 20% a Sortibox). Es la restricción dura que define qué PSP sirve.
+- **split payment / application fee** — capacidad del PSP de **dividir un pago** entre varios beneficiarios en una sola transacción (ej. 80% al organizador, 20% a Libox). Es la restricción dura que define qué PSP sirve.
 - **marketplace (modelo)** — arquitectura donde una plataforma facilita pagos entre compradores y múltiples vendedores, cobrando una comisión vía split.
 - **merchant of record** — el comercio que figura legalmente como vendedor ante el participante y emite el comprobante. Bajo Modelo C, es el **organizador**.
 - **escrow** — figura donde un tercero custodia el dinero hasta que se cumplan condiciones, y recién entonces lo libera.
-- **Modelo A / B / C** — las tres formas de custodia evaluadas en [Z.1](decisions/Z1-custodia-del-dinero.md): **A** = split directo puro (Sortibox no toca el dinero); **B** = escrow real (Sortibox custodia, requiere licencia); **C** = escrow conceptual (opera como A pero lleva contabilidad como B). **Sortibox usa C.**
+- **Modelo A / B / C** — las tres formas de custodia evaluadas en [Z.1](decisions/Z1-custodia-del-dinero.md): **A** = split directo puro (Libox no toca el dinero); **B** = escrow real (Libox custodia, requiere licencia); **C** = escrow conceptual (opera como A pero lleva contabilidad como B). **Libox usa C.**
 - **payout** — el desembolso del dinero al organizador.
 - **chargeback (contracargo)** — cuando un participante reclama a su banco/tarjeta y se revierte el cobro. Bajo Modelo C lo absorbe primero el PSP.
 - **reconciliation (conciliación)** — cruzar lo que reporta el PSP contra el ledger interno para detectar diferencias. Gate `PSP_RECONCILED`.
 - **ledger doble entrada** — contabilidad donde cada movimiento se registra en dos cuentas (debe = haber). Garantiza que las cuentas siempre cuadren.
 - **settlement (liquidación)** — el proceso de cerrar las obligaciones económicas tras el sorteo y la entrega: pagar al organizador, reconocer la comisión, manejar refunds.
 - **settlement gates** — condiciones obligatorias que deben cumplirse antes de liberar dinero (draw ejecutado, entrega resuelta, sin disputa, ledger cuadrado, PSP conciliado). Bajo Modelo C son **conceptuales** (registran estado, no congelan dinero real).
-- **Cuentas del ledger** (PRD): *Cash Clearing* (dinero capturado pendiente de conciliar), *Purchase Liability* (obligación por boletos vendidos), *Platform Revenue* (comisión Sortibox), *Payment Expense* (costo PSP), *Client Payable* (neto a pagar al organizador), *Refund Reserve* (reserva de devoluciones), *Chargeback Loss* (pérdida por contracargos), *Settlement Freeze* (bloqueo por disputa).
+- **Cuentas del ledger** (PRD): *Cash Clearing* (dinero capturado pendiente de conciliar), *Purchase Liability* (obligación por boletos vendidos), *Platform Revenue* (comisión Libox), *Payment Expense* (costo PSP), *Client Payable* (neto a pagar al organizador), *Refund Reserve* (reserva de devoluciones), *Chargeback Loss* (pérdida por contracargos), *Settlement Freeze* (bloqueo por disputa).
 
 ---
 
@@ -85,8 +85,8 @@ El PRD modela 8 "tipos" de sorteo. **No son 8 motores distintos**: son **presets
 
 - **RBAC (Role-Based Access Control)** — control de acceso según el rol del actor.
 - **Usuario / Participante** — quien compra boletos y participa.
-- **Cliente / Organizador** — quien crea el sorteo y entrega el premio. (En el PRD se llama "Cliente"; en Sortibox lo llamamos **organizador**.)
-- **Admin** — rol soberano de Sortibox: aprueba, ejecuta excepciones, resuelve disputas, libera settlement. Cada acción sensible exige **motivo** (`reason_required`) y queda auditada.
+- **Cliente / Organizador** — quien crea el sorteo y entrega el premio. (En el PRD se llama "Cliente"; en Libox lo llamamos **organizador**.)
+- **Admin** — rol soberano de Libox: aprueba, ejecuta excepciones, resuelve disputas, libera settlement. Cada acción sensible exige **motivo** (`reason_required`) y queda auditada.
 
 ---
 

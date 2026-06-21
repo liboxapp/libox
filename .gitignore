@@ -9,7 +9,7 @@
 .obsidian/plugins/*/data.json
 
 # Extracción temporal del PRD
-/tmp/alazar_libox_prd_v11.txt
+/tmp/libox_prd_v11.txt
 
 # --- Node / Next.js (para cuando entre el código) ---
 node_modules/
