@@ -1,0 +1,35 @@
+name: outline-sync
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**/*.md"
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install outline-cli
+        run: pip install --quiet outline-kb-cli
+      - name: Sync changed docs to Outline
+        env:
+          OUTLINE_API_KEY: ${{ secrets.OUTLINE_API_KEY }}
+          OUTLINE_BASE_URL: https://app.getoutline.com/api
+        run: |
+          changed=$(git diff --name-only HEAD^ HEAD -- 'docs/**/*.md' || true)
+          if [ -z "$changed" ]; then
+            echo "no doc changes detected"
+            exit 0
+          fi
+          # shellcheck disable=SC2086
+          bash scripts/outline-sync.sh $changed
