@@ -2,13 +2,13 @@
 title: Flujo end-to-end del sistema
 description: Diagrama maestro del flujo de procesos — onboarding organizador → sorteo → compra → ejecución → liquidación → auditoría, alineado con los 8 dominios y los ADRs Z.1–Z.5
 status: vivo
-tags: [liboxapp, flujo, arquitectura, diagrama]
+tags: [libox, flujo, arquitectura, diagrama]
 updated: 2026-06-19
 ---
 
 # Flujo end-to-end del sistema
 
-Esquema maestro del **flujo de procesos** de Liboxapp: el camino completo de una rifa desde que un organizador se registra hasta que el dinero se liquida y el sorteo queda auditado. Es la "vista de pájaro" que conecta los [8 dominios del sistema](../plans/liboxapp-plan.md#3-dominios-del-sistema-bounded-contexts) y respeta las decisiones cerradas (custodia [Z.1](../decisions/Z1-custodia-del-dinero.md), PSP [Z.2](../decisions/Z2-eleccion-psp.md), organizador [Z.3](../decisions/Z3-tipo-de-organizador.md), motor de sorteo [Z.4](../decisions/Z4-tipos-de-sorteo.md)).
+Esquema maestro del **flujo de procesos** de Libox: el camino completo de una rifa desde que un organizador se registra hasta que el dinero se liquida y el sorteo queda auditado. Es la "vista de pájaro" que conecta los [8 dominios del sistema](../plans/libox-plan.md#3-dominios-del-sistema-bounded-contexts) y respeta las decisiones cerradas (custodia [Z.1](../decisions/Z1-custodia-del-dinero.md), PSP [Z.2](../decisions/Z2-eleccion-psp.md), organizador [Z.3](../decisions/Z3-tipo-de-organizador.md), motor de sorteo [Z.4](../decisions/Z4-tipos-de-sorteo.md)).
 
 Los términos (`pool_hash`, `external_entropy`, `settlement gates`, cuentas del ledger, etc.) están definidos en el [glosario](../glosario.md). Este documento es la base para los wireframes de los 5 flujos críticos pendientes.
 
@@ -105,11 +105,11 @@ stateDiagram-v2
 
 ## 3. Lectura por fases
 
-**A · Onboarding (dominio 1).** Solo organizadores con **RUC activo** (natural o jurídica, [Z.3](../decisions/Z3-tipo-de-organizador.md)). El KYC valida el RUC contra el padrón SUNAT; el organizador queda como *merchant of record* (emite el comprobante, no Liboxapp).
+**A · Onboarding (dominio 1).** Solo organizadores con **RUC activo** (natural o jurídica, [Z.3](../decisions/Z3-tipo-de-organizador.md)). El KYC valida el RUC contra el padrón SUNAT; el organizador queda como *merchant of record* (emite el comprobante, no Libox).
 
 **B · Creación y aprobación (dominio 2).** El organizador define premio, precio, total de boletos, el `draw_config` versionado (condición de disparo + 1 ganador en MVP-1) y adjunta la autorización municipal. Pasa por **aprobación manual de backoffice** antes de publicarse.
 
-**C · Compra (dominios 3 y 4).** El punto más crítico por concurrencia y dinero. Pago con **Mercado Pago, split en la fuente** ([Z.2](../decisions/Z2-eleccion-psp.md)): el dinero del participante nunca pasa por Liboxapp (Modelo C, [Z.1](../decisions/Z1-custodia-del-dinero.md)). `Idempotency-Key` + webhook firmado evitan dobles cobros y dobles asignaciones. Recién con el pago consolidado se asigna número de boleto y se emite el comprobante vía PSE. El ledger doble entrada corre desde el día 1 aunque la custodia sea conceptual.
+**C · Compra (dominios 3 y 4).** El punto más crítico por concurrencia y dinero. Pago con **Mercado Pago, split en la fuente** ([Z.2](../decisions/Z2-eleccion-psp.md)): el dinero del participante nunca pasa por Libox (Modelo C, [Z.1](../decisions/Z1-custodia-del-dinero.md)). `Idempotency-Key` + webhook firmado evitan dobles cobros y dobles asignaciones. Recién con el pago consolidado se asigna número de boleto y se emite el comprobante vía PSE. El ledger doble entrada corre desde el día 1 aunque la custodia sea conceptual.
 
 **D · Ejecución (dominio 5).** Al cumplirse la condición (umbral y/o fecha) se cierra la venta y se congela el `canonical_pool`. La cadena de fairness `pool_hash → external_entropy → seed_material → random_value → winner_index` produce un ganador **reproducible por cualquier tercero** (draw proof + acta firmada). Si la condición no se cumple al deadline → `FAILED` → refund total.
 
