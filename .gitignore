@@ -39,5 +39,13 @@ yarn-error.log*
 !.vscode/extensions.json
 .idea/
 
-# Claude Code — settings personales/locales (no compartir)
+# Claude Code — settings y worktrees locales (no compartir)
 .claude/settings.local.json
+.claude/settings.json
+.claude/worktrees/
+
+# Tooling de agentes local (skills locales, no es source del producto)
+.agents/
+
+# Archivos temporales de FUSE (FS montado)
+.fuse_hidden*
