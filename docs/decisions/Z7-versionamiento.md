@@ -56,8 +56,10 @@ La pieza que une el objetivo: **Conventional Commits → release-please → CHAN
 ## Flujo de trabajo
 
 - `main` protegida; nada se commitea directo.
-- Ramas `feat/...`, `fix/...`, `docs/...` → **Pull Request** → squash merge con título Conventional.
+- Ramas `feat/...`, `fix/...`, `docs/...` → **Pull Request** → **rebase-and-merge** (único método habilitado en el repo). Cada commit aterriza en `main` y debe ser Conventional; los commits —no el título del PR— alimentan release-please.
 - CI (`commitlint`, `docs`) debe pasar antes de mergear.
+
+> **Actualización 2026-06-20:** la política de merge pasó de *squash merge* a **rebase-and-merge** (decisión de Diego). En GitHub se deshabilitaron *merge commit* y *squash*; solo queda *rebase*. Implica mantener historial lineal y commits limpios y conventional en cada rama.
 - Detalle operativo y pasos para activar branch protection en GitHub: [`CONTRIBUTING.md`](../../CONTRIBUTING.md).
 
 ---
