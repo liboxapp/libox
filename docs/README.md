@@ -1,11 +1,11 @@
 ---
-title: Sortibox — Índice del wiki
+title: Libox — Índice del wiki
 status: vivo
-tags: [sortibox, indice, wiki]
+tags: [libox, indice, wiki]
 updated: 2026-06-05
 ---
 
-# Sortibox — Wiki del proyecto
+# Libox — Wiki del proyecto
 
 Marketplace web de rifas digitales con boleto pagado, operado bajo regulación peruana. Estado actual: **idea pura** — sin código todavía, en fase de diseño de producto + arquitectura.
 
@@ -13,8 +13,8 @@ Marketplace web de rifas digitales con boleto pagado, operado bajo regulación p
 
 | Carpeta / archivo | Contenido | Cuándo abrirlo |
 |---|---|---|
-| [`prd/`](prd/) | PRD ALAZAR v11 del socio (48 páginas, PDF) | Fuente autoritativa de producto y arquitectura técnica. Léelo cuando necesites el "blueprint" completo: roles RBAC, modelo económico, Purchase/Draw/Delivery/Settlement engines, ledger bank-grade, auditoría, APIs, threat model, SLOs. |
-| [`plans/sortibox-plan.md`](plans/sortibox-plan.md) | Plan inicial de producto, arquitectura, stack y roadmap. Incluye el **Anexo Z — Bitácora de decisiones cerradas**. | Léelo para el camino completo del MVP, dominios del sistema, decisiones pendientes, próximos pasos. |
+| [`prd/`](prd/) | PRD Libox v11 del socio (48 páginas, PDF) | Fuente autoritativa de producto y arquitectura técnica. Léelo cuando necesites el "blueprint" completo: roles RBAC, modelo económico, Purchase/Draw/Delivery/Settlement engines, ledger bank-grade, auditoría, APIs, threat model, SLOs. |
+| [`plans/libox-plan.md`](plans/libox-plan.md) | Plan inicial de producto, arquitectura, stack y roadmap. Incluye el **Anexo Z — Bitácora de decisiones cerradas**. | Léelo para el camino completo del MVP, dominios del sistema, decisiones pendientes, próximos pasos. |
 | [`decisions/`](decisions/) | ADRs autocontenidos — uno por decisión cerrada. Versión canónica para compartir con socios e inversionistas. | Léelo cuando quieras compartir o consultar una decisión específica sin todo el contexto del plan. |
 | [`compliance-peru.md`](compliance-peru.md) | Documento de trabajo sobre el marco regulatorio peruano (SUNAT, autorización municipal, retención de impuestos, KYC, PLAFT, T&C). | Léelo antes de cualquier conversación con el abogado, y para entender por qué el PRD por sí solo no cubre todo. |
 | [`glosario.md`](glosario.md) | Glosario de términos técnicos, de producto y regulatorios (T1–T8, fairness del sorteo, arquitectura, pagos, compliance). | Consúltalo cuando un término no se entienda. |
@@ -22,10 +22,10 @@ Marketplace web de rifas digitales con boleto pagado, operado bajo regulación p
 ## Cómo se relacionan los documentos
 
 ```
-                    PRD ALAZAR v11 (socio)
+                    PRD Libox v11 (socio)
                   blueprint técnico, agnóstico geográfico
                               ↓
-                         Plan Sortibox
+                         Plan Libox
                   hoja de ruta MVP + decisiones técnicas
                               │
               ┌───────────────┼───────────────┐

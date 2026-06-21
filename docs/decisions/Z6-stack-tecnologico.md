@@ -1,9 +1,9 @@
 ---
 title: Z.6 — Stack tecnológico
 status: cerrada-en-direccion
-tags: [sortibox, decision, stack, nextjs, arquitectura]
+tags: [libox, decision, stack, nextjs, arquitectura]
 decided: 2026-06-06
-relates: [docs/decisions/Z1-custodia-del-dinero.md, docs/decisions/Z2-eleccion-psp.md, docs/decisions/Z4-tipos-de-sorteo.md, docs/plans/sortibox-plan.md]
+relates: [docs/decisions/Z1-custodia-del-dinero.md, docs/decisions/Z2-eleccion-psp.md, docs/decisions/Z4-tipos-de-sorteo.md, docs/plans/libox-plan.md]
 updated: 2026-06-06
 ---
 
@@ -11,19 +11,19 @@ updated: 2026-06-06
 
 **Estado**: Cerrada en dirección (2026-06-06). Sub-decisiones (ORM, auth, job runner) a confirmar al hacer el scaffold.
 **Decisor**: Diego.
-**Documento canónico**: este archivo. Mirror en [`docs/plans/sortibox-plan.md`](../plans/sortibox-plan.md) (sección 4 + Anexo Z.6).
+**Documento canónico**: este archivo. Mirror en [`docs/plans/libox-plan.md`](../plans/libox-plan.md) (sección 4 + Anexo Z.6).
 
 ---
 
 ## Decisión
 
-**Next.js (App Router) como framework único** para todo Sortibox: superficie pública (SEO) y aplicación autenticada (dashboards, checkout, backoffice). Sobre ese núcleo: **PostgreSQL** + ORM TypeScript, un **job runner gestionado** para el trabajo en background (outbox, sorteos programados, conciliación), y un proveedor de **auth** con MFA.
+**Next.js (App Router) como framework único** para todo Libox: superficie pública (SEO) y aplicación autenticada (dashboards, checkout, backoffice). Sobre ese núcleo: **PostgreSQL** + ORM TypeScript, un **job runner gestionado** para el trabajo en background (outbox, sorteos programados, conciliación), y un proveedor de **auth** con MFA.
 
 ---
 
-## La pregunta que disparó la decisión: ¿Sortibox es una "web estática"?
+## La pregunta que disparó la decisión: ¿Libox es una "web estática"?
 
-Una web estática es HTML pre-generado, sin lógica de servidor por request ni datos tras login. Evaluando Sortibox superficie por superficie:
+Una web estática es HTML pre-generado, sin lógica de servidor por request ni datos tras login. Evaluando Libox superficie por superficie:
 
 | Superficie | ¿Estática? |
 |---|---|
@@ -36,7 +36,7 @@ Una web estática es HTML pre-generado, sin lógica de servidor por request ni d
 | Backoffice admin | No (aprobaciones, disputas, settlement) |
 | Motor sorteo / ledger / settlement | No (backend transaccional) |
 
-**Conclusión: Sortibox NO es una web estática.** Es una **aplicación transaccional fintech-grade con una superficie de contenido estático**. Solo 2-3 de 8 superficies son estáticas; el core (comprar → sortear → entregar → liquidar) es dinámico y server-driven.
+**Conclusión: Libox NO es una web estática.** Es una **aplicación transaccional fintech-grade con una superficie de contenido estático**. Solo 2-3 de 8 superficies son estáticas; el core (comprar → sortear → entregar → liquidar) es dinámico y server-driven.
 
 ## Por qué no Astro
 

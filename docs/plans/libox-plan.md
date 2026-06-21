@@ -1,17 +1,17 @@
 ---
-title: Plan Sortibox
+title: Plan Libox
 status: vivo
-tags: [sortibox, plan, roadmap]
-canonical: docs/plans/sortibox-plan.md
+tags: [libox, plan, roadmap]
+canonical: docs/plans/libox-plan.md
 mirror: ~/.claude/plans/spicy-sparking-hopcroft.md
 updated: 2026-06-05
 ---
 
-# Sortibox — Plan inicial de producto y arquitectura
+# Libox — Plan inicial de producto y arquitectura
 
 ## Contexto
 
-Sortibox es un **marketplace web de rifas digitales con boleto pagado** operado bajo regulación peruana. Estado actual: **idea pura** — carpeta `/Users/diegocotrina/Desktop/sortibox` vacía, sin stack elegido, sin wireframes. Diego (full stack engineer) y socios van a contratar abogado para el marco legal.
+Libox es un **marketplace web de rifas digitales con boleto pagado** operado bajo regulación peruana. Estado actual: **idea pura** — carpeta `/Users/diegocotrina/Desktop/libox` vacía, sin stack elegido, sin wireframes. Diego (full stack engineer) y socios van a contratar abogado para el marco legal.
 
 Este documento NO es un implementation plan de código. Es la hoja de ruta de producto + arquitectura que sirve como base para empezar a construir. Su objetivo:
 
@@ -34,7 +34,7 @@ Este documento NO es un implementation plan de código. Es la hoja de ruta de pr
 | Plataforma | Web (responsive móvil + desktop), sin app nativa en MVP |
 | Postura sobre "auditable" | Cumplimiento con leyes financieras peruanas, **NO** blockchain |
 
-**Implicación de exigir RUC (no solo jurídicas):** el ancla es que Sortibox factura su comisión como servicio B2B al organizador, lo que exige que el organizador tenga RUC. Esto incluye personas naturales con negocio / RUC activo, no solo personas jurídicas — corrige una imprecisión del plan original. Se descarta para MVP la persona natural solo-DNI (sin RUC) por la restricción de facturación + riesgo PLAFT. Detalle en **[Anexo Z.3](#z3--tipo-de-organizador-cerrada-el-2026-06-05)**.
+**Implicación de exigir RUC (no solo jurídicas):** el ancla es que Libox factura su comisión como servicio B2B al organizador, lo que exige que el organizador tenga RUC. Esto incluye personas naturales con negocio / RUC activo, no solo personas jurídicas — corrige una imprecisión del plan original. Se descarta para MVP la persona natural solo-DNI (sin RUC) por la restricción de facturación + riesgo PLAFT. Detalle en **[Anexo Z.3](#z3--tipo-de-organizador-cerrada-el-2026-06-05)**.
 
 **Implicación de "solo rifa pagada":** el marco legal aplicable es el de rifas con autorización municipal, no sorteos promocionales MINCETUR. Estandarizar en un solo régimen reduce superficie regulatoria en V1.
 
@@ -44,7 +44,7 @@ Este documento NO es un implementation plan de código. Es la hoja de ruta de pr
 
 ### 2.1. Custodia del dinero — **CERRADA (2026-06-05) → ver Anexo Z.1**
 
-Decisión: **Modelo C — escrow conceptual**. Operativa de split directo vía PSP marketplace (el dinero del participante nunca pasa por Sortibox), pero con el ledger doble entrada del PRD ALAZAR v11 corriendo desde día 1 como si Sortibox fuera escrow. Justificación completa, alternativas evaluadas (A puro, B real), implicaciones que los socios deben aceptar, y validaciones externas pendientes con abogado y comerciales PSP: ver **[Anexo Z.1](#z1--custodia-del-dinero-cerrada-el-2026-06-05)**.
+Decisión: **Modelo C — escrow conceptual**. Operativa de split directo vía PSP marketplace (el dinero del participante nunca pasa por Libox), pero con el ledger doble entrada del PRD Libox v11 corriendo desde día 1 como si Libox fuera escrow. Justificación completa, alternativas evaluadas (A puro, B real), implicaciones que los socios deben aceptar, y validaciones externas pendientes con abogado y comerciales PSP: ver **[Anexo Z.1](#z1--custodia-del-dinero-cerrada-el-2026-06-05)**.
 
 ### 2.2. PSP / Gateway de pagos — **CERRADA EN DIRECCIÓN (2026-06-05) → ver Anexo Z.2**
 
@@ -109,7 +109,7 @@ Antes de pensar en stack, mapeo los módulos lógicos. Esto guía la estructura 
    - Endpoint público de verificación por sorteo (semilla, algoritmo, lista de boletos, ganador).
 
 8. **Backoffice**
-   - Aprobación de organizadores y sorteos por staff de Sortibox.
+   - Aprobación de organizadores y sorteos por staff de Libox.
    - Resolución de disputas.
    - Métricas operativas.
 
@@ -132,7 +132,7 @@ Dos alternativas razonables:
 - **Opción 1 — Next.js full stack (API routes + Server Actions)**: una sola codebase, despliegue simple en Vercel o similar. Riesgo: pagos/webhooks/jobs requieren más cuidado al escalar. Bueno para validar.
 - **Opción 2 — Next.js (frontend) + API separada en NestJS o Fastify (TypeScript)**: separa concerns, más fácil de escalar, mejor para integrar workers y jobs. Más overhead inicial.
 
-**DECISIÓN CERRADA (Z.6): Next.js para todo (Opción 1).** Un solo framework cubre la superficie pública (SEO vía RSC/ISR) y la app autenticada (dashboards, checkout, backoffice). Sortibox **no es web estática** — es app transaccional con una superficie de contenido; por eso se descartó Astro. Se prevé extraer un servicio backend dedicado cuando los jobs/carga lo justifiquen. Detalle: **[Anexo Z.6](#z6--stack-tecnológico-cerrada-en-dirección-el-2026-06-06)** y ADR [`decisions/Z6-stack-tecnologico.md`](../decisions/Z6-stack-tecnologico.md).
+**DECISIÓN CERRADA (Z.6): Next.js para todo (Opción 1).** Un solo framework cubre la superficie pública (SEO vía RSC/ISR) y la app autenticada (dashboards, checkout, backoffice). Libox **no es web estática** — es app transaccional con una superficie de contenido; por eso se descartó Astro. Se prevé extraer un servicio backend dedicado cuando los jobs/carga lo justifiquen. Detalle: **[Anexo Z.6](#z6--stack-tecnológico-cerrada-en-dirección-el-2026-06-06)** y ADR [`decisions/Z6-stack-tecnologico.md`](../decisions/Z6-stack-tecnologico.md).
 
 ### Base de datos
 
@@ -268,9 +268,9 @@ El propósito es ser **extraíble**: cada entrada Z.X es autocontenida y puede c
 
 ### Z.1 — Custodia del dinero (cerrada el 2026-06-05)
 
-**Decisión**: Sortibox opera el MVP-1 bajo **Modelo C — escrow conceptual**.
-- **Operativamente**: split directo vía PSP marketplace (probable Mercado Pago). El dinero del participante nunca pasa por cuentas controladas por Sortibox.
-- **Internamente**: Sortibox lleva el **ledger doble entrada del PRD ALAZAR v11** desde día 1, registrando conceptualmente los flujos como si custodiara el dinero, incluso cuando no lo hace.
+**Decisión**: Libox opera el MVP-1 bajo **Modelo C — escrow conceptual**.
+- **Operativamente**: split directo vía PSP marketplace (probable Mercado Pago). El dinero del participante nunca pasa por cuentas controladas por Libox.
+- **Internamente**: Libox lleva el **ledger doble entrada del PRD Libox v11** desde día 1, registrando conceptualmente los flujos como si custodiara el dinero, incluso cuando no lo hace.
 
 **Estado**: cerrada en dirección con Diego. Pendiente de ratificación con abogado contratado y comercial PSP (ver Z.1.7).
 
@@ -278,17 +278,17 @@ El propósito es ser **extraíble**: cada entrada Z.X es autocontenida y puede c
 
 | Modelo | Operativa del dinero | Comerciante de registro frente al participante |
 |---|---|---|
-| **A — Split directo puro** | Participante → PSP → cuentas separadas de organizador y Sortibox. Sortibox nunca toca el dinero. | Organizador (o PSP como agregador) |
-| **B — Escrow real** | Participante → PSP → cuenta Sortibox; Sortibox custodia y libera al organizador tras cumplir gates. | Sortibox |
-| **C — Escrow conceptual** (elegida) | Operativa idéntica a A; ledger doble entrada interno como si fuera B. | Organizador (operativo); Sortibox para reportería y reconciliación |
+| **A — Split directo puro** | Participante → PSP → cuentas separadas de organizador y Libox. Libox nunca toca el dinero. | Organizador (o PSP como agregador) |
+| **B — Escrow real** | Participante → PSP → cuenta Libox; Libox custodia y libera al organizador tras cumplir gates. | Libox |
+| **C — Escrow conceptual** (elegida) | Operativa idéntica a A; ledger doble entrada interno como si fuera B. | Organizador (operativo); Libox para reportería y reconciliación |
 
 #### Z.1.2 — Por qué se descartó el Modelo A puro
 
 A puro reduce el ledger interno a un log de pagos. Esto tiene tres consecuencias indeseables para una plataforma con ambición fintech-grade como la del PRD:
 
 1. **Sin reconciliación robusta contra el PSP**: si Mercado Pago reporta un payout distinto al esperado, no hay fuente de verdad interna que detecte el desfase. Tiene que descubrirse manualmente revisando los reports de MP.
-2. **Sin evidencia auditada ante disputas**: cuando un participante o un auditor pida la trazabilidad de un pago concreto, Sortibox solo puede mostrar lo que el PSP reportó, no su propia contabilidad.
-3. **Migración futura a escrow real (B) requiere reescribir contabilidad**: si más adelante Sortibox justifica operar como custodio, no tiene el modelo contable ya validado. Eso es deuda técnica diferida.
+2. **Sin evidencia auditada ante disputas**: cuando un participante o un auditor pida la trazabilidad de un pago concreto, Libox solo puede mostrar lo que el PSP reportó, no su propia contabilidad.
+3. **Migración futura a escrow real (B) requiere reescribir contabilidad**: si más adelante Libox justifica operar como custodio, no tiene el modelo contable ya validado. Eso es deuda técnica diferida.
 
 El costo incremental de implementar el ledger del PRD sobre operativa A es **bajo** (es disciplina de código, no requiere infraestructura adicional). Saltarlo es una falsa economía.
 
@@ -306,8 +306,8 @@ B (escrow real) tiene dos caminos posibles, ambos incompatibles con el plazo de 
 - Timeline realista: **12-24 meses de licenciamiento + 4-6 meses de build técnico = 18-30 meses al primer organizador real**.
 
 **B.2 — Partnership con EEDE existente o banco fiduciario** `[LEGAL→ABOGADO + COMERCIAL]`:
-- Sortibox se asocia con una EEDE ya autorizada (ej. Bim) o un banco que ofrezca cuentas escrow bajo su licencia.
-- Sortibox da las órdenes de liberación; la EEDE/banco las ejecuta.
+- Libox se asocia con una EEDE ya autorizada (ej. Bim) o un banco que ofrezca cuentas escrow bajo su licencia.
+- Libox da las órdenes de liberación; la EEDE/banco las ejecuta.
 - Fees típicos de 0.3-1% sobre el monto custodiado, encima del fee PSP.
 - Timeline: **3-6 meses de negociación legal/comercial + 2-3 meses de integración técnica = 5-9 meses al primer organizador**.
 
@@ -319,29 +319,29 @@ C combina cuatro propiedades que ningún otro modelo combina:
 
 1. **Tiempo al mercado de A** (8-12 semanas, igual que cualquier marketplace estándar).
 2. **Disciplina contable de B** (ledger doble entrada con cuentas Cash Clearing, Purchase Liability, Platform Revenue, Payment Expense, Client Payable, Refund Reserve, Chargeback Loss, Settlement Freeze).
-3. **Perfil regulatorio de A** (Sortibox nunca capta fondos del público; el dinero fluye por el PSP autorizado).
+3. **Perfil regulatorio de A** (Libox nunca capta fondos del público; el dinero fluye por el PSP autorizado).
 4. **Compatibilidad con migración futura a B** sin reescribir contabilidad. Solo cambian los conectores externos (de "ledger interno con dinero en MP" a "ledger interno con dinero en cuenta escrow propia").
 
-Además, C es el único modelo que preserva la intención arquitectónica del PRD ALAZAR v11 (settlement gates, audit-first, ledger bank-grade) sin forzar al MVP a un modelo regulatorio inviable.
+Además, C es el único modelo que preserva la intención arquitectónica del PRD Libox v11 (settlement gates, audit-first, ledger bank-grade) sin forzar al MVP a un modelo regulatorio inviable.
 
 #### Z.1.5 — Implicaciones concretas que los socios deben aceptar
 
 C no es gratis. Los socios deben aceptar conscientemente las siguientes limitaciones del MVP:
 
-1. **Los "settlement gates" del PRD son conceptuales en MVP, no operativos**. El PRD asume implícitamente que Sortibox puede bloquear el payout al organizador ante una disputa abierta. **En Modelo C esto no es posible**: el dinero fluye según las reglas del PSP, no las de Sortibox. Los gates internos registran el estado pero no congelan dinero real. Esta conversación se debe tener antes de presentar la plataforma a inversionistas o stakeholders, para evitar que el PRD genere expectativas equivocadas.
+1. **Los "settlement gates" del PRD son conceptuales en MVP, no operativos**. El PRD asume implícitamente que Libox puede bloquear el payout al organizador ante una disputa abierta. **En Modelo C esto no es posible**: el dinero fluye según las reglas del PSP, no las de Libox. Los gates internos registran el estado pero no congelan dinero real. Esta conversación se debe tener antes de presentar la plataforma a inversionistas o stakeholders, para evitar que el PRD genere expectativas equivocadas.
 
-2. **Si un organizador desaparece o se niega a entregar el premio, Sortibox no puede revertir el pago unilateralmente**. La protección al participante se basa en tres capas:
+2. **Si un organizador desaparece o se niega a entregar el premio, Libox no puede revertir el pago unilateralmente**. La protección al participante se basa en tres capas:
    - **KYC RUC robusto** y revisión manual de organizadores antes de habilitarlos.
-   - **Proceso de disputa del PSP** (chargeback dirigido al organizador, no a Sortibox).
+   - **Proceso de disputa del PSP** (chargeback dirigido al organizador, no a Libox).
    - **Reputación pública** del organizador en el marketplace + capacidad de baneo.
 
-3. **Refunds operativos requieren la cooperación del organizador o del PSP**. Sortibox no puede ejecutar reembolsos desde fondos propios. En Modelo B esto sería trivial; en C no.
+3. **Refunds operativos requieren la cooperación del organizador o del PSP**. Libox no puede ejecutar reembolsos desde fondos propios. En Modelo B esto sería trivial; en C no.
 
-4. **El chargeback risk lo absorbe el PSP primero**, no Sortibox. Esto es un beneficio neto del modelo en términos de capital de trabajo, pero significa que Sortibox depende del PSP para esa protección.
+4. **El chargeback risk lo absorbe el PSP primero**, no Libox. Esto es un beneficio neto del modelo en términos de capital de trabajo, pero significa que Libox depende del PSP para esa protección.
 
 5. **La contabilidad interna debe conciliarse periódicamente contra los reports del PSP**. Si MP reporta un payout que no coincide con el ledger interno, se abre un caso de reconciliation (ya modelado en el PRD). Esto requiere un proceso operativo continuo, no solo código.
 
-#### Z.1.6 — Implicaciones sobre el PRD ALAZAR v11
+#### Z.1.6 — Implicaciones sobre el PRD Libox v11
 
 El PRD asume implícitamente Modelo B (escrow real) en varios lugares. Bajo Modelo C, las siguientes partes se reinterpretan:
 
@@ -349,8 +349,8 @@ El PRD asume implícitamente Modelo B (escrow real) en varios lugares. Bajo Mode
 |---|---|
 | Settlement gates (Parte V, Anexo F.2) | Existen como gates internos de estado; no controlan dinero real en MVP. Cuando se migre a B, sí lo controlarán sin cambios de código. |
 | Cuenta `Settlement Freeze` (E.1, XI.2) | Existe en el ledger interno como contra-liability; representa estado lógico de bloqueo, no dinero realmente congelado. |
-| Cuenta `Refund Reserve` | Existe conceptualmente para cuando Sortibox absorba refunds (post-MVP). En MVP no se carga porque los refunds los ejecuta el PSP. |
-| Cuenta `Chargeback Loss` | En MVP el riesgo lo absorbe el PSP primero; la cuenta existe para registrar los casos excepcionales que escalen a Sortibox. |
+| Cuenta `Refund Reserve` | Existe conceptualmente para cuando Libox absorba refunds (post-MVP). En MVP no se carga porque los refunds los ejecuta el PSP. |
+| Cuenta `Chargeback Loss` | En MVP el riesgo lo absorbe el PSP primero; la cuenta existe para registrar los casos excepcionales que escalen a Libox. |
 | Gate `PSP_RECONCILED` | **Operativamente vinculante** en C: si el ledger interno no concilia contra MP, no se reconoce el revenue del fee. |
 
 El **resto del PRD (Purchase Engine, Draw Engine, Delivery, Auditoría, APIs, Observabilidad)** queda **plenamente aplicable** bajo Modelo C. La decisión de custodia no contamina esas piezas.
@@ -359,11 +359,11 @@ El **resto del PRD (Purchase Engine, Draw Engine, Delivery, Auditoría, APIs, Ob
 
 La decisión está cerrada en dirección, pero antes de empezar a codificar el módulo de pagos hay que validar:
 
-1. **[ABOGADO]** ¿Operar un marketplace de rifas con boleto pagado bajo organizador RUC califica a Sortibox como **sujeto obligado UIF-Perú** independientemente del modelo de custodia? Esto define si Sortibox necesita oficial de cumplimiento PLAFT y manual desde día 1, sin importar A, B o C.
-2. **[ABOGADO]** Confirmar que bajo Modelo C la actividad de Sortibox NO califica como **captación de fondos del público** regulada por SBS (Ley 26702, Ley 29985 de Dinero Electrónico).
-3. **[ABOGADO]** Análisis explícito del riesgo de la "zona gris": que Sortibox nunca tenga una cuenta bancaria propia que reciba dinero del participante **incluso por minutos**. Si la integración con MP terminara enrutando dinero por una cuenta intermedia controlada por Sortibox, eso debería rechazarse.
+1. **[ABOGADO]** ¿Operar un marketplace de rifas con boleto pagado bajo organizador RUC califica a Libox como **sujeto obligado UIF-Perú** independientemente del modelo de custodia? Esto define si Libox necesita oficial de cumplimiento PLAFT y manual desde día 1, sin importar A, B o C.
+2. **[ABOGADO]** Confirmar que bajo Modelo C la actividad de Libox NO califica como **captación de fondos del público** regulada por SBS (Ley 26702, Ley 29985 de Dinero Electrónico).
+3. **[ABOGADO]** Análisis explícito del riesgo de la "zona gris": que Libox nunca tenga una cuenta bancaria propia que reciba dinero del participante **incluso por minutos**. Si la integración con MP terminara enrutando dinero por una cuenta intermedia controlada por Libox, eso debería rechazarse.
 4. **[COMERCIAL MERCADO PAGO PERÚ]** Confirmar que la API Marketplace Sellers está disponible operativamente en Perú, con cobertura de Yape como método de pago para el participante final.
-5. **[COMERCIAL MP]** Confirmar tiempos reales de payout al organizador, % de reserva por seguridad, proceso de disputa y disponibilidad (si existe) de "release on command" para retener payout hasta orden de Sortibox.
+5. **[COMERCIAL MP]** Confirmar tiempos reales de payout al organizador, % de reserva por seguridad, proceso de disputa y disponibilidad (si existe) de "release on command" para retener payout hasta orden de Libox.
 6. **[COMERCIAL — ALTERNATIVOS]** Validar si Culqi, Izipay o Niubiz ofrecen un modelo marketplace equivalente, como contingencia ante limitaciones de MP en Perú.
 
 #### Z.1.8 — Preguntas para discutir con socios
@@ -384,7 +384,7 @@ Si los socios cuestionan la decisión, estos son los pivotes de discusión:
 
 #### Z.2.1 — Por qué el PSP se volvió un problema (no era preferencia)
 
-El cierre de Z.1 (custodia = Modelo C) impuso una restricción dura: **Sortibox nunca toca el dinero pero igual cobra su 20%**. Eso solo es posible si el pago se **divide en la fuente** (split / application fee), capacidad que **no todos los PSP peruanos tienen**. Así, la elección de PSP dejó de ser preferencia de DX y pasó a ser satisfacción de una restricción. La "Mercado Pago" del PRD podía ser correcta, pero por una razón que el PRD no enuncia (es de los pocos con marketplace maduro).
+El cierre de Z.1 (custodia = Modelo C) impuso una restricción dura: **Libox nunca toca el dinero pero igual cobra su 20%**. Eso solo es posible si el pago se **divide en la fuente** (split / application fee), capacidad que **no todos los PSP peruanos tienen**. Así, la elección de PSP dejó de ser preferencia de DX y pasó a ser satisfacción de una restricción. La "Mercado Pago" del PRD podía ser correcta, pero por una razón que el PRD no enuncia (es de los pocos con marketplace maduro).
 
 #### Z.2.2 — Inputs de Diego que afinaron la decisión (2026-06-05)
 
@@ -419,7 +419,7 @@ Misma batería a **Mercado Pago Perú** y a **Culqi**; las preguntas 1 y 2 son *
 #### Z.2.6 — Implicaciones que los socios deben aceptar
 
 1. **Cada organizador deberá crear cuenta y pasar KYC con el PSP** (MP) para cobrar. Es el punto más débil del modelo marketplace: fricción de onboarding del lado del organizador. Aceptable para organizadores RUC, pero hay que diseñarlo en el flujo.
-2. El dinero del organizador **aterriza primero en su wallet del PSP**, no directo en su banco; él retira después. Sortibox no controla ese paso.
+2. El dinero del organizador **aterriza primero en su wallet del PSP**, no directo en su banco; él retira después. Libox no controla ese paso.
 3. La **fecha/fase de entrada de Culqi** queda abierta y es decisión de socios; no bloquea el MVP-1.
 
 #### Z.2.7 — Impacto sobre el PRD
@@ -442,7 +442,7 @@ En Perú el RUC lo tienen también las personas naturales (con negocio / RUC act
 
 #### Z.3.3 — Restricciones y por qué se descarta la Opción 3
 
-Ancla dura: Sortibox factura su comisión 20% como **servicio B2B** → el organizador **necesita RUC** sí o sí. Eso descarta la Opción 3 (solo-DNI) por imposibilidad de facturación + riesgo PLAFT. Autorización municipal para personas naturales = `[LEGAL→ABOGADO]` pendiente.
+Ancla dura: Libox factura su comisión 20% como **servicio B2B** → el organizador **necesita RUC** sí o sí. Eso descarta la Opción 3 (solo-DNI) por imposibilidad de facturación + riesgo PLAFT. Autorización municipal para personas naturales = `[LEGAL→ABOGADO]` pendiente.
 
 #### Z.3.4 — Por qué Opción 2 (inputs de Diego)
 
@@ -512,7 +512,7 @@ El motor de [Z.4](../decisions/Z4-tipos-de-sorteo.md) ya modela `mode ∈ {AUTO,
 
 ### Z.6 — Stack tecnológico (cerrada en dirección el 2026-06-06)
 
-**Decisión**: **Next.js (App Router) para todo**. Sortibox **no es web estática** (solo 2-3 de 8 superficies lo son; el core comprar→sortear→entregar→liquidar es dinámico y transaccional), por lo que se descartó Astro — optimizado para el caso inverso (contenido + islas). Next cubre la superficie pública (SEO vía RSC/ISR) y la app autenticada con un solo framework maduro. Stack: Next.js+TS, Tailwind+shadcn/ui, PostgreSQL, Drizzle (preferido), job runner gestionado (Inngest/Trigger), auth con MFA (Clerk/Supabase), Mercado Pago multi-PSP, Vercel, Sentry+PostHog. El job runner es **crítico** (outbox, disparo de sorteo, conciliación). ADR canónico: [`decisions/Z6-stack-tecnologico.md`](../decisions/Z6-stack-tecnologico.md). Sub-decisiones al scaffold: ORM, job runner, auth, DB host.
+**Decisión**: **Next.js (App Router) para todo**. Libox **no es web estática** (solo 2-3 de 8 superficies lo son; el core comprar→sortear→entregar→liquidar es dinámico y transaccional), por lo que se descartó Astro — optimizado para el caso inverso (contenido + islas). Next cubre la superficie pública (SEO vía RSC/ISR) y la app autenticada con un solo framework maduro. Stack: Next.js+TS, Tailwind+shadcn/ui, PostgreSQL, Drizzle (preferido), job runner gestionado (Inngest/Trigger), auth con MFA (Clerk/Supabase), Mercado Pago multi-PSP, Vercel, Sentry+PostHog. El job runner es **crítico** (outbox, disparo de sorteo, conciliación). ADR canónico: [`decisions/Z6-stack-tecnologico.md`](../decisions/Z6-stack-tecnologico.md). Sub-decisiones al scaffold: ORM, job runner, auth, DB host.
 
 ### Z.7 — Versionamiento y flujo de repositorio (cerrada el 2026-06-06)
 

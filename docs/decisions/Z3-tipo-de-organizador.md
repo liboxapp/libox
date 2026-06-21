@@ -1,9 +1,9 @@
 ---
 title: Z.3 — Tipo de organizador
 status: cerrada
-tags: [sortibox, decision, organizador, kyc, ruc, compliance]
+tags: [libox, decision, organizador, kyc, ruc, compliance]
 decided: 2026-06-05
-relates: [docs/decisions/Z1-custodia-del-dinero.md, docs/decisions/Z2-eleccion-psp.md, docs/compliance-peru.md, docs/plans/sortibox-plan.md]
+relates: [docs/decisions/Z1-custodia-del-dinero.md, docs/decisions/Z2-eleccion-psp.md, docs/compliance-peru.md, docs/plans/libox-plan.md]
 updated: 2026-06-05
 ---
 
@@ -11,7 +11,7 @@ updated: 2026-06-05
 
 **Estado**: Cerrada (2026-06-05). Una validación legal pendiente (autorización municipal para personas naturales) que ajusta el borde, no la dirección.
 **Decisor**: Diego (con conformidad pendiente de socios).
-**Documento canónico**: este archivo. Mirror corto en [`docs/plans/sortibox-plan.md`](../plans/sortibox-plan.md#z3--tipo-de-organizador-cerrada-el-2026-06-05) (Anexo Z.3).
+**Documento canónico**: este archivo. Mirror corto en [`docs/plans/libox-plan.md`](../plans/libox-plan.md#z3--tipo-de-organizador-cerrada-el-2026-06-05) (Anexo Z.3).
 
 > ⚠️ Puntos marcados `[LEGAL→ABOGADO]`: lectura del autor sobre normativa pública peruana, **no asesoría legal**; ratificar con el abogado.
 
@@ -46,7 +46,7 @@ El plan original colapsó dos cosas distintas. En Perú **el RUC lo tienen tambi
 ## Restricciones que acotan el espectro
 
 - **A. Recibir el split en MP** ([Z.2](Z2-eleccion-psp.md)): naturales y jurídicas pueden ser sellers en MP. *Poco restrictiva.*
-- **B. RUC para facturar la comisión — ancla dura**: Sortibox cobra su 20% como **servicio B2B** al organizador; facturarlo exige que el organizador tenga RUC. Esto es independiente del tratamiento fiscal del boleto en sí, así que es un ancla limpia: **el organizador necesita RUC sí o sí**.
+- **B. RUC para facturar la comisión — ancla dura**: Libox cobra su 20% como **servicio B2B** al organizador; facturarlo exige que el organizador tenga RUC. Esto es independiente del tratamiento fiscal del boleto en sí, así que es un ancla limpia: **el organizador necesita RUC sí o sí**.
 - **C. Autorización municipal de la rifa** `[LEGAL→ABOGADO]`: ¿una persona natural puede obtener licencia municipal de rifa, o solo entidades formales? Abierto, varía por municipalidad. Puede ajustar el borde de la Opción 2.
 - **D. Riesgo PLAFT/fraude**: las personas naturales son más difíciles de perseguir y más expuestas a multi-accounting; argumenta hacia formalidad.
 

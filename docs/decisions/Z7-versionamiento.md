@@ -1,9 +1,9 @@
 ---
 title: Z.7 — Versionamiento y flujo de repositorio
 status: cerrada
-tags: [sortibox, decision, versionamiento, git, ci, semver]
+tags: [libox, decision, versionamiento, git, ci, semver]
 decided: 2026-06-06
-relates: [docs/plans/sortibox-plan.md]
+relates: [docs/plans/libox-plan.md]
 updated: 2026-06-06
 ---
 

@@ -1,9 +1,9 @@
 ---
 title: Z.8 — Roles de memoria y contexto
 status: cerrada
-tags: [sortibox, decision, tooling, memoria, contexto, plugins]
+tags: [libox, decision, tooling, memoria, contexto, plugins]
 decided: 2026-06-06
-relates: [docs/plans/sortibox-plan.md]
+relates: [docs/plans/libox-plan.md]
 updated: 2026-06-06
 ---
 
@@ -11,13 +11,13 @@ updated: 2026-06-06
 
 **Estado**: Cerrada (2026-06-06).
 **Decisor**: Diego.
-**Documento canónico**: este archivo. Mirror en [`docs/plans/sortibox-plan.md`](../plans/sortibox-plan.md) (Anexo Z.8). Versión operativa en [`CLAUDE.md`](../../CLAUDE.md).
+**Documento canónico**: este archivo. Mirror en [`docs/plans/libox-plan.md`](../plans/libox-plan.md) (Anexo Z.8). Versión operativa en [`CLAUDE.md`](../../CLAUDE.md).
 
 ---
 
 ## Contexto
 
-Tras instalar plugins de Claude Code (skill-creator, superpowers, context-mode, claude-mem, frontend-design, get-shit-done), quedaron **varios mecanismos de memoria/contexto corriendo en paralelo** en las sesiones de Sortibox. Sin roles definidos, compiten, duplican trabajo y pueden generar divergencia sobre "cuál es la verdad" del proyecto.
+Tras instalar plugins de Claude Code (skill-creator, superpowers, context-mode, claude-mem, frontend-design, get-shit-done), quedaron **varios mecanismos de memoria/contexto corriendo en paralelo** en las sesiones de Libox. Sin roles definidos, compiten, duplican trabajo y pueden generar divergencia sobre "cuál es la verdad" del proyecto.
 
 Mecanismos activos detectados:
 - **`MEMORY.md` + `docs/`** — memoria curada del proyecto (auto-memoria + wiki versionado).
@@ -38,7 +38,7 @@ Se asignan **carriles (roles) explícitos** para que cada herramienta haga una s
 
 ## Reglas de oro
 
-1. **La verdad de Sortibox vive en `docs/` + `MEMORY.md`**, nunca solo en `claude-mem` o `context-mode`. Esos son aceleradores, no el registro.
+1. **La verdad de Libox vive en `docs/` + `MEMORY.md`**, nunca solo en `claude-mem` o `context-mode`. Esos son aceleradores, no el registro.
 2. Toda **decisión cerrada** se documenta como ADR en `docs/decisions/` + mirror en el Anexo Z (flujo de siempre). No se delega ese registro a la captura automática.
 3. Para **procesar outputs grandes** (cuando entre el código: builds, tests, logs), preferir las tools de `context-mode` para no inflar el contexto.
 4. La **memoria auto-capturada no es autoritativa**: ante discrepancia, mandan los ADRs/plan.
@@ -47,7 +47,7 @@ Se asignan **carriles (roles) explícitos** para que cada herramienta haga una s
 
 - Hay redundancia consciente: tres mecanismos de memoria/contexto. Se tolera mientras cada uno aporte en su carril.
 - `claude-mem` queda **a prueba**: si tras unas sesiones no aporta sobre lo que ya da `MEMORY.md`, se desactiva para reducir aparato.
-- GSD añade hooks que interceptan herramientas; si generan fricción en el flujo de planificación de Sortibox, se revisa su configuración.
+- GSD añade hooks que interceptan herramientas; si generan fricción en el flujo de planificación de Libox, se revisa su configuración.
 
 ## Pendiente
 
