@@ -31,5 +31,5 @@ Hito: wiki de planificación y decisiones de producto cerradas (etapa pre-códig
 - Vault de Obsidian (`.obsidian/app.json`) con links en markdown estándar.
 - Infraestructura de versionamiento: Conventional Commits, CHANGELOG, CI de docs, release-please.
 
-[Unreleased]: https://github.com/OWNER/libox/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/OWNER/libox/releases/tag/v0.1.0
+[Unreleased]: https://github.com/liboxapp/libox/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/liboxapp/libox/releases/tag/v0.1.0

@@ -68,7 +68,6 @@ La pieza que une el objetivo: **Conventional Commits → release-please → CHAN
 
 - Crear el repositorio remoto en GitHub y `git push`.
 - Activar **branch protection** / rulesets (vive en la config de GitHub, no en archivos).
-- Reemplazar `OWNER` por el usuario/org real en los links del `CHANGELOG.md`.
 
 ---
 

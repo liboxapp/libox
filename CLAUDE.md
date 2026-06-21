@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repository is
 
-Libox is a **web marketplace for paid-ticket digital raffles** operating under Peruvian regulation. The repo is **still pre-code** — no application and no `package.json` yet — but it is **no longer bare planning**: it is a real git repository (`github.com/DianCotrina/libox`) with versioning tooling already wired up (SemVer, Conventional Commits, release-please, markdownlint + commitlint CI — see Z.7). Its content is a **documentation wiki** capturing product decisions, architecture, stack, and regulatory analysis before the first line of app code.
+Libox is a **web marketplace for paid-ticket digital raffles** operating under Peruvian regulation. The repo is **still pre-code** — no application and no `package.json` yet — but it is **no longer bare planning**: it is a real git repository (`github.com/liboxapp/libox`) with versioning tooling already wired up (SemVer, Conventional Commits, release-please, markdownlint + commitlint CI — see Z.7). Its content is a **documentation wiki** capturing product decisions, architecture, stack, and regulatory analysis before the first line of app code.
 
 Do not invent build/test commands or scaffold a stack unprompted. The **stack is already decided** (Z.6: Next.js App Router modular monolith + PostgreSQL) but **not yet scaffolded**. When code work begins, update this file with the real commands and architecture at that point.
 
-> **Note on naming — STANDING RULE.** The product is **Libox**. **Sortibox** (prior name) and **ALAZAR** (older PRD name) are **legacy**. The GitHub repo (`github.com/DianCotrina/libox`, local `origin` matches) and all tracked repo content have been renamed to Libox. **Any residual mention of "Sortibox" or "ALAZAR" — in older git commits, the Outline "Sortibox — Desarrollo" collection, the stranded auto-memory, or external/partner docs — must be read as "Libox".** Surfaces still pending the rename (outside this repo): the Outline **"Sortibox — Desarrollo"** collection and the auto-memory files.
+> **Note on naming — STANDING RULE.** The product is **Libox**. **Sortibox** (prior name) and **ALAZAR** (older PRD name) are **legacy**. The GitHub repo (`github.com/liboxapp/libox`, local `origin` matches) and all tracked repo content have been renamed to Libox. **Any residual mention of "Sortibox" or "ALAZAR" — in older git commits, the Outline "Sortibox — Desarrollo" collection, the stranded auto-memory, or external/partner docs — must be read as "Libox".** Surfaces still pending the rename (outside this repo): the Outline **"Sortibox — Desarrollo"** collection and the auto-memory files.
 
 ## Wiki layout (`docs/`)
 
