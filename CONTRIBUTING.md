@@ -43,7 +43,7 @@ feat(payments)!: migra de split directo a escrow real
 
 - `main` es la rama protegida y siempre desplegable. **No se commitea directo a `main`.**
 - El trabajo va en ramas `feat/...`, `fix/...`, `docs/...` y entra vía **Pull Request**.
-- Se recomienda **squash merge** con un **título de PR en formato Conventional Commit** (ese título alimenta a release-please).
+- El merge a `main` es **siempre rebase-and-merge** (único método habilitado en el repo). Cada commit de la rama aterriza individualmente en `main`, por lo que **cada commit debe ser un Conventional Commit válido** (lo valida el check `commitlint`) — son los commits, no el título del PR, los que alimentan a release-please. Limpia la rama (sin *wip*) antes de mergear.
 - Un PR debe pasar los checks de CI (`commitlint`, `docs`) antes de mergear.
 
 ## Protección de la rama `main` (configurar en GitHub)
@@ -57,7 +57,7 @@ Esto se activa una sola vez desde la web de GitHub (no se puede versionar en el 
    - `commitlint`
    - `markdownlint` y `links` (del workflow `docs`)
 4. Activar **Require branches to be up to date before merging**.
-5. (Opcional) **Require linear history** si se usa squash merge.
+5. **Require linear history** (coherente con rebase-and-merge, el único método de merge habilitado).
 
 ## CI actual
 
