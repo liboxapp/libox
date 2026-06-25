@@ -8,7 +8,20 @@ Libox is a **web marketplace for paid-ticket digital raffles** operating under P
 
 Do not invent build/test commands or scaffold a stack unprompted. The **stack is already decided** (Z.6: Next.js App Router modular monolith + PostgreSQL) but **not yet scaffolded**. When code work begins, update this file with the real commands and architecture at that point.
 
-> **Note on naming — STANDING RULE.** The product is **Libox**. **Sortibox** (prior name) and **ALAZAR** (older PRD name) are **legacy**. The GitHub repo (`github.com/liboxapp/libox`, local `origin` matches) and all tracked repo content have been renamed to Libox. **Any residual mention of "Sortibox" or "ALAZAR" — in older git commits, the Outline "Sortibox — Desarrollo" collection, the stranded auto-memory, or external/partner docs — must be read as "Libox".** Surfaces still pending the rename (outside this repo): the Outline **"Sortibox — Desarrollo"** collection and the auto-memory files.
+> **Note on naming — STANDING RULE.** The product is **Libox**. **Sortibox** (prior name) and **ALAZAR** (older PRD name) are **legacy**. The GitHub repo now lives in the **liboxapp org** (`github.com/liboxapp/libox`, local `origin` already points there) and all tracked repo content has been renamed to Libox. **Any residual mention of "Sortibox" or "ALAZAR" — in older git commits, the Outline "Sortibox — Desarrollo" collection, the stranded auto-memory, or external/partner docs — must be read as "Libox".** Surfaces still pending the rename (outside this repo): only the auto-memory files — the Outline collection was already renamed to **"Libox — Desarrollo"** (2026-06-21).
+
+## Cowork session layout
+
+When working in Cowork, four folders are mounted, each with a role. Read
+`Context/README.md` at session start — it is the operating manual (folder roles,
+work pipeline, session checklist).
+
+- **Project** — this repo: canonical KB (`docs/`, decisions, plan, scripts). Source of truth.
+- **Context** — operating manual for Claude: working method + `estilo-documentacion.md`. Rules, not deliverables.
+- **Cowork station** — staging: drafts and WIP, built here before promotion. Nothing permanent.
+- **Output** — finished deliverables (meeting transcripts, dev plans, reports).
+
+Pipeline: build in **Cowork station** → promote to **Project** (canonical, plan first) or **Output** (deliverable).
 
 ## Wiki layout (`docs/`)
 
@@ -28,7 +41,7 @@ The team mirrors the wiki to **Outline** (`liboxapp.getoutline.com`), reachable 
 
 | Collection | Role |
 |---|---|
-| **Sortibox — Desarrollo** *(name pending rename → Libox — Desarrollo)* | **Read-only mirror** of `docs/` (ADRs Z.1–Z.8, plan, glosario, compliance, PRD). Each mirrored ADR banners: "fuente canónica vive en el repo GitHub… changes via PR, then republished here." Edit the repo, not the mirror. |
+| **Libox — Desarrollo** | **Read-only mirror** of `docs/` (ADRs Z.1–Z.8, plan, glosario, compliance, PRD). Each mirrored ADR banners: "fuente canónica vive en el repo GitHub… changes via PR, then republished here." Edit the repo, not the mirror. |
 | **Libox — Negocio** | **Business operational layer** (born in Outline, not mirrored): governance, meetings, backlog, risk register, traceability matrix, roadmap, finances. Its per-decision docs are **business summaries** that point to the canonical dev ADR. |
 
 When a decision changes, edit the canonical file in `docs/decisions/` (via PR), then republish the Outline mirror.

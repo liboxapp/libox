@@ -4,14 +4,14 @@ status: vivo
 tags: [libox, plan, roadmap]
 canonical: docs/plans/libox-plan.md
 mirror: ~/.claude/plans/spicy-sparking-hopcroft.md
-updated: 2026-06-05
+updated: 2026-06-21
 ---
 
 # Libox — Plan inicial de producto y arquitectura
 
 ## Contexto
 
-Libox es un **marketplace web de rifas digitales con boleto pagado** operado bajo regulación peruana. Estado actual: **idea pura** — carpeta `/Users/diegocotrina/Desktop/libox` vacía, sin stack elegido, sin wireframes. Diego (full stack engineer) y socios van a contratar abogado para el marco legal.
+Libox es un **marketplace web de rifas digitales con boleto pagado** operado bajo regulación peruana. Estado actual: **pre-código** — repositorio git con tooling de versionado ya cableado (SemVer, Conventional Commits, release-please, CI), stack ya decidido (Z.6: Next.js App Router + PostgreSQL) pero **aún sin scaffold**; sin wireframes todavía. Diego (full stack engineer) y socios van a contratar abogado para el marco legal.
 
 Este documento NO es un implementation plan de código. Es la hoja de ruta de producto + arquitectura que sirve como base para empezar a construir. Su objetivo:
 
@@ -529,7 +529,7 @@ El motor de [Z.4](../decisions/Z4-tipos-de-sorteo.md) ya modela `mode ∈ {AUTO,
 No hay código que correr todavía. Validación = revisión humana:
 
 - Diego revisa este documento y comparte el **Anexo Z** con los socios.
-- Cada conflicto pendiente (sección 2 y los conflictos PRD vs plan aún abiertos: PSP, organizador, tipos de sorteo, T8 LIVE) se discute caso por caso y se cierra como nueva entrada en el **Anexo Z**.
+- Los 4 conflictos originales PRD vs plan están **cerrados** (Z.1–Z.5), más Z.6–Z.8. Cada decisión nueva se discute caso por caso y se cierra como entrada en el **Anexo Z** (sigue Z.9).
 - Las validaciones marcadas `[LEGAL→ABOGADO]` y `[COMERCIAL]` se cierran antes de escribir código del módulo correspondiente.
-- Las decisiones cerradas se replicarán en el `README.md` del repo cuando exista.
-- El `CLAUDE.md` se generará en la próxima sesión, una vez exista estructura de repo.
+- Las decisiones cerradas se reflejan en `docs/README.md` y se espejan a la colección Outline "Libox — Desarrollo".
+- El `CLAUDE.md` del repo ya existe y opera como guía de sesión.
