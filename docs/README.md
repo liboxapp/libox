@@ -2,12 +2,12 @@
 title: Libox — Índice del wiki
 status: vivo
 tags: [libox, indice, wiki]
-updated: 2026-06-05
+updated: 2026-06-21
 ---
 
 # Libox — Wiki del proyecto
 
-Marketplace web de rifas digitales con boleto pagado, operado bajo regulación peruana. Estado actual: **idea pura** — sin código todavía, en fase de diseño de producto + arquitectura.
+Marketplace web de rifas digitales con boleto pagado, operado bajo regulación peruana. Estado actual: **pre-código** — sin aplicación todavía, pero ya con repositorio git y tooling de versionado (SemVer, Conventional Commits, release-please, CI). El contenido es un **wiki de documentación** que captura decisiones de producto, arquitectura, stack y análisis regulatorio antes de la primera línea de código.
 
 ## Mapa
 
@@ -40,7 +40,7 @@ Marketplace web de rifas digitales con boleto pagado, operado bajo regulación p
 
 ## Decisiones cerradas
 
-El índice canónico de decisiones vive en **[decisions/README.md](decisions/README.md)** — ahí está la tabla completa y la convención para agregar nuevas. (Una decisión cerrada hasta ahora: Z.1 Custodia del dinero.)
+El índice canónico de decisiones vive en **[decisions/README.md](decisions/README.md)** — ahí está la tabla completa y la convención para agregar nuevas. **Z.1–Z.8 cerradas** (custodia del dinero, PSP, tipo de organizador, motor de sorteo, T8 LIVE, stack, versionamiento, roles de memoria/contexto). La próxima es Z.9.
 
 ## Obsidian
 
@@ -56,7 +56,8 @@ Este wiki está pensado para abrirse como **vault de Obsidian** (abre la carpeta
 
 ## Pendientes activos
 
-- 4 de 5 conflictos PRD vs plan aún por cerrar: PSP, tipo de organizador, tipos de sorteo en MVP-1, T8 LIVE.
+- Los 4 conflictos originales PRD vs plan están **cerrados** (Z.1–Z.5), más Z.6–Z.8. Sigue Z.9.
+- Validaciones externas pendientes: llamada comercial a Mercado Pago (split/Yape, Z.2) y ratificación legal `[LEGAL→ABOGADO]` (custodia Z.1, autorización municipal Z.3).
 - Recortar el plan a un MVP-1 ejecutable en 8-12 semanas con 1 dev.
 - Convertir [`compliance-peru.md`](compliance-peru.md) de stub a documento cerrado con apoyo del abogado.
 - Wireframes de los 5 flujos críticos.
