@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Sync repo docs/ -> Outline collection "Liboxapp — Desarrollo" (read-only mirror).
+# Sync repo docs/ -> Outline collection "Libox — Desarrollo" (read-only mirror).
 # The repo is canonical (see CLAUDE.md / ADR Z.8); this pushes one-way to Outline.
 #
 # Usage:
