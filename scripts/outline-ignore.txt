@@ -1,0 +1,7 @@
+# Docs de docs/ excluidos del espejo Outline a propósito.
+# Regla (CI outline-sync, job check-map): todo .md bajo docs/ debe estar en
+# scripts/outline-map.json o listado aquí; si no, el workflow falla.
+# Para mapear un doc nuevo: crear el documento placeholder en Outline
+# (colección "Libox — Desarrollo"), copiar su ID a outline-map.json.
+docs/flujos/flujo-end-to-end.md
+docs/plans/mvp1-fases-desarrollo.md

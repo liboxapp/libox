@@ -5,12 +5,36 @@ on:
     branches: [main]
     paths:
       - "docs/**/*.md"
+      - "scripts/outline-map.json"
+      - "scripts/outline-sync.sh"
+      - "scripts/outline-ignore.txt"
+  workflow_dispatch: {}
 
 permissions:
   contents: read
 
 jobs:
+  check-map:
+    name: Every doc is mapped or ignored
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check outline-map coverage
+        run: |
+          mapped=$(python3 -c "import json; print('\n'.join(json.load(open('scripts/outline-map.json'))))")
+          ignored=$(grep -v '^#' scripts/outline-ignore.txt || true)
+          missing=0
+          while IFS= read -r f; do
+            echo "$mapped" | grep -qxF "$f" && continue
+            echo "$ignored" | grep -qxF "$f" && continue
+            echo "::error file=$f::not in scripts/outline-map.json nor scripts/outline-ignore.txt — map it (bootstrap the Outline doc first) or ignore it explicitly"
+            missing=1
+          done < <(git ls-files -- docs | grep -E '\.md$' | sort -u)
+          exit $missing
+
   sync:
+    name: Sync docs to Outline mirror
+    needs: check-map
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,12 +45,25 @@ jobs:
           python-version: "3.12"
       - name: Install outline-cli
         run: pip install --quiet outline-kb-cli
-      - name: Sync changed docs to Outline
+      - name: Sync to Outline
         env:
           OUTLINE_API_KEY: ${{ secrets.OUTLINE_API_KEY }}
-          OUTLINE_BASE_URL: https://app.getoutline.com/api
+          OUTLINE_BASE_URL: https://liboxapp.getoutline.com/api
         run: |
-          changed=$(git diff --name-only HEAD^ HEAD -- 'docs/**/*.md' || true)
+          # Manual dispatch → full resync of every mapped doc.
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            bash scripts/outline-sync.sh
+            exit 0
+          fi
+          # Map/script changes → full resync (a doc may have been added to the map
+          # without its content changing in the same commit).
+          infra=$(git diff --name-only HEAD^ HEAD -- scripts/outline-map.json scripts/outline-sync.sh || true)
+          if [ -n "$infra" ]; then
+            bash scripts/outline-sync.sh
+            exit 0
+          fi
+          # Otherwise sync only the docs touched by this push.
+          changed=$(git diff --name-only HEAD^ HEAD -- docs | grep -E '\.md$' || true)
           if [ -z "$changed" ]; then
             echo "no doc changes detected"
             exit 0
