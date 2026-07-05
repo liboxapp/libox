@@ -3,13 +3,13 @@ title: Z.6 — Stack tecnológico
 status: cerrada-en-direccion
 tags: [libox, decision, stack, nextjs, arquitectura]
 decided: 2026-06-06
-relates: [docs/decisions/Z1-custodia-del-dinero.md, docs/decisions/Z2-eleccion-psp.md, docs/decisions/Z4-tipos-de-sorteo.md, docs/plans/libox-plan.md]
-updated: 2026-06-06
+relates: [docs/decisions/Z1-custodia-del-dinero.md, docs/decisions/Z2-eleccion-psp.md, docs/decisions/Z4-tipos-de-sorteo.md, docs/plans/libox-plan.md, docs/benchmark-stack.md]
+updated: 2026-07-05
 ---
 
 # Z.6 — Stack tecnológico
 
-**Estado**: Cerrada en dirección (2026-06-06). Sub-decisiones (ORM, auth, job runner) a confirmar al hacer el scaffold.
+**Estado**: Cerrada en dirección (2026-06-06). Sub-decisiones ORM, auth y DB host **cerradas el 2026-07-05** con benchmark de mercado ([`benchmark-stack.md`](../benchmark-stack.md)). Pendiente al scaffold: job runner.
 **Decisor**: Diego.
 **Documento canónico**: este archivo. Mirror en [`docs/plans/libox-plan.md`](../plans/libox-plan.md) (sección 4 + Anexo Z.6).
 
@@ -60,10 +60,10 @@ Next.js ya entrega lo que se buscaba de Astro (páginas públicas rápidas y SEO
 |---|---|---|
 | Framework | **Next.js (App Router) + TypeScript** | Una sola codebase: público + app + backoffice por rol. |
 | UI | **Tailwind + shadcn/ui** | Rápido, accesible. |
-| DB | **PostgreSQL** (Neon/Supabase para MVP) | Transaccional, soporta el ledger y el append-only audit. |
-| ORM | **Drizzle** (preferido) o Prisma | Drizzle por control fino del SQL y migraciones; confirmar al scaffold. |
-| Job runner | **Inngest** o **Trigger.dev** | Necesario para outbox worker, ejecución de sorteo por deadline/umbral, conciliación PSP. Evita Redis+worker propio en MVP. |
-| Auth | **Clerk** o **Supabase Auth** | MFA obligatorio para organizadores y staff (lo pide el PRD para Admin). |
+| DB | **PostgreSQL en Supabase** (cerrada 2026-07-05) | Transaccional, soporta el ledger y el append-only audit. Supavisor en **modo transacción** obligatorio desde el día 1 (serverless). |
+| ORM | **Drizzle** (cerrada 2026-07-05) | Control fino del SQL, migraciones incluidas, cold starts 3-5x menores que Prisma en serverless. |
+| Job runner | **Inngest** o **Trigger.dev** | Necesario para outbox worker, ejecución de sorteo por deadline/umbral, conciliación PSP. Evita Redis+worker propio en MVP. Confirmar al scaffold. |
+| Auth | **Supabase Auth** (cerrada 2026-07-05) | MFA obligatorio para organizadores y staff (lo pide el PRD para Admin). RLS integrado. Ruta de migración: WorkOS al acercarse a ~100k MAU. |
 | Pagos | **Mercado Pago** (ver [Z.2](Z2-eleccion-psp.md)) | Adaptador **multi-PSP** desde el inicio (Culqi 2º rail). |
 | Hosting | **Vercel** + DB gestionada | Migrar a infra propia con tracción/compliance. |
 | Observabilidad | **Sentry** + logs estructurados + **PostHog** | `trace_id` transversal (PRD). |
@@ -84,9 +84,14 @@ El PRD pide outbox, ledger doble entrada, webhooks firmados, draw engine y multi
 
 ---
 
-## Sub-decisiones pendientes (al hacer scaffold)
+## Sub-decisiones cerradas (2026-07-05)
 
-1. ORM definitivo: **Drizzle** vs Prisma.
-2. Job runner: **Inngest** vs Trigger.dev.
-3. Auth: **Clerk** vs Supabase Auth.
-4. DB host: **Neon** vs Supabase.
+Cerradas con benchmark de mercado a julio 2026 — comparativas completas, costos y fuentes en [`benchmark-stack.md`](../benchmark-stack.md).
+
+1. **ORM: Drizzle** (descarta Prisma). Cold starts 3-5x menores y bundle ~90% más chico en serverless (Vercel Functions). SQL-first — útil para las agregaciones del marketplace (tickets, rankings, settlement). Riesgo de lock-in mínimo: el esquema es SQL estándar, migrar a Kysely o SQL crudo sería mecánico. En cliente se complementa con `supabase-js` para CRUD simple protegido por RLS.
+2. **Auth: Supabase Auth** (descarta Clerk). A 100k MAU: ~$187/mes vs ~$1,825/mes de Clerk — ~10x de diferencia para funcionalidad equivalente en este caso (email, OAuth social, MFA). Bonus: RLS de Postgres integrado con `auth.uid()` resuelve gran parte de la autorización sin código de backend. **Ruta de migración futura**: WorkOS AuthKit (gratis hasta 1M MAU) se reevalúa al acercarse a ~100k MAU; Supabase soporta proveedores de auth externos, así que la migración no obliga a cambiar de DB.
+3. **DB host: Supabase** (descarta Neon). Neon es excelente Postgres serverless, pero solo DB: Libox necesita además realtime (contadores de tickets, estado del sorteo) y storage (imágenes de premios), que Supabase incluye en el plan Pro ($25/mes) junto con auth. Con Neon serían 3-4 proveedores adicionales por costo similar. Condición operativa: **Supavisor en modo transacción + prepared statements deshabilitados** desde el día 1 — causa #1 de incidentes Postgres-serverless en producción.
+
+## Sub-decisión pendiente (al hacer scaffold)
+
+1. Job runner: **Inngest** vs Trigger.dev.
