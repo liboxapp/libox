@@ -10,8 +10,8 @@ description: Comparativas de mercado que sustentan el cierre de las sub-decision
 
 Análisis de mercado que sustenta el cierre de las sub-decisiones de
 [Z.6 — Stack tecnológico](decisions/Z6-stack-tecnologico.md). Escala objetivo:
-10k–100k usuarios en 12–18 meses. Criterio: costo como startup + escalabilidad
-+ rutas de salida documentadas, no lo trending.
+10k–100k usuarios en 12–18 meses. Criterio: costo como startup +
+escalabilidad + rutas de salida documentadas, no lo trending.
 
 ## DB host: Supabase vs Neon
 
