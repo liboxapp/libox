@@ -11,5 +11,6 @@
   "docs/decisions/Z5-t8-live.md": "10cc2256-6763-469d-9ccd-9a9db14dbe6d",
   "docs/decisions/Z6-stack-tecnologico.md": "0827d9a7-33bc-4ab3-812e-dbb1a05eb621",
   "docs/decisions/Z7-versionamiento.md": "33ce9b35-60f8-4c55-9e6b-d2d3aaa541f9",
-  "docs/decisions/Z8-roles-memoria-contexto.md": "8095ad7d-2a1d-4e34-984f-8d7b4f4a401b"
+  "docs/decisions/Z8-roles-memoria-contexto.md": "8095ad7d-2a1d-4e34-984f-8d7b4f4a401b",
+  "docs/benchmark-stack.md": "6d6630d1-eaf9-4b1d-b67a-5ac4d8a5417c"
 }

@@ -28,7 +28,7 @@ Esta carpeta guarda las decisiones cerradas del proyecto Libox, cada una en su p
 | [Z.3](Z3-tipo-de-organizador.md) | Tipo de organizador — cualquiera con RUC (natural o jurídica) | Cerrada; pendiente validación legal de autorización municipal | 2026-06-05 |
 | [Z.4](Z4-tipos-de-sorteo.md) | Tipos de sorteo MVP-1 — motor configurable 1 ganador (T1–T4 presets) | Cerrada | 2026-06-05 |
 | [Z.5](Z5-t8-live.md) | T8 LIVE — diferido a MVP-3 | Cerrada | 2026-06-05 |
-| [Z.6](Z6-stack-tecnologico.md) | Stack tecnológico — Next.js para todo (descarta Astro) | Cerrada en dirección; sub-decisiones al scaffold | 2026-06-06 |
+| [Z.6](Z6-stack-tecnologico.md) | Stack tecnológico — Next.js para todo (descarta Astro); Drizzle + Supabase (Auth y DB host) cerrados con [benchmark](../benchmark-stack.md) | Cerrada en dirección; job runner al scaffold | 2026-07-05 |
 | [Z.7](Z7-versionamiento.md) | Versionamiento — semver + Conventional Commits + release-please | Cerrada | 2026-06-06 |
 | [Z.8](Z8-roles-memoria-contexto.md) | Roles de memoria y contexto — docs/MEMORY = verdad; context-mode/claude-mem/GSD encarrilados | Cerrada | 2026-06-06 |
 
