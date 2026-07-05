@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Releases are automated with [release-please](https://github.com/googleapis/release-please)
 from [Conventional Commits](https://www.conventionalcommits.org/).
 
+## [0.1.1](https://github.com/liboxapp/libox/compare/v0.1.0...v0.1.1) (2026-07-05)
+
+
+### Bug Fixes
+
+* **ci:** fix plan links and relax markdownlint rules for green CI ([dd68834](https://github.com/liboxapp/libox/commit/dd688348727ba158add0cc65f4a73ef3230b5c28))
+* **docs:** rewrap criteria sentence that markdownlint parsed as a list ([3063f62](https://github.com/liboxapp/libox/commit/3063f62fcad55dd4fdc125926f416e8887c27efa))
+* **outline:** correct plan path in sync map and collection name in script ([aa7d03c](https://github.com/liboxapp/libox/commit/aa7d03c2368bd6300245c95afdf5c90d97b1e9e2))
+
 ## [Unreleased]
 
 ## [0.1.0] - 2026-06-06
