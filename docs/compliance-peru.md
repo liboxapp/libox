@@ -2,7 +2,7 @@
 title: Compliance Perú (documento de trabajo)
 status: borrador
 tags: [libox, compliance, peru, legal]
-updated: 2026-06-05
+updated: 2026-07-05
 ---
 
 # Compliance Perú — documento de trabajo
@@ -30,10 +30,13 @@ Normativa relevante identificada:
 - **Sujetos obligados ante UIF-Perú — Ley 27693** y modificatorias: incluye administradores de juegos de azar y apuestas.
 - **Régimen tributario SUNAT**: IGV, factura electrónica vía PSE, retención de IR de 2da categoría sobre premios.
 - **Marco municipal de sorteos / rifas**: autorización municipal para rifas con boleto pagado (varía por municipalidad).
+- **DL 1411 (y modif. DU 009-2020) — juegos de lotería y similares** `[LEGAL→ABOGADO]`: reserva la organización de loterías y juegos similares a las **Sociedades de Beneficencia**, directamente o vía contratos de asociación en participación con operadores privados (cargas: 1% de ventas brutas al MIMP; ≥5% a la Beneficencia en contratos de asociación). Lectura del autor: una **rifa lucrativa con boleto pagado podría calificar como "lotería y similar"**, en cuyo caso un organizador privado con RUC no podría venderla por cuenta propia y la autorización municipal no bastaría.
+- **DS 010-2016-IN (MININTER/DGIN)** `[LEGAL→ABOGADO]`: regula **promociones comerciales** (sorteos gratuitos ligados a compra), **rifas con fines sociales** (sin lucro) y colectas públicas, con autorización y garantía. No cubre rifas lucrativas.
 
 ### Preguntas para abogado
 
-1. ¿Operar un marketplace de rifas con boleto pagado bajo organizador RUC califica a Libox como **sujeto obligado UIF-Perú** (administrador de juegos de azar)? Si sí, se requiere oficial de cumplimiento PLAFT y manual **desde día 1**, sin importar el modelo de custodia.
+0. **(Prioritaria — condiciona el modelo de negocio)** ¿Una rifa con boleto pagado y fin de lucro califica como "juego de lotería y similares" bajo el **DL 1411** (exclusivo de Sociedades de Beneficencia), o basta la autorización municipal que asume el modelo actual? Si aplica el DL 1411: ¿qué vía habilita el marketplace — asociación en participación con una Beneficencia, restricción a rifas con fin social (DS 010-2016-IN), o reformulación como promoción comercial? ⚠️ La respuesta **tensiona la decisión cerrada [Z.3](decisions/Z3-tipo-de-organizador.md)** ("cualquier RUC activo puede organizar") y el KYC del propio PSP, que suele exigir acreditar la autorización del rubro juegos.
+1. ¿Operar un marketplace de rifas con boleto pagado bajo organizador RUC califica a Libox como **sujeto obligado UIF-Perú** (administrador de juegos de azar)? Si sí, se requiere oficial de cumplimiento PLAFT y manual **desde día 1**, sin importar el modelo de custodia. Nota: si la vía resultara ser asociación con Beneficencia (pregunta 0), la probabilidad de calificar como sujeto obligado aumenta.
 2. ¿Bajo el [Modelo C de custodia](decisions/Z1-custodia-del-dinero.md), la actividad de Libox queda fuera del régimen SBS de captación de fondos del público?
 3. ¿Qué califica como "rifa" vs "sorteo promocional" para el municipio / MINCETUR, y cuáles aplican a Libox?
 4. ¿Qué umbrales de monto activan retención de IR de 2da categoría sobre el premio, y quién debe ejecutar la retención (organizador o Libox)?
@@ -52,6 +55,8 @@ Normativa relevante identificada:
 ---
 
 ## 3. Autorización del sorteo
+
+> ⚠️ `[LEGAL→ABOGADO]` Esta sección asume que la **autorización municipal habilita la rifa pagada**. Ese supuesto está en duda por el DL 1411 (ver pregunta 0 de la sección 1): si la rifa lucrativa califica como "lotería y similar", la vía no sería municipal. El campo `Raffle.autorizacion_municipal_url` del modelo de datos hereda este supuesto.
 
 - Sorteos con boleto pagado típicamente requieren autorización municipal. La municipalidad varía por jurisdicción del organizador.
 - En el modelo de datos del MVP, el campo `Raffle.autorizacion_municipal_url` ya está previsto: el organizador sube el documento al crear el sorteo, y la aprobación admin no se concede sin él.
