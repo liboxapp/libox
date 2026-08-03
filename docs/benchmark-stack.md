@@ -88,6 +88,26 @@ en Workers vía OpenNext) o Railway. Regla dura: el video en vivo (T8 LIVE,
 [Z.5](decisions/Z5-t8-live.md), MVP-3) jamás pasa por Vercel — a $0.15/GB sería
 ruinoso.
 
+## Job runner: Inngest vs Trigger.dev
+
+En Vercel no hay procesos residentes: outbox publisher, conciliación diaria,
+DLQ y draw por deadline viven en el job runner — infraestructura crítica, no
+opcional. Perfil comparado (agosto 2026):
+
+| Criterio | Inngest | Trigger.dev |
+|---|---|---|
+| Modelo | Event-driven, steps durables dentro de tus funciones serverless | Tareas/workflows en workers propios de la plataforma |
+| Fit Vercel | Nativo (corre en las functions existentes) | Bueno, pero modelo aparte |
+| Sweet spot | Fan-out por eventos, crons, `sleepUntil` | Tareas largas de ejecución única; self-host |
+| Free tier | 50k runs/mes | ~50 runs/día (o créditos) |
+| Siguiente escalón | ~$30/mes | ~$10-50/mes |
+| Salida | Migrar handlers (son funciones propias) | Self-host open source |
+
+**Veredicto: Inngest.** El trabajo de Libox es event-driven y fan-out
+(webhooks → pasos durables, outbox → dominios, draw por deadline) — el caso
+donde Inngest destaca; ninguna carga del MVP es una tarea larga de ejecución
+única. Trigger.dev queda como salida si aparece necesidad de self-host.
+
 ## Streaming (referencia para MVP-3 / Z.5)
 
 Cloudflare Stream: $5/1,000 min almacenados + $1/1,000 min entregados, sin fee
@@ -115,4 +135,5 @@ documentada (Vercel→Cloudflare, Supabase→cualquier Postgres, Drizzle→SQL).
 - Hosting: [Makerkit — Vercel cost](https://makerkit.dev/blog/saas/vercel-cost), [Cloudflare Workers vs Vercel](https://www.morphllm.com/comparisons/cloudflare-workers-vs-vercel)
 - Supabase en producción: [arquitectura 2026](https://www.frontendtechlead.com/blog/supabase-production-architecture-2026), [connection management](https://supabase.com/docs/guides/database/connection-management)
 - ORM: [Makerkit — Drizzle vs Prisma](https://makerkit.dev/blog/tutorials/drizzle-vs-prisma), [Bytebase](https://www.bytebase.com/blog/drizzle-vs-prisma/)
+- Job runner: [Inngest vs Trigger.dev vs BullMQ — buildmvpfast](https://www.buildmvpfast.com/blog/inngest-vs-trigger-dev-vs-bullmq-background-jobs-nextjs-2026), [background jobs pricing](https://www.buildmvpfast.com/api-costs/background-jobs), [PkgPulse](https://www.pkgpulse.com/guides/inngest-vs-trigger-dev-v3-vs-restate-2026)
 - Streaming: [Cloudflare Stream simulcasting](https://developers.cloudflare.com/stream/stream-live/simulcasting/), [comparativa de video](https://www.buildmvpfast.com/api-costs/video)
