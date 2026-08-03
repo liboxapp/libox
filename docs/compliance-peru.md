@@ -11,7 +11,7 @@ updated: 2026-07-05
 
 ## Propósito
 
-El [PRD Libox v11](prd/) del socio es deliberadamente **agnóstico geográficamente** y no aborda el marco regulatorio peruano. Este documento existe para llenar ese vacío: es la pieza específica-Perú que el PRD no cubre. Vive separada del PRD por decisión consciente (ver [Bitácora de decisiones futura — Z.X Compliance Perú aparte]) para que el PRD pueda evolucionar como blueprint técnico mientras este documento evoluciona con el abogado.
+El PRD del socio fue **agnóstico geográficamente** hasta V11; desde **V12.3** incluye el **Anexo K — Legal & Compliance Readiness Perú-first** (matriz regulatoria, documentos legales versionados y gates técnicos de producto: LEGAL_ACK_GATE, AGE_GATE, TAX_SPLIT_GATE, etc.). Este documento sigue siendo la pieza de trabajo con el abogado y **no queda reemplazado por el Anexo K**: el anexo define mecánica de producto, no resuelve las preguntas legales abiertas — en particular la **pregunta 0 (DL 1411)**: el Anexo K asume "autorización ante la autoridad competente" tramitada por el organizador sin identificar el marco aplicable, el mismo supuesto que esta doc marca en duda. El campo `authorization_ref` de V12 (C-11) y `Raffle.autorizacion_municipal_url` del modelo previo son el mismo supuesto y deben alinearse cuando el abogado responda. Vive separada del PRD por decisión consciente para que el PRD evolucione como blueprint técnico mientras este documento evoluciona con el abogado.
 
 ## Estado
 
