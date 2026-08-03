@@ -9,7 +9,7 @@ updated: 2026-07-05
 
 # Z.6 — Stack tecnológico
 
-**Estado**: Cerrada en dirección (2026-06-06). Sub-decisiones ORM, auth y DB host **cerradas el 2026-07-05** con benchmark de mercado ([`benchmark-stack.md`](../benchmark-stack.md)). Pendiente al scaffold: job runner.
+**Estado**: Cerrada en dirección (2026-06-06). Sub-decisiones ORM, auth y DB host cerradas el 2026-07-05; **job runner (Inngest) cerrado el 2026-08-03** — todas las sub-decisiones resueltas ([`benchmark-stack.md`](../benchmark-stack.md)).
 **Decisor**: Diego.
 **Documento canónico**: este archivo. Mirror en [`docs/plans/libox-plan.md`](../plans/libox-plan.md) (sección 4 + Anexo Z.6).
 
@@ -62,7 +62,7 @@ Next.js ya entrega lo que se buscaba de Astro (páginas públicas rápidas y SEO
 | UI | **Tailwind + shadcn/ui** | Rápido, accesible. |
 | DB | **PostgreSQL en Supabase** (cerrada 2026-07-05) | Transaccional, soporta el ledger y el append-only audit. Supavisor en **modo transacción** obligatorio desde el día 1 (serverless). |
 | ORM | **Drizzle** (cerrada 2026-07-05) | Control fino del SQL, migraciones incluidas, cold starts 3-5x menores que Prisma en serverless. |
-| Job runner | **Inngest** o **Trigger.dev** | Necesario para outbox worker, ejecución de sorteo por deadline/umbral, conciliación PSP. Evita Redis+worker propio en MVP. Confirmar al scaffold. |
+| Job runner | **Inngest** (cerrada 2026-08-03) | Outbox worker, sorteo por deadline/umbral (`sleepUntil`/eventos), conciliación diaria, DLQ. Free tier 50k runs/mes cubre el MVP. Salida documentada: Trigger.dev (self-host). |
 | Auth | **Supabase Auth** (cerrada 2026-07-05) | MFA obligatorio para organizadores y staff (lo pide el PRD para Admin). RLS integrado. Ruta de migración: WorkOS al acercarse a ~100k MAU. |
 | Pagos | **Mercado Pago** (ver [Z.2](Z2-eleccion-psp.md)) | Adaptador **multi-PSP** desde el inicio (Culqi 2º rail). |
 | Hosting | **Vercel** + DB gestionada | Migrar a infra propia con tracción/compliance. |
@@ -92,6 +92,18 @@ Cerradas con benchmark de mercado a julio 2026 — comparativas completas, costo
 2. **Auth: Supabase Auth** (descarta Clerk). A 100k MAU: ~$187/mes vs ~$1,825/mes de Clerk — ~10x de diferencia para funcionalidad equivalente en este caso (email, OAuth social, MFA). Bonus: RLS de Postgres integrado con `auth.uid()` resuelve gran parte de la autorización sin código de backend. **Ruta de migración futura**: WorkOS AuthKit (gratis hasta 1M MAU) se reevalúa al acercarse a ~100k MAU; Supabase soporta proveedores de auth externos, así que la migración no obliga a cambiar de DB.
 3. **DB host: Supabase** (descarta Neon). Neon es excelente Postgres serverless, pero solo DB: Libox necesita además realtime (contadores de tickets, estado del sorteo) y storage (imágenes de premios), que Supabase incluye en el plan Pro ($25/mes) junto con auth. Con Neon serían 3-4 proveedores adicionales por costo similar. Condición operativa: **Supavisor en modo transacción + prepared statements deshabilitados** desde el día 1 — causa #1 de incidentes Postgres-serverless en producción.
 
-## Sub-decisión pendiente (al hacer scaffold)
+## Sub-decisión cerrada (2026-08-03)
 
-1. Job runner: **Inngest** vs Trigger.dev.
+4. **Job runner: Inngest** (descarta Trigger.dev para MVP). El perfil de
+   Libox es event-driven y fan-out (outbox → dominios, webhooks → pasos
+   durables, draw por deadline con `sleepUntil`) — el sweet spot de Inngest,
+   que además corre dentro de las funciones serverless existentes (Vercel)
+   sin infraestructura propia. Free tier de 50k runs/mes cubre el MVP;
+   siguiente escalón ~$30/mes. Trigger.dev ganaría con tareas largas de
+   ejecución única o necesidad de self-host — ninguna aplica al MVP; queda
+   documentado como **salida** si el costo o el modelo cambian. Detalle
+   comparativo en [`benchmark-stack.md`](../benchmark-stack.md).
+
+Con esto, **todas las sub-decisiones de Z.6 están cerradas**. El diseño de
+los módulos críticos que consumen el job runner (Payment Adapter, Draw,
+Ticket, Settlement) tiene design notes propias previas al scaffold.

@@ -68,3 +68,33 @@ Esto se activa una sola vez desde la web de GitHub (no se puede versionar en el 
 | `release-please` | calcula versión y actualiza `CHANGELOG.md` | en push a `main` |
 
 Cuando entre el código (Next.js), se añadirán jobs de `typecheck`, `test` y `build`.
+
+## Reglas de ingeniería (vigentes desde el scaffold)
+
+Salen del architecture review (agosto 2026) y de las design notes de los
+módulos críticos. Son regla dura al escribir código:
+
+1. **Writes de dinero solo por Drizzle server-side.** Todo write que toque
+   dinero, tickets, draw, settlement o auditoría va en una **sola transacción
+   Drizzle** (`persist → audit_event → outbox`, mismo commit), server-side.
+   `supabase-js` queda para reads bajo RLS y realtime — **nunca** para estos
+   writes (PostgREST no tiene transacciones multi-statement; el invariante de
+   auditoría se rompería en silencio).
+2. **Webhooks: ACK rápido, procesa async.** El endpoint valida firma,
+   persiste en `webhook_inbox` con idempotency key, responde 200 en < 2s y
+   delega a Inngest. Cero lógica de negocio inline. El estado del pago es la
+   fuente de verdad, nunca el conteo de webhooks.
+3. **Concurrencia se resuelve en la DB.** Unicidad de ticket por constraint
+   (`UNIQUE (raffle_id, ticket_number)`), reservas atómicas con TTL, y locks
+   explícitos (`SELECT … FOR UPDATE` / advisory lock) en la ejecución del
+   draw. La idempotency key es la segunda barrera, no la única.
+
+### Checklist de scaffold
+
+- [ ] Supavisor **modo transacción** + `prepared: false` en el cliente Drizzle.
+- [ ] Constraints de unicidad de ticket y balance de ledger en la migración 001.
+- [ ] PITR habilitado en Supabase desde el día 1.
+- [ ] Job semanal de export del audit store a objeto WORM (object lock) con hash de verificación.
+- [ ] Inngest conectado; `webhook_inbox` y outbox publisher como primeras functions.
+- [ ] Realtime de contadores por canal broadcast throttled, no `postgres_changes` por insert.
+- [ ] Sentry + `trace_id` transversal desde el primer endpoint.
