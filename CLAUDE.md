@@ -30,7 +30,8 @@ Start every session by reading `docs/README.md` — it is the index and explains
 | Path | Role |
 |---|---|
 | `docs/README.md` | Wiki index + map of how documents connect. Entry point. |
-| `docs/prd/Libox PRD V11.pdf` | Partner's 48-page PRD. Authoritative **technical/product blueprint** (fintech-grade: RBAC, Purchase/Draw/Delivery/Settlement engines, double-entry ledger, audit-first, APIs, threat model). Geographically agnostic — does **not** cover Peru compliance. |
+| `docs/prd/LIBOX PRD BLUEPRINT MVP V12 3.docx` + `ENTERPRISE V12 3.docx` | Partner's PRD **V12.3**, now split in two: **MVP** (modular monolith, Role Books USER/CLIENT/ADMIN/SUPPORT, Raffle Engine T1-T8, Anexo K Legal Perú-first, Anexo L investor readiness) and **Enterprise** (target state: 20 microservices, event-driven). Authoritative technical/product blueprint. ⚠️ V12.3 conflicts with closed ADRs (settlement gates vs Z.1, target-based pricing, T8 in MVP vs Z.5) — see the deltas analysis before treating any V12 mechanic as agreed. |
+| `docs/prd/Libox PRD V11.pdf` | Previous PRD (historical). ADRs Z.1-Z.8 cite it; keep for traceability. Geographically agnostic — Peru compliance entered the PRD only in V12.3 (Anexo K). |
 | `docs/plans/libox-plan.md` | Living plan: product, architecture, stack, roadmap. Contains **Anexo Z** — the running log of closed decisions. Mirrored at `~/.claude/plans/spicy-sparking-hopcroft.md`; the `docs/` copy is canonical for the team. |
 | `docs/decisions/` | Self-contained ADRs, one per closed decision. The shareable canonical record for partners/investors. See `docs/decisions/README.md` for the convention. |
 | `docs/compliance-peru.md` | Working doc for the Peruvian regulatory frame (SUNAT, municipal authorization, prize tax withholding, KYC, PLAFT, T&C). Deliberately kept **separate from the PRD**. Still a stub pending the lawyer. |
