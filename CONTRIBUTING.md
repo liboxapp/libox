@@ -39,6 +39,21 @@ feat(payments)!: migra de split directo a escrow real
 
 **Ámbitos sugeridos**: `wiki`, `decisions`, `plan`, `purchase`, `draw`, `delivery`, `settlement`, `ledger`, `audit`, `payments`, `auth`, `backoffice`.
 
+### Autoría: sin co-autores automáticos
+
+Los commits **no llevan trailers de co-autoría de herramientas de IA**. En concreto, está prohibido añadir:
+
+```
+Co-Authored-By: Claude <...>
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+```
+
+ni cualquier variante equivalente (`Generated with…`, `Co-Authored-By: <bot>`), tampoco en el cuerpo de los Pull Requests.
+
+**Motivo:** la autoría del repositorio corresponde a las personas del equipo. Un trailer `Co-Authored-By` hace que GitHub registre a la herramienta como *contributor* del proyecto — aparece en la lista de contribuidores, en `git shortlog` y en las estadísticas del repo, que es exactamente lo que no queremos para un repositorio que se comparte con socios e inversores.
+
+Que se haya usado asistencia de IA para redactar un cambio no altera esta regla: **el autor del commit es quien lo revisa y lo firma.**
+
 ## Ramas y Pull Requests
 
 - `main` es la rama protegida y siempre desplegable. **No se commitea directo a `main`.**
