@@ -8,6 +8,11 @@ config:
     siblings_only: true   # encabezados repetidos en distintas secciones (ADRs)
   MD025:
     front_matter_title: ""   # no tratar el `title:` del frontmatter como H1
+  MD029: false   # numeración de listas ordenadas: las ADRs continúan la
+                 # numeración de sub-decisiones a través de encabezados fechados
+                 # (1-3 en julio, 4 en agosto), lo que la regla lee como una
+                 # lista nueva que debería empezar en 1. La continuidad es
+                 # intencional y se repite con cada sub-decisión nueva.
   MD032: false   # listas sin línea en blanco alrededor
   MD033: false   # HTML inline permitido
   MD040: false   # fenced code sin lenguaje (árboles de directorios, etc.)
