@@ -39,12 +39,14 @@ yarn-error.log*
 !.vscode/extensions.json
 .idea/
 
-# Claude Code — settings y worktrees locales (no compartir)
+# Claude Code — se comparte la config de equipo, no la personal.
+#   .claude/settings.json  → versionado: hooks, plugins y marketplaces del equipo.
+#   .claude/skills/        → versionado: skills compartidas.
+#   settings.local.json    → personal (permisos, overrides): NUNCA se versiona.
 .claude/settings.local.json
-.claude/settings.json
 .claude/worktrees/
 
-# Tooling de agentes local (skills locales, no es source del producto)
+# Tooling de agentes local (copia previa de skills; la fuente ahora es .claude/skills/)
 .agents/
 
 # Archivos temporales de FUSE (FS montado)
