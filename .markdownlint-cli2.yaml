@@ -24,3 +24,5 @@ ignores:
   - "node_modules"
   - "CHANGELOG.md"
   - ".github"
+  - ".claude"   # skills compartidas: código de terceros, no prosa del wiki
+  - ".agents"   # copia local previa de skills (no versionada)
