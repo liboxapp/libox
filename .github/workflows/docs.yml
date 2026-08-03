@@ -1,10 +1,11 @@
 name: docs
 
 on:
+  # Sin filtro de `paths`: `markdownlint` y `links` son checks requeridos por la
+  # ruleset de `main`. Si se filtran por ruta, un PR que no toca Markdown nunca
+  # los reporta y queda bloqueado para siempre (no "pendiente": nunca corren).
+  # Ambos jobs lintean todo el repo, así que correrlos siempre es correcto y barato.
   pull_request:
-    paths:
-      - "**/*.md"
-      - ".markdownlint-cli2.yaml"
   push:
     branches: [main]
     paths:
