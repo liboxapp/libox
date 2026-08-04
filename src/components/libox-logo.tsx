@@ -18,7 +18,14 @@ import { cn } from '@/lib/utils';
  *     short vertical, quarter arc back into the waist — where the two strokes
  *     fuse into the "sola forma continua" of VIES 3.1.
  * The B lobes bulge right off an implied spine; the L stem carries the mark.
- * Round caps and joins (VIES 3.3). Purple -> Violet gradient (VIES 6.4).
+ * Round caps and joins (VIES 3.3).
+ *
+ * Gradient runs Signal Violet #8B5CF6 (top-left) -> Libox Purple #6D28D9
+ * (bottom-right), sampled off the frozen art. VIES 6.4 describes it the other
+ * way round; the standard's own precedence rule settles it — where a textual
+ * description and the approved art disagree, the frozen art prevails. This is
+ * the isotype only: the `--gradient-brand` UI token keeps its planned
+ * 135deg Purple -> Violet direction, since no frozen art governs it.
  *
  * Replace with the official master SVG when the brand export package lands.
  * Do not deform, recolor, or change proportions (VIES 8, usos no permitidos).
@@ -44,8 +51,8 @@ export function LiboxIsotype({ className }: { className?: string }) {
           y2="100"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#6D28D9" />
-          <stop offset="1" stopColor="#8B5CF6" />
+          <stop stopColor="#8B5CF6" />
+          <stop offset="1" stopColor="#6D28D9" />
         </linearGradient>
       </defs>
       <path
