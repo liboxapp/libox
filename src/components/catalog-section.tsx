@@ -25,7 +25,7 @@ export function CatalogSection({ raffles }: { raffles: Raffle[] }) {
             aria-pressed={filter === option.value}
             onClick={() => setFilter(option.value)}
             className={cn(
-              'rounded-full border px-4 py-1.5 text-sm font-medium transition-[transform,opacity] duration-150',
+              'inline-flex min-h-11 items-center rounded-full border px-5 text-sm font-medium transition-[transform,opacity] duration-150',
               'hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95',
               filter === option.value
                 ? 'border-transparent bg-primary text-primary-foreground'

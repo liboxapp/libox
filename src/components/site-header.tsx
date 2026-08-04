@@ -9,7 +9,7 @@ export function SiteHeader() {
         <Link
           href="/"
           aria-label="Libox — inicio"
-          className="rounded-md transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-ring"
+          className="flex min-h-11 items-center rounded-md transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-ring"
         >
           <LiboxLogo />
         </Link>

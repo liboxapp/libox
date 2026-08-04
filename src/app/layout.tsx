@@ -27,10 +27,17 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es-PE">
-      <body className={`${manrope.variable} ${instrumentSans.variable} antialiased`}>
-        {children}
-      </body>
+    /*
+     * The next/font variable classes must live on <html>, not <body>: the
+     * `@theme inline` block in globals.css declares --font-sans/--font-heading
+     * on :root referencing --font-instrument/--font-manrope. A var() that is
+     * undefined on the element where it is read makes the whole custom property
+     * compute to the guaranteed-invalid value, which then inherits down — so
+     * declaring the fonts on <body> left every base rule falling back to the
+     * system stack.
+     */
+    <html lang="es-PE" className={`${manrope.variable} ${instrumentSans.variable}`}>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

@@ -48,8 +48,8 @@ export function PrizeArt({
       {/*
        * Brand echo: the isotype's lower lobe — the "opportunity loop" — as an
        * exact semicircle bleeding off the top and bottom edges, so no stroke
-       * cap ever reads as a stray blob. Same geometry as the mark, so a prize
-       * tile is recognisably Libox without repeating the logo.
+       * cap ever reads as a stray blob. Echoes the mark's rounded arc language,
+       * so a prize tile is recognisably Libox without repeating the logo.
        */}
       <svg
         viewBox="0 0 160 100"
