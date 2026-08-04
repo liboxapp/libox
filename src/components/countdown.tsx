@@ -37,9 +37,15 @@ export function Countdown({
     return <span className={cn(base, 'text-muted-foreground')}>Cerrada</span>;
   }
 
+  const countdownText = formatCountdown(getCountdownParts(target, now));
+
   return (
-    <time dateTime={target.toISOString()} className={base} aria-label="Tiempo restante">
-      {formatCountdown(getCountdownParts(target, now))}
+    <time
+      dateTime={target.toISOString()}
+      className={base}
+      aria-label={`Tiempo restante: ${countdownText}`}
+    >
+      {countdownText}
     </time>
   );
 }

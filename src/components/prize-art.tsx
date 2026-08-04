@@ -13,7 +13,8 @@ import { cn } from '@/lib/utils';
  * Local prize illustrations — no stock photography, no external requests.
  * Each category gets its own cut of the brand gradient so a catalogue of
  * cards reads as one family while still being told apart at a glance.
- * Ramps stay inside the VIES palette (Trust Navy -> Purple -> Violet).
+ * Ramps derive from the brand violet range; tints beyond the 4 frozen VIES
+ * colors are pending brand-owner ratification.
  */
 const CATEGORY_ART: Record<RaffleCategory, { icon: LucideIcon; from: string; to: string }> = {
   tecnologia: { icon: Laptop, from: '#6D28D9', to: '#8B5CF6' },
