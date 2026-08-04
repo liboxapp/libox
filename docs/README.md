@@ -19,6 +19,7 @@ Marketplace web de rifas digitales con boleto pagado, operado bajo regulación p
 | [`compliance-peru.md`](compliance-peru.md) | Documento de trabajo sobre el marco regulatorio peruano (SUNAT, autorización municipal, retención de impuestos, KYC, PLAFT, T&C). | Léelo antes de cualquier conversación con el abogado, y para entender por qué el PRD por sí solo no cubre todo. |
 | [`glosario.md`](glosario.md) | Glosario de términos técnicos, de producto y regulatorios (T1–T8, fairness del sorteo, arquitectura, pagos, compliance). | Consúltalo cuando un término no se entienda. |
 | [`benchmark-stack.md`](benchmark-stack.md) | Benchmark de mercado (julio 2026) que sustenta el cierre de las sub-decisiones de Z.6: comparativas Supabase/Neon, auth por MAU, Drizzle/Prisma, hosting y proyección de costos. | Léelo para entender por qué se eligió cada pieza del stack y cuáles son las rutas de salida. |
+| [`onboarding.md`](onboarding.md) | Checklist de incorporación de desarrolladores: accesos, entorno de Claude Code versionado, lectura obligatoria y flujo diario. | Es lo primero que lee un dev nuevo; Diego lo usa al asignar cada seat. |
 
 ## Cómo se relacionan los documentos
 
