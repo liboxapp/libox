@@ -61,6 +61,16 @@ Que se haya usado asistencia de IA para redactar un cambio no altera esta regla:
 - El merge a `main` es **siempre rebase-and-merge** (único método habilitado en el repo). Cada commit de la rama aterriza individualmente en `main`, por lo que **cada commit debe ser un Conventional Commit válido** (lo valida el check `commitlint`) — son los commits, no el título del PR, los que alimentan a release-please. Limpia la rama (sin *wip*) antes de mergear.
 - Un PR debe pasar los checks de CI (`commitlint`, `docs`) antes de mergear.
 
+### Correo de autoría: dominio de la organización
+
+Todos los commits llevan como autor un correo **`@liboxapp.com`** — la autoría del repo es corporativa de cara a socios e inversores. Lo valida el check `commitlint` en cada PR (los bots, como release-please, están exentos). En la práctica:
+
+- Añade y **verifica** tu correo `@liboxapp.com` en tu cuenta de GitHub (*Settings → Emails*) — sin esto tus commits quedan sin atribuir.
+- Configura el correo **local a este repo** (no toca tus otros proyectos): `git config user.email "tu@liboxapp.com"`.
+- Desactiva *Settings → Emails → "Block command line pushes that expose my email"*: con ese toggle activo, GitHub rechaza tus pushes con el error **GH007**.
+
+Detalle paso a paso en [`docs/onboarding.md`](docs/onboarding.md).
+
 ## Protección de la rama `main` (configurar en GitHub)
 
 Esto se activa una sola vez desde la web de GitHub (no se puede versionar en el repo):

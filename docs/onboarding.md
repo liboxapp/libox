@@ -12,6 +12,12 @@ funcionando. Tiempo estimado: ~30 minutos.
 
 ## 1. Accesos
 
+- [ ] Añade y **verifica** tu correo **`@liboxapp.com`** en tu cuenta de
+  GitHub (*Settings → Emails*). **Requisito previo a la invitación** — Diego
+  no invita cuentas sin el correo de la org verificado.
+- [ ] Desactiva *Settings → Emails → "Block command line pushes that expose
+  my email"* — con ese toggle activo, GitHub rechaza tus pushes con el error
+  **GH007** (este repo commitea con el correo corporativo visible).
 - [ ] Invitación a la organización GitHub **`liboxapp`** (te la envía Diego).
 - [ ] Seat en **Claude Team** con acceso a Claude Code (te lo asigna Diego).
 - [ ] Cuenta en Outline (`liboxapp.getoutline.com`) — capa compartible del
@@ -20,6 +26,9 @@ funcionando. Tiempo estimado: ~30 minutos.
 ## 2. Repo y entorno de Claude Code
 
 - [ ] Clona el repo: `git clone https://github.com/liboxapp/libox.git`
+- [ ] Configura el correo corporativo **local al repo** (no afecta tus otros
+  proyectos): `git config user.email "tu@liboxapp.com"`. El CI rechaza PRs
+  con commits de correos fuera de `@liboxapp.com` (bots exentos).
 - [ ] Instala [Claude Code](https://claude.com/claude-code) (CLI, app de
   escritorio o extensión del IDE).
 - [ ] Abre el repo con Claude Code. El entorno del equipo está **versionado**
@@ -62,6 +71,9 @@ funcionando. Tiempo estimado: ~30 minutos.
 
 ## 5. Para Diego al incorporar cada dev
 
+- [ ] Verificar que el dev ya tiene su correo `@liboxapp.com` **verificado**
+  en su cuenta GitHub (pedirle captura de *Settings → Emails*); solo
+  entonces invitar.
 - [ ] Invitar al team `core` de la org con rol *write*.
 - [ ] Asignar seat de Claude Team.
 - [ ] Al pasar de 1 colaborador: subir el ruleset de `main` a **1 approval
