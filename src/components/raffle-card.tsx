@@ -10,17 +10,24 @@ import { Timer } from 'lucide-react';
 
 /*
  * State chips sit on top of the violet prize art, so each one needs contrast
- * twice: label against chip, and chip against the artwork. All three stay
- * inside the frozen VIES palette.
- *   success  Success Green + Trust Navy label  7.46:1 (white was 2.54:1)
- *   warning  LIBOX Purple + white label        7.10:1 (Signal Violet was 4.23:1
- *            and, being the art's own tint, barely detached from it)
- *   closed   Trust Navy + white label         18.93:1
- * The hairline white ring lifts every chip off the gradient underneath.
+ * twice: label against chip, and chip against the artwork underneath. All
+ * three stay inside the frozen VIES palette.
+ *
+ *            chip + label                    label   chip vs art (worst ramp)
+ *   success  Success Green + Trust Navy      7.46    2.80   (white was 2.54)
+ *   warning  Signal Violet + Trust Navy      4.47    1.68   (white was 4.23)
+ *   closed   Trust Navy + white             18.93    1.73
+ *
+ * Warning deliberately keeps Signal Violet rather than a darker brand purple:
+ * LIBOX Purple lands at 1.00 against the tecnología and hogar ramps — the fill
+ * vanishes and only the ring survives — and Trust Navy does the same on the
+ * efectivo ramp while colliding with the closed state. Signal Violet is the
+ * one frozen tint that never disappears; the navy label carries the legibility.
+ * The hairline white ring lifts every chip off the gradient.
  */
 const TONE_CLASSES: Record<BadgeTone, string> = {
   success: 'bg-success text-navy ring-1 ring-white/70',
-  warning: 'bg-primary text-primary-foreground ring-1 ring-white/70',
+  warning: 'bg-accent text-navy ring-1 ring-white/70',
   closed: 'bg-navy text-white ring-1 ring-white/70',
 };
 
@@ -39,7 +46,7 @@ export function RaffleCard({ raffle }: { raffle: Raffle }) {
           <PrizeArt category={raffle.category} size="card" />
           <div className="absolute left-3 top-3 flex gap-2">
             <Badge variant="secondary">{CATEGORY_LABELS[raffle.category]}</Badge>
-            <Badge className={cn('border-transparent', TONE_CLASSES[badge.tone])}>
+            <Badge className={cn('border-transparent font-semibold', TONE_CLASSES[badge.tone])}>
               {badge.label}
             </Badge>
           </div>
