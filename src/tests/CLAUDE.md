@@ -5,9 +5,9 @@
 - **Test-driven development** (superpowers:test-driven-development) for
   every feature and bugfix: write the failing test first, watch it fail,
   then write the code that makes it pass.
-- **Commands pending scaffold** — there is no test runner yet. When the app
-  is scaffolded, document here the real commands (full suite + single test)
-  in the same PR.
+- **Commands**: `npm test` (full suite) · `npm test -- <path/to/file.test.ts>`
+  (single file) · `npm run test:watch` (watch mode). Unit tests live in
+  `src/tests/unit/`.
 - Tests are code: English names and comments, one clear behavior per test,
   arrange–act–assert.
 - Money, tickets, draw, settlement, and audit paths get priority coverage —

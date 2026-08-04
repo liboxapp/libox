@@ -15,9 +15,22 @@ Folder-specific rules live in nested CLAUDE.md files, loaded on demand:
 
 ## Commands
 
-**Pending scaffold.** There is no `package.json` yet. Do not invent build,
-test, or lint commands, and do not scaffold the app unprompted. When the app
-is scaffolded, replace this section with the real commands **in the same PR**.
+Run from the repo root (`package.json` lives there; app code in `src/`):
+
+- `npm run dev` — dev server at `http://localhost:3000`
+- `npm run build` — production build
+- `npm run lint` — ESLint over the repo
+- `npm run typecheck` — `tsc --noEmit`
+- `npm test` — Vitest suite (single run)
+- `npm test -- src/tests/unit/raffle.test.ts` — a single test file
+- `npm run test:watch` — Vitest in watch mode
+- On a clean clone, run `npm run build` once before `npm run typecheck` —
+  Next 16 generates route types (`LayoutProps`) during build; without them
+  typecheck fails with `TS2304`.
+- `AGENTS.md` at the repo root hosts the Next-managed `nextjs-agent-rules`
+  block: `next dev` upserts it there (never into CLAUDE.md); it will
+  legitimately change when Next is upgraded — commit that diff with the
+  upgrade PR.
 
 ## Language policy
 
