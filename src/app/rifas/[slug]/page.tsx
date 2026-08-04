@@ -49,30 +49,21 @@ export default async function RafflePage({ params }: { params: Promise<Params> }
     <>
       <SiteHeader />
       <main className="mx-auto w-full max-w-6xl px-4 pt-8">
+        {/*
+          * Three grid children in reading order: art, raffle, explainer. On
+          * mobile that is the order a buyer needs — prize, price, countdown,
+          * checkout — with "Cómo funciona" after it instead of between the art
+          * and the product. The explicit lg placement puts the explainer back
+          * under the art in the left column on desktop.
+          */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.2fr_1fr]">
-          <div>
-            <PrizeArt category={raffle.category} size="hero" />
-            <section aria-label="Cómo funciona" className="mt-8">
-              <h2 className="text-xl font-bold">Cómo funciona</h2>
-              <ol className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
-                {HOW_IT_WORKS.map((step, index) => (
-                  <li
-                    key={step.title}
-                    className="rounded-lg border border-border bg-card p-4"
-                    style={{ boxShadow: 'var(--shadow-card)' }}
-                  >
-                    <step.icon aria-hidden="true" className="h-6 w-6 text-primary" />
-                    <h3 className="mt-2 text-sm font-bold">
-                      {index + 1}. {step.title}
-                    </h3>
-                    <p className="mt-1 text-sm text-muted-foreground">{step.text}</p>
-                  </li>
-                ))}
-              </ol>
-            </section>
-          </div>
+          <PrizeArt
+            category={raffle.category}
+            size="hero"
+            className="lg:col-start-1 lg:row-start-1"
+          />
 
-          <div className="space-y-5">
+          <div className="space-y-5 lg:col-start-2 lg:row-span-2 lg:row-start-1">
             <Badge variant="secondary">{CATEGORY_LABELS[raffle.category]}</Badge>
             <h1 className="text-3xl font-extrabold tracking-tight">{raffle.title}</h1>
             <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
@@ -117,6 +108,28 @@ export default async function RafflePage({ params }: { params: Promise<Params> }
               </>
             )}
           </div>
+
+          <section
+            aria-label="Cómo funciona"
+            className="lg:col-start-1 lg:row-start-2"
+          >
+            <h2 className="text-xl font-bold">Cómo funciona</h2>
+            <ol className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+              {HOW_IT_WORKS.map((step, index) => (
+                <li
+                  key={step.title}
+                  className="rounded-lg border border-border bg-card p-4"
+                  style={{ boxShadow: 'var(--shadow-card)' }}
+                >
+                  <step.icon aria-hidden="true" className="h-6 w-6 text-primary" />
+                  <h3 className="mt-2 text-sm font-bold">
+                    {index + 1}. {step.title}
+                  </h3>
+                  <p className="mt-1 text-sm text-muted-foreground">{step.text}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
         </div>
       </main>
       <SiteFooter />

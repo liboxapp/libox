@@ -8,10 +8,20 @@ import { CATEGORY_LABELS, getRaffleBadge, type BadgeTone, type Raffle } from '@/
 import { cn } from '@/lib/utils';
 import { Timer } from 'lucide-react';
 
+/*
+ * State chips sit on top of the violet prize art, so each one needs contrast
+ * twice: label against chip, and chip against the artwork. All three stay
+ * inside the frozen VIES palette.
+ *   success  Success Green + Trust Navy label  7.46:1 (white was 2.54:1)
+ *   warning  LIBOX Purple + white label        7.10:1 (Signal Violet was 4.23:1
+ *            and, being the art's own tint, barely detached from it)
+ *   closed   Trust Navy + white label         18.93:1
+ * The hairline white ring lifts every chip off the gradient underneath.
+ */
 const TONE_CLASSES: Record<BadgeTone, string> = {
-  success: 'bg-success text-success-foreground',
-  warning: 'bg-accent text-accent-foreground',
-  closed: 'bg-navy text-white',
+  success: 'bg-success text-navy ring-1 ring-white/70',
+  warning: 'bg-primary text-primary-foreground ring-1 ring-white/70',
+  closed: 'bg-navy text-white ring-1 ring-white/70',
 };
 
 export function RaffleCard({ raffle }: { raffle: Raffle }) {
