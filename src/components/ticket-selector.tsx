@@ -50,7 +50,11 @@ export function TicketSelector({
       </p>
       <div className="mt-4 flex items-baseline justify-between border-t border-border pt-4">
         <span className="text-sm text-muted-foreground">Subtotal</span>
-        <span className="font-[family-name:var(--font-manrope)] text-2xl font-extrabold tabular-nums text-primary">
+        <span
+          className="font-[family-name:var(--font-manrope)] text-2xl font-extrabold tabular-nums text-primary"
+          aria-live="polite"
+          aria-atomic="true"
+        >
           {formatPEN(computeSubtotalCents(quantity, ticketPriceCents))}
         </span>
       </div>
