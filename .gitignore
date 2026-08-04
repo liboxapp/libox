@@ -51,3 +51,11 @@ yarn-error.log*
 
 # Archivos temporales de FUSE (FS montado)
 .fuse_hidden*
+
+# Artefactos generados por Next.js/TypeScript (no versionar)
+#   *.tsbuildinfo   → caché de `tsc --noEmit` (tsconfig tiene `incremental: true`).
+#   next-env.d.ts   → lo reescriben `next dev` y `next build` con rutas distintas
+#                     (.next/dev/types vs .next/types); versionarlo ensucia el árbol
+#                     en cada cambio de comando. Es la convención de create-next-app 16.
+*.tsbuildinfo
+next-env.d.ts
