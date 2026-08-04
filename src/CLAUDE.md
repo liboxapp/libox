@@ -19,6 +19,7 @@ Run from the repo root (`package.json` lives there; app code in `src/`):
 
 - `npm run dev` — dev server at `http://localhost:3000`
 - `npm run build` — production build
+- `npm run start` — production server after a build
 - `npm run lint` — ESLint over the repo
 - `npm run typecheck` — `tsc --noEmit`
 - `npm test` — Vitest suite (single run)
@@ -130,7 +131,7 @@ trailers or "Generated with Claude Code"** — root standing rule.
 
 - **Batch 1 (enabled)**: `hookify`, `claude-md-management`.
 - **Batch 2 (first scaffold PR)**: `security-guidance`, `claude-security`,
-  `typescript-lsp`, `pr-review-toolkit`, `vercel-plugin` (returns when
+  `typescript-lsp`, `pr-review-toolkit`, `vercel` (returns when
   there is an app to deploy).
 - **Removed in the 2026-08-03 team audit**: GSD skills (overlapped
   Superpowers SDD), `claude-mem` (Z.8 probation resolved: it duplicated

@@ -16,7 +16,9 @@ import { Timer } from 'lucide-react';
  *            chip + label                    label   chip vs art (worst ramp)
  *   success  Success Green + Trust Navy      7.46    2.80   (white was 2.54)
  *   warning  Signal Violet + Trust Navy      4.47    1.68   (white was 4.23)
- *   closed   Trust Navy + white             18.93    1.73
+ *   closed   Trust Navy + white             18.93    1.00   (efectivo ramp:
+ *            Trust Navy chip on Trust Navy art is a 1.00:1 self-match; the
+ *            white ring is what keeps the chip legible there)
  *
  * Warning deliberately keeps Signal Violet rather than a darker brand purple:
  * LIBOX Purple lands at 1.00 against the tecnología and hogar ramps — the fill

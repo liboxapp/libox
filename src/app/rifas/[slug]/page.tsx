@@ -88,12 +88,14 @@ export default async function RafflePage({ params }: { params: Promise<Params> }
               >
                 <PartyPopper aria-hidden="true" className="mx-auto h-8 w-8 text-primary" />
                 <h2 className="mt-2 text-lg font-bold">Sorteo finalizado</h2>
-                <p className="mt-1 text-muted-foreground">
-                  Ganadora: <strong>{raffle.winner?.name}</strong> con el ticket{' '}
-                  <strong className="tabular-nums">
-                    #{String(raffle.winner?.ticketNumber).padStart(4, '0')}
-                  </strong>
-                </p>
+                {raffle.winner && (
+                  <p className="mt-1 text-muted-foreground">
+                    Ganadora: <strong>{raffle.winner.name}</strong> con el ticket{' '}
+                    <strong className="tabular-nums">
+                      #{String(raffle.winner.ticketNumber).padStart(4, '0')}
+                    </strong>
+                  </p>
+                )}
               </div>
             ) : (
               <>
