@@ -17,27 +17,13 @@
     "skill-creator@claude-plugins-official": true,
     "hookify@claude-plugins-official": true,
     "claude-md-management@claude-plugins-official": true,
-    "context-mode@context-mode": true,
-    "claude-mem@thedotmack": true,
-    "vercel-plugin@vercel": true
+    "context-mode@context-mode": true
   },
   "extraKnownMarketplaces": {
     "context-mode": {
       "source": {
         "source": "github",
         "repo": "mksglu/context-mode"
-      }
-    },
-    "thedotmack": {
-      "source": {
-        "source": "github",
-        "repo": "thedotmack/claude-mem"
-      }
-    },
-    "vercel": {
-      "source": {
-        "source": "github",
-        "repo": "vercel/vercel-plugin"
       }
     }
   }

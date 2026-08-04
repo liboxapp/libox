@@ -100,7 +100,11 @@ trailers or "Generated with Claude Code"** — root standing rule.
 
 - **Batch 1 (enabled)**: `hookify`, `claude-md-management`.
 - **Batch 2 (first scaffold PR)**: `security-guidance`, `claude-security`,
-  `typescript-lsp`, `pr-review-toolkit`.
+  `typescript-lsp`, `pr-review-toolkit`, `vercel-plugin` (returns when
+  there is an app to deploy).
+- **Removed in the 2026-08-03 team audit**: GSD skills (overlapped
+  Superpowers SDD), `claude-mem` (Z.8 probation resolved: it duplicated
+  MEMORY.md without added value), `vercel-plugin` (premature pre-code).
 - **Rejected — don't re-litigate without new evidence**: `feature-dev`
   (competes with Superpowers SDD), `code-review` and `code-simplifier`
   (built-ins exist), `commit-commands` (no-trailer rule),
