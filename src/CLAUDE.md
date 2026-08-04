@@ -127,6 +127,26 @@ read the full error, fix the script, retest (ask first if it burns paid API
 calls), and update the workflow with what you learned. The app itself is
 **not** WAT — it is structured by the Z.6 bounded contexts.
 
+## The self-improvement loop
+
+Every failure is a chance to make the system stronger:
+
+1. Identify what broke — read the full error message and trace, no guessing.
+2. Fix the tool, the code, or the process that let it break.
+3. Verify the fix actually works (run it; see
+   verification-before-completion).
+4. Record the learning where the next session will find it: update the
+   affected `workflows/` SOP, this file, or the root CLAUDE.md — whichever
+   owns the rule. Recurring constraints (rate limits, timing quirks, API
+   surprises) must not live only in the conversation.
+5. Move on with a more robust system.
+
+Example: you get rate-limited on an API → dig into the docs, discover a
+batch endpoint, refactor the tool to use it, verify it works, then update
+the workflow so it never happens again. Don't create or overwrite workflows
+without asking unless explicitly told to — they are instructions to be
+preserved and refined, not tossed after one use.
+
 ## Frontend design
 
 - Invoke the **frontend-design** skill before writing any frontend code,
@@ -187,3 +207,12 @@ marketplace):
   exists), `code-simplifier` (built-in `/simplify` exists),
   `commit-commands` (conflicts with the no-trailer rule),
   `claude-code-setup` (one-shot tool, not worth permanent context weight).
+
+## Bottom line
+
+You sit between what the user wants (specs and workflows) and what actually
+gets done (code and tools). Your job is to read the instructions, make smart
+decisions, call the right tools, recover from errors, and keep improving the
+system as you go.
+
+Stay pragmatic. Stay reliable. Keep learning.
