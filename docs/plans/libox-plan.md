@@ -4,7 +4,7 @@ status: vivo
 tags: [libox, plan, roadmap]
 canonical: docs/plans/libox-plan.md
 mirror: ~/.claude/plans/spicy-sparking-hopcroft.md
-updated: 2026-06-21
+updated: 2026-08-11
 ---
 
 # Libox — Plan inicial de producto y arquitectura
@@ -512,7 +512,7 @@ El motor de [Z.4](../decisions/Z4-tipos-de-sorteo.md) ya modela `mode ∈ {AUTO,
 
 ### Z.6 — Stack tecnológico (cerrada en dirección el 2026-06-06)
 
-**Decisión**: **Next.js (App Router) para todo**. Libox **no es web estática** (solo 2-3 de 8 superficies lo son; el core comprar→sortear→entregar→liquidar es dinámico y transaccional), por lo que se descartó Astro — optimizado para el caso inverso (contenido + islas). Next cubre la superficie pública (SEO vía RSC/ISR) y la app autenticada con un solo framework maduro. Stack: Next.js+TS, Tailwind+shadcn/ui, PostgreSQL, Drizzle, job runner gestionado (Inngest/Trigger), auth con MFA, Mercado Pago multi-PSP, Vercel, Sentry+PostHog. El job runner es **crítico** (outbox, disparo de sorteo, conciliación). ADR canónico: [`decisions/Z6-stack-tecnologico.md`](../decisions/Z6-stack-tecnologico.md). **Actualización 2026-07-05**: sub-decisiones ORM, auth y DB host cerradas con benchmark de mercado — **Drizzle**, **Supabase Auth** (WorkOS como ruta a ~100k MAU) y **Supabase** como DB host (bundle realtime+storage+auth); detalle en [`benchmark-stack.md`](../benchmark-stack.md). **Actualización 2026-08-03**: job runner cerrado — **Inngest** (event-driven/fan-out, serverless-nativo en Vercel, free tier 50k runs/mes; Trigger.dev como salida self-host). Todas las sub-decisiones de Z.6 resueltas.
+**Decisión**: **Next.js (App Router) para todo**. Libox **no es web estática** (solo 2-3 de 8 superficies lo son; el core comprar→sortear→entregar→liquidar es dinámico y transaccional), por lo que se descartó Astro — optimizado para el caso inverso (contenido + islas). Next cubre la superficie pública (SEO vía RSC/ISR) y la app autenticada con un solo framework maduro. Stack: Next.js+TS, Tailwind+shadcn/ui, PostgreSQL, Drizzle, job runner gestionado (Inngest/Trigger), auth con MFA, Mercado Pago multi-PSP, Vercel, Sentry+PostHog. El job runner es **crítico** (outbox, disparo de sorteo, conciliación). ADR canónico: [`decisions/Z6-stack-tecnologico.md`](../decisions/Z6-stack-tecnologico.md). **Actualización 2026-07-05**: sub-decisiones ORM, auth y DB host cerradas con benchmark de mercado — **Drizzle**, **Supabase Auth** (WorkOS como ruta a ~100k MAU) y **Supabase** como DB host (bundle realtime+storage+auth); detalle en [`benchmark-stack.md`](../benchmark-stack.md). **Actualización 2026-08-03**: job runner cerrado — **Inngest** (event-driven/fan-out, serverless-nativo en Vercel, free tier 50k runs/mes; Trigger.dev como salida self-host). Todas las sub-decisiones de Z.6 resueltas. **Actualización 2026-08-11**: rate limiting cerrado como estándar transversal — **Vercel WAF** (capa gruesa por IP) + **Upstash Redis** (`@upstash/ratelimit`, límites por usuario/acción en código); diseño y políticas iniciales en [`2026-08-11-rate-limiting-design.md`](../superpowers/specs/2026-08-11-rate-limiting-design.md).
 
 ### Z.7 — Versionamiento y flujo de repositorio (cerrada el 2026-06-06)
 

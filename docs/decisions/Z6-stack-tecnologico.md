@@ -4,12 +4,12 @@ status: cerrada-en-direccion
 tags: [libox, decision, stack, nextjs, arquitectura]
 decided: 2026-06-06
 relates: [docs/decisions/Z1-custodia-del-dinero.md, docs/decisions/Z2-eleccion-psp.md, docs/decisions/Z4-tipos-de-sorteo.md, docs/plans/libox-plan.md, docs/benchmark-stack.md]
-updated: 2026-07-05
+updated: 2026-08-11
 ---
 
 # Z.6 — Stack tecnológico
 
-**Estado**: Cerrada en dirección (2026-06-06). Sub-decisiones ORM, auth y DB host cerradas el 2026-07-05; **job runner (Inngest) cerrado el 2026-08-03** — todas las sub-decisiones resueltas ([`benchmark-stack.md`](../benchmark-stack.md)).
+**Estado**: Cerrada en dirección (2026-06-06). Sub-decisiones ORM, auth y DB host cerradas el 2026-07-05; **job runner (Inngest) cerrado el 2026-08-03** — todas las sub-decisiones resueltas ([`benchmark-stack.md`](../benchmark-stack.md)). **Rate limiting (Vercel WAF + Upstash Redis) cerrado el 2026-08-11.**
 **Decisor**: Diego.
 **Documento canónico**: este archivo. Mirror en [`docs/plans/libox-plan.md`](../plans/libox-plan.md) (sección 4 + Anexo Z.6).
 
@@ -67,6 +67,7 @@ Next.js ya entrega lo que se buscaba de Astro (páginas públicas rápidas y SEO
 | Pagos | **Mercado Pago** (ver [Z.2](Z2-eleccion-psp.md)) | Adaptador **multi-PSP** desde el inicio (Culqi 2º rail). |
 | Hosting | **Vercel** + DB gestionada | Migrar a infra propia con tracción/compliance. |
 | Observabilidad | **Sentry** + logs estructurados + **PostHog** | `trace_id` transversal (PRD). |
+| Rate limiting | **Vercel WAF + Upstash Redis** (cerrada 2026-08-11) | WAF como capa gruesa por IP (staged log → enforce); `@upstash/ratelimit` para límites por usuario/acción en código. Webhooks exentos (firma + anti-replay). |
 
 ---
 
@@ -103,6 +104,20 @@ Cerradas con benchmark de mercado a julio 2026 — comparativas completas, costo
    ejecución única o necesidad de self-host — ninguna aplica al MVP; queda
    documentado como **salida** si el costo o el modelo cambian. Detalle
    comparativo en [`benchmark-stack.md`](../benchmark-stack.md).
+
+## Sub-decisión cerrada (2026-08-11)
+
+5. **Rate limiting: Vercel WAF + Upstash Redis** (descarta WAF solo y
+   limiter sobre Postgres). El WAF es la capa gruesa: reglas por IP con
+   rollout staged (log → enforce) y tráfico bloqueado que no se factura;
+   pero en planes no-Enterprise solo cuenta por IP/JA4 y por región del
+   edge, así que no puede expresar límites por usuario. La capa fina vive
+   en la aplicación: `@upstash/ratelimit` sobre Upstash Redis (integración
+   del marketplace de Vercel, free tier ~500k comandos/mes), con políticas
+   declaradas en código junto a cada endpoint. Un limiter sobre Postgres
+   se descartó porque convierte cada request abusivo en un write a la
+   misma DB que se busca proteger. Diseño completo y políticas iniciales:
+   [`2026-08-11-rate-limiting-design.md`](../superpowers/specs/2026-08-11-rate-limiting-design.md).
 
 Con esto, **todas las sub-decisiones de Z.6 están cerradas**. El diseño de
 los módulos críticos que consumen el job runner (Payment Adapter, Draw,

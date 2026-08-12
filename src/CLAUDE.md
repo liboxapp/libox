@@ -67,11 +67,28 @@ Canonical text in [CONTRIBUTING.md](../CONTRIBUTING.md). Summary:
 
 The CONTRIBUTING scaffold checklist ships with the first code PR.
 
+## Rate limiting (standing policy)
+
+Canonical design:
+[rate-limiting spec](../docs/superpowers/specs/2026-08-11-rate-limiting-design.md)
+(+ ADR Z.6 sub-decision 5). Two layers: Vercel WAF as the coarse per-IP
+shield (rules staged log → enforce, mirrored in the repo) and
+`@upstash/ratelimit` on Upstash Redis as the fine layer in code. Every new
+Route Handler or Server Action that mutates state or calls a paid external
+API declares its policy in the rate-limit registry
+(`src/lib/rate-limit.ts`) — or its explicit exemption; an endpoint with
+neither does not pass review. Key by `auth.uid()` when authenticated, else
+IP. Route Handlers return `429` + `Retry-After`; Server Actions return a
+typed rejection (es-PE copy). Fail-open with a Sentry alert if Redis is
+unreachable. Webhooks and Inngest jobs are exempt — their protection is
+signature + anti-replay (hard rule 2), never a counter.
+
 ## Stack (closed — ADR Z.6)
 
 Next.js (App Router) + TypeScript · Tailwind CSS + shadcn/ui · PostgreSQL on
 Supabase (Supavisor transaction mode) · Drizzle · Inngest · Supabase Auth
-(MFA) · Mercado Pago behind a multi-PSP adapter · Vercel · Sentry +
+(MFA) · Upstash Redis (rate limiting) · Mercado Pago behind a multi-PSP
+adapter · Vercel · Sentry +
 structured logs + PostHog with cross-cutting `trace_id`.
 
 No dependencies outside this stack without an ADR in `docs/decisions/`.
