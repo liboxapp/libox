@@ -11,7 +11,7 @@ updated: 2026-06-06
 
 **Estado**: Cerrada (2026-06-06).
 **Decisor**: Diego.
-**Documento canónico**: este archivo. Mirror en [`docs/plans/libox-plan.md`](../plans/libox-plan.md) (Anexo Z.8). Versión operativa en [`CLAUDE.md`](../../CLAUDE.md).
+**Documento canónico**: este archivo. Mirror en [`docs/plans/libox-plan.md`](../plans/libox-plan.md) (Anexo Z.8). Versión operativa en [`CLAUDE.md`](../../../CLAUDE.md).
 
 ---
 

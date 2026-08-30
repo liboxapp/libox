@@ -54,7 +54,7 @@ funcionando. Tiempo estimado: ~30 minutos.
 3. [`CLAUDE.md`](../CLAUDE.md) (raíz) — cómo trabaja Claude en este repo.
 4. [`src/CLAUDE.md`](../src/CLAUDE.md) — reglas de código: flujo Superpowers
    SDD, política de idiomas, stack cerrado (Z.6), orquestación de modelos.
-5. Los 8 ADRs de [`docs/decisions/`](decisions/README.md) — las decisiones
+5. Los 8 ADRs de [`docs/decisions/`](archive/decisions/README.md) — las decisiones
    ya cerradas; no se reabren sin evidencia nueva.
 
 ## 4. Flujo de trabajo diario

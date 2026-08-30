@@ -117,7 +117,7 @@ Cerradas con benchmark de mercado a julio 2026 — comparativas completas, costo
    declaradas en código junto a cada endpoint. Un limiter sobre Postgres
    se descartó porque convierte cada request abusivo en un write a la
    misma DB que se busca proteger. Diseño completo y políticas iniciales:
-   [`2026-08-11-rate-limiting-design.md`](../superpowers/specs/2026-08-11-rate-limiting-design.md).
+   [`2026-08-11-rate-limiting-design.md`](../../superpowers/specs/2026-08-11-rate-limiting-design.md).
 
 Con esto, **todas las sub-decisiones de Z.6 están cerradas**. El diseño de
 los módulos críticos que consumen el job runner (Payment Adapter, Draw,

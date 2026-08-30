@@ -47,7 +47,7 @@ Semver formal versiona releases de software con API. Hoy el repo es un **wiki de
 | release-please | calcula versión y abre PR de release con el CHANGELOG | `release-please-config.json`, `.release-please-manifest.json`, workflow `release-please` |
 | CHANGELOG.md | historial legible por humanos | `CHANGELOG.md` |
 | CI docs | markdownlint + verificación de links locales | workflow `docs`, `.markdownlint-cli2.yaml` |
-| Branch protection | `main` siempre verde y revisado | se configura en GitHub (ver [CONTRIBUTING](../../CONTRIBUTING.md)) |
+| Branch protection | `main` siempre verde y revisado | se configura en GitHub (ver [CONTRIBUTING](../../../CONTRIBUTING.md)) |
 
 La pieza que une el objetivo: **Conventional Commits → release-please → CHANGELOG + tag** es un pipeline automático. Cada merge a `main` con un `feat`/`fix` hace que release-please abra un PR de release con la versión y el changelog calculados.
 
@@ -60,7 +60,7 @@ La pieza que une el objetivo: **Conventional Commits → release-please → CHAN
 - CI (`commitlint`, `docs`) debe pasar antes de mergear.
 
 > **Actualización 2026-06-20:** la política de merge pasó de *squash merge* a **rebase-and-merge** (decisión de Diego). En GitHub se deshabilitaron *merge commit* y *squash*; solo queda *rebase*. Implica mantener historial lineal y commits limpios y conventional en cada rama.
-- Detalle operativo y pasos para activar branch protection en GitHub: [`CONTRIBUTING.md`](../../CONTRIBUTING.md).
+- Detalle operativo y pasos para activar branch protection en GitHub: [`CONTRIBUTING.md`](../../../CONTRIBUTING.md).
 
 ---
 
