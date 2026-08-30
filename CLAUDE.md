@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repository is
 
-Libox is a **web marketplace for paid-ticket digital raffles** operating under Peruvian regulation. The repo is **still pre-code** — no application and no `package.json` yet — but it is **no longer bare planning**: it is a real git repository (`github.com/liboxapp/libox`) with versioning tooling already wired up (SemVer, Conventional Commits, release-please, markdownlint + commitlint CI — see Z.7). Its content is a **documentation wiki** capturing product decisions, architecture, stack, and regulatory analysis before the first line of app code.
+Libox is a **web marketplace for paid-ticket digital raffles** operating under Peruvian regulation. The repo is a real git repository (`github.com/liboxapp/libox`) with versioning tooling wired up (SemVer, Conventional Commits, release-please, markdownlint + commitlint CI — see Z.7). It holds two things: (1) the **canonical documentation baseline** in `docs/linea-base/` — governed by the **Registro Maestro V6** (`LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V6.md`, read it first: if a document is not in its §1, it does not govern) and verified by `verify_corpus.py` (root; rule CD-10: zero failures before any emission/merge) — and (2) an **early Next.js scaffold** in `src/`.
 
-Do not invent build/test commands or scaffold a stack unprompted. The **stack is already decided** (Z.6: Next.js App Router modular monolith + PostgreSQL) but **not yet scaffolded**. When code work begins, update this file with the real commands and architecture at that point.
+⚠️ **Stack under review (ASS-002 in Outline doc 20):** the canon (L3 V7 §0.3) states **.NET 8** as the service runtime, while ADR Z.6 (and the actual scaffold) is **Next.js full-stack**. The de facto derogation of Z.6 was never ratified by the partners. Do not extend the scaffold or scaffold anything new until ASS-002 is resolved.
 
-> **Note on naming — STANDING RULE.** The product is **Libox**. **Sortibox** (prior name) and **ALAZAR** (older PRD name) are **legacy**. The GitHub repo now lives in the **liboxapp org** (`github.com/liboxapp/libox`, local `origin` already points there) and all tracked repo content has been renamed to Libox. **Any residual mention of "Sortibox" or "ALAZAR" — in older git commits or external/partner docs — must be read as "Libox".** All internal surfaces are renamed: the Outline collection is **"Libox — Desarrollo"** (2026-06-21) and the auto-memory was migrated and renamed (2026-08-03).
+> **Note on naming — STANDING RULE.** The product is **Libox**. **Sortibox** (prior name) and **ALAZAR** (older PRD name) are **legacy**. The GitHub repo now lives in the **liboxapp org** (`github.com/liboxapp/libox`, local `origin` already points there) and all tracked repo content has been renamed to Libox. **Any residual mention of "Sortibox" or "ALAZAR" — in older git commits or external/partner docs — must be read as "Libox".** All internal surfaces are renamed. Outline was consolidated into a **single collection "Libox — Negocio"** (2026-08-30); the old "Libox — Desarrollo" collection was emptied and marked for deletion.
 
 ## Cowork session layout
 
@@ -16,7 +16,7 @@ When working in Cowork, four folders are mounted, each with a role. Read
 `Context/README.md` at session start — it is the operating manual (folder roles,
 work pipeline, session checklist).
 
-- **Project** — this repo: canonical KB (`docs/`, decisions, plan, scripts). Source of truth.
+- **Libox** (formerly "Project") — this repo: canonical KB (`docs/linea-base/`, scripts, scaffold). Source of truth.
 - **Context** — operating manual for Claude: working method + `estilo-documentacion.md`. Rules, not deliverables.
 - **Cowork station** — staging: drafts and WIP, built here before promotion. Nothing permanent.
 - **Output** — finished deliverables (meeting transcripts, dev plans, reports).
@@ -29,48 +29,37 @@ Start every session by reading `docs/README.md` — it is the index and explains
 
 | Path | Role |
 |---|---|
-| `docs/README.md` | Wiki index + map of how documents connect. Entry point. |
-| `docs/prd/LIBOX PRD BLUEPRINT MVP V12 3.docx` + `ENTERPRISE V12 3.docx` | Partner's PRD **V12.3**, now split in two: **MVP** (modular monolith, Role Books USER/CLIENT/ADMIN/SUPPORT, Raffle Engine T1-T8, Anexo K Legal Perú-first, Anexo L investor readiness) and **Enterprise** (target state: 20 microservices, event-driven). Authoritative technical/product blueprint. ⚠️ V12.3 conflicts with closed ADRs (settlement gates vs Z.1, target-based pricing, T8 in MVP vs Z.5) — see the deltas analysis before treating any V12 mechanic as agreed. |
-| `docs/prd/Libox PRD V11.pdf` | Previous PRD (historical). ADRs Z.1-Z.8 cite it; keep for traceability. Geographically agnostic — Peru compliance entered the PRD only in V12.3 (Anexo K). |
-| `docs/plans/libox-plan.md` | Living plan: product, architecture, stack, roadmap. Contains **Anexo Z** — the running log of closed decisions. Mirrored at `~/.claude/plans/spicy-sparking-hopcroft.md`; the `docs/` copy is canonical for the team. |
-| `docs/decisions/` | Self-contained ADRs, one per closed decision. The shareable canonical record for partners/investors. See `docs/decisions/README.md` for the convention. |
-| `docs/compliance-peru.md` | Working doc for the Peruvian regulatory frame (SUNAT, municipal authorization, prize tax withholding, KYC, PLAFT, T&C). Deliberately kept **separate from the PRD**. Still a stub pending the lawyer. |
+| `docs/README.md` | Wiki index. Entry point. |
+| `docs/linea-base/` | **The canonical corpus** (flat `.md`, one file per document of the baseline): Registro Maestro V6 · LBPF V3 · Strategy V3 · **PRD MVP V9** · Enterprise V3 · Espec. Técnica L3 V7 · Matriz V1 · Guía V1 · Design System L4 V2 · VIES V3 · Backlog V3 · Dossier Legal V1 · 2 audits · Evaluación V1. Precedence: L0 > L2 > L3 > L4; VIES rules brand. |
+| `docs/linea-base/ARTEFACTOS/` | Executable artifacts: `libox_schema_L3_V7.sql` (135 tables, zero errors on PG16) · `libox_openapi_L3_V7.yaml` (16/~30 routes, **incomplete — T-1**) · design tokens L4 V2 · Backlog xlsx. |
+| `verify_corpus.py` (repo root) | Coherence verifier, 10 checks. Run `python3 verify_corpus.py --dir docs/linea-base` — **zero failures required** (CD-10). Its `BASELINE` list is the single source of truth of which version governs. |
+| `docs/operacion/` | Empty for now; destination of the future Manual de Operación (T-3, 13 SP). |
+| `docs/archive/` | **Historical, do not cite** (Registro §2): old PRDs (ALAZAR/V11/V12.3), `plans/`, `decisions/` (ADRs Z.1–Z.8 — Z.1/Z.2 carry de facto derogation banners in Outline), `compliance-peru.md`, `benchmark-stack.md`. Recognized, superseded. |
+| `docs/glosario.md` · `docs/onboarding.md` · `docs/flujos/` | Working docs, non-normative. |
 
 ## Outline (shareable layer)
 
-The team mirrors the wiki to **Outline** (`liboxapp.getoutline.com`), reachable via the Outline MCP (already configured — no setup needed per session). The **canonical source of truth is this git repo `docs/`**, not Outline. Two collections:
+The team mirrors the corpus to **Outline** (`liboxapp.getoutline.com`), reachable via the Outline MCP. The **canonical source of truth for the corpus is this repo's `docs/linea-base/`**, not Outline. Since 2026-08-30 there is a **single collection, "Libox — Negocio"**, with three layers:
 
-| Collection | Role |
+| Layer | Role |
 |---|---|
-| **Libox — Desarrollo** | **Read-only mirror** of `docs/` (ADRs Z.1–Z.8, plan, glosario, compliance, PRD). Each mirrored ADR banners: "fuente canónica vive en el repo GitHub… changes via PR, then republished here." Edit the repo, not the mirror. |
-| **Libox — Negocio** | **Business operational layer** (born in Outline, not mirrored): governance, meetings, backlog, risk register, traceability matrix, roadmap, finances. Its per-decision docs are **business summaries** that point to the canonical dev ADR. |
+| **LIBOX — Línea Base documental (canon vigente)** | Navigable mirror of `docs/linea-base/` in 10 sections (00_CONTROL … REGISTROS_DECISION). Edit the repo, republish the mirror. |
+| **Desarrollo** (doc tree) | Historical/working dev docs: ADRs Z.1–Z.8 (with derogation banners), compliance, benchmark, glosario, plan, wiki index. |
+| **00–21 + 99. Archivo** | Business operational layer born in Outline: governance, meetings, ideas inbox (IDEA-\*), risk register (RISK-\*), assumptions/changes log (ASS-\*/CHANGE-\* in doc 20), action board. |
 
-When a decision changes, edit the canonical file in `docs/decisions/` (via PR), then republish the Outline mirror.
-
-## Reading the PDF PRD
-
-The native Read tool cannot render this PDF (poppler not installed). Extract text with Python instead:
-
-```
-python3 -m pip install --user --quiet pypdf
-python3 -c "from pypdf import PdfReader; r=PdfReader('docs/prd/Libox PRD V11.pdf'); print('\n'.join(p.extract_text() for p in r.pages))"
-```
+When a corpus document changes: new full version (no subversions), `verify_corpus.py` at zero failures, update `BASELINE` + Registro §1 in the same act (CD-10/CD-11), then republish the Outline mirror.
 
 ## Decision workflow (important)
 
-The core activity here is resolving conflicts between the partner's PRD and the Libox plan, **one at a time, in depth** — the user (Diego) explicitly does not want simplified summaries. When a decision is closed:
+**The Z-line of decisions is historical** — the canon in `docs/linea-base/` governs (Registro V6, rule of use). Decisions now follow the corpus's own control: findings go to the **backlog de cambio** (CD-07) or Outline's doc 20 (ASS-\*/CHANGE-\*), and only become normative through a **new document version** verified by `verify_corpus.py` (CD-10) and registered in Registro §1 + `BASELINE` (CD-11). Baseline is **frozen** — only findings that block construction or expose legal/patrimonial risk reopen it.
 
-1. Document it as an entry **Z.N** in `docs/plans/libox-plan.md` (Anexo Z), and
-2. Simultaneously create a self-contained ADR `docs/decisions/Z<n>-<slug>.md`, then
-3. Update the indexes in `docs/README.md` and `docs/decisions/README.md`.
+Two de facto derogations of partner decisions are **pending partner ratification** (see Outline doc 20): **ASS-001** (custody: Z.1 Modelo C → full retention with 6 gates) and **ASS-002** (stack: Z.6 Next.js full-stack → L3 .NET 8).
 
-ADR structure: Decision · Alternatives evaluated · Why each was rejected · Implications the team must accept · Impact on the PRD · Pending external validations · Questions for partners.
+### Decision status (Anexo Z — historical, kept for traceability)
 
-### Decision status (Anexo Z)
+All ADR files now live under `docs/archive/decisions/`. ⚠️ Z.1 and Z.2 are **derogated de facto** by PRD V9 (see ASS-001); Z.6 is contradicted by L3 §0.3 (see ASS-002).
 
-**All four original PRD-vs-plan conflicts are now closed**, plus three further decisions (Z.6–Z.8). Current state:
-
-- **Z.1 Custodia del dinero** → Modelo C (conceptual escrow). `docs/decisions/Z1-custodia-del-dinero.md`.
+- **Z.1 Custodia del dinero** → Modelo C (conceptual escrow). `docs/archive/decisions/Z1-custodia-del-dinero.md`. **Derogated de facto — fallback if L-06 rejects custody.**
 - **Z.2 Elección de PSP** → **Cerrada en dirección.** Mercado Pago primario con *split en la fuente* (~80% organizador / ~20% Libox), Culqi como 2º rail futuro, **Yape dentro del checkout de MP** (no rail aparte). Final decision gated on a commercial call to MP (eliminatory questions: does MP split to multiple beneficiaries, and does it apply to Yape?). `Z2-eleccion-psp.md`.
 - **Z.3 Tipo de organizador** → **Cerrada.** Any person *or* company with **active RUC** (not only juridical persons): companies, NGOs, freelancers, creators, formalized merchants. DNI-only excluded. `Z3-tipo-de-organizador.md`.
 - **Z.4 Motor de sorteo** → **Cerrada.** Single configurable engine, 1 winner in MVP-1, auto/manual trigger with admin approval, automatic refund on failure. SHA-256 + external randomness fairness, publicly auditable. `Z4-tipos-de-sorteo.md`.
@@ -97,7 +86,7 @@ ADR structure: Decision · Alternatives evaluated · Why each was rejected · Im
 - **`context-mode`** = process large tool outputs in its sandbox to save context window (logs, builds, big files). A compute aid, not the record.
 - **Removed in the 2026-08-03 team audit** (Z.8 probation resolved): `claude-mem` (duplicated `MEMORY.md` without added value) and `get-shit-done` (overlapped the Superpowers SDD flow canonized in [`src/CLAUDE.md`](src/CLAUDE.md)). Do not re-enable without new evidence.
 
-Rules: every closed decision is still documented as an ADR in `docs/decisions/` + Anexo Z mirror — never delegated to auto-capture. Auto-captured memory is not authoritative; ADRs/plan win on any discrepancy.
+Rules: the project's truth is version-controlled in `docs/linea-base/` — never delegated to auto-capture. Auto-captured memory is not authoritative; the canon wins on any discrepancy.
 
 ## Key product facts (closed with Diego, 2026-06-05)
 

@@ -1,0 +1,680 @@
+openapi: 3.1.0
+info:
+  title: LIBOX API
+  version: "1.0.0"
+  x-artifact: libox_openapi_L3_V7.yaml
+  x-level: L3
+  x-governed-by: LBPF V3
+  x-implements: PRD MVP V8
+  x-specified-in: Especificación Técnica L3 V7 §11
+  description: |
+    Contratos de interfaz de LIBOX. Este archivo es la fuente de generación de tipos
+    para cliente y servidor, de las pruebas de contrato y del servidor simulado.
+    La regla BR-03 del Backlog V2 exige que los contratos y tipos se GENEREN desde
+    aquí, no que se escriban como historia.
+
+    Reglas transversales:
+    - Toda mutación de dinero exige cabecera Idempotency-Key provista por el cliente
+      y única por intento. No se deriva del contenido (RN-52).
+    - Toda respuesta incorpora trace_id.
+    - Los importes son enteros de la unidad mínima, acompañados de currency (C-06).
+    - Las fechas son ISO 8601 con el desplazamiento del mercado.
+    - Ningún error revela existencia de cuentas ni datos de terceros (RN-201).
+
+servers:
+  - url: https://api.libox.pe/api/v1
+    description: Producción PE
+  - url: https://api.staging.libox.pe/api/v1
+    description: Staging
+
+tags:
+  - name: Identidad
+  - name: Organizador
+  - name: Catálogo
+  - name: Verificación pública
+  - name: Sorteo
+  - name: Premio
+  - name: Compra
+  - name: Pagos
+  - name: Resolución
+  - name: Controversias
+  - name: Liquidación
+  - name: Saldo de reembolso
+  - name: Protección del usuario
+  - name: Cumplimiento
+  - name: Alarmas
+  - name: Mercado
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Credencial de vida corta, 15 minutos. Renovación por testigo rotatorio.
+
+  parameters:
+    TraceId:
+      name: X-Trace-Id
+      in: header
+      required: false
+      schema: { type: string, format: uuid }
+      description: Si falta, se genera y se devuelve.
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, maxLength: 120 }
+      description: Única por intento, generada por el cliente. Vigencia 24 h.
+    Cursor:
+      name: cursor
+      in: query
+      schema: { type: string }
+    Limit:
+      name: limit
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+
+  schemas:
+    Money:
+      type: object
+      required: [amount, currency]
+      properties:
+        amount:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Entero de la unidad mínima. Nunca punto flotante.
+        currency:
+          type: string
+          pattern: '^[A-Z]{3}$'
+      example: { amount: 2500, currency: PEN }
+
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, trace_id]
+          properties:
+            code: { type: string, example: ERR_ORDER_MIN_AMOUNT }
+            message:
+              type: string
+              description: Lenguaje llano y no culpabilizante. Nunca revela cuentas ni datos de terceros.
+              example: El monto mínimo de compra es S/ 10,00.
+            details: { type: object, additionalProperties: true }
+            trace_id: { type: string, format: uuid }
+
+    Probability:
+      type: object
+      description: Formato triple obligatorio (DP-02). Las tres expresan lo mismo.
+      required: [fraction, percent, per_thousand_text]
+      properties:
+        fraction: { type: string, example: "3 / 750" }
+        percent: { type: number, format: float, example: 0.4 }
+        per_thousand_text: { type: string, example: "4 de cada 1.000 tickets vendidos" }
+
+    Pool:
+      type: object
+      description: Denominador de la probabilidad. Su divulgación es obligatoria (R-10).
+      required: [sold, total]
+      properties:
+        sold: { type: integer }
+        total: { type: integer }
+
+    PrizeValue:
+      type: object
+      required: [approved_value, source, captured_at]
+      properties:
+        approved_value: { $ref: '#/components/schemas/Money' }
+        source: { type: string, example: "Referencia de mercado" }
+        captured_at: { type: string, format: date }
+
+    RaffleSummary:
+      type: object
+      required: [id, raffle_code, title, ticket_price, pool, probability, prize_value, ends_at]
+      properties:
+        id: { type: string, format: uuid }
+        raffle_code: { type: string, pattern: '^LBX-[0-9]{6}-[A-Z0-9]{5}$' }
+        title: { type: string }
+        raffle_type:
+          type: string
+          enum: [T1, T2, T3, T4, T5, T6, T7, T8]
+        base_type:
+          type: string
+          nullable: true
+          enum: [T1, T2, T3, T4, T5, T6, T7]
+          description: Obligatorio si raffle_type es T8; prohibido en el resto.
+        prize_category:
+          type: string
+          enum: [P_A, P_B, P_C1, P_C2, P_D, P_E]
+        ticket_price: { $ref: '#/components/schemas/Money' }
+        pool: { $ref: '#/components/schemas/Pool' }
+        probability: { $ref: '#/components/schemas/Probability' }
+        prize_value: { $ref: '#/components/schemas/PrizeValue' }
+        organizer:
+          type: object
+          properties:
+            display_name: { type: string, example: "Tecnología Express" }
+            reputation_level: { type: string, enum: [N0, N1, N2, N3] }
+            verified: { type: boolean }
+        status: { type: string }
+        ends_at: { type: string, format: date-time, nullable: true }
+        claim_sla_days: { type: integer, description: 7, 15 o 30 según valor aprobado }
+        delivery_sla_days: { type: integer }
+        unclaimed_route: { type: string, enum: [REDRAW, CANCEL] }
+        shipping_estimates:
+          type: array
+          description: Obligatorio antes de comprar (BR-08, RN-18).
+          items:
+            type: object
+            properties:
+              macrozone: { type: string, example: "Selva" }
+              from: { $ref: '#/components/schemas/Money' }
+        featured:
+          type: object
+          nullable: true
+          description: Toda posición destacada expone su criterio (RN-187, RN-188).
+          properties:
+            kind: { type: string, enum: [PAID, ORGANIC_VOLUME, ORGANIC_NEW, ORGANIC_CLOSING, ORGANIC_VELOCITY] }
+            label: { type: string, example: "Destacado" }
+            reason_text: { type: string, example: "Organizador con 47 sorteos completados" }
+
+    OrderCreate:
+      type: object
+      required: [raffle_id, quantity]
+      properties:
+        raffle_id: { type: string, format: uuid }
+        quantity: { type: integer, minimum: 1 }
+        use_refund_credit:
+          type: boolean
+          default: false
+          description: Nunca preseleccionado (LINT-005).
+        device_id: { type: string, format: uuid }
+
+    Order:
+      type: object
+      required: [order_id, status, gross_amount, cash_amount, reserved_until]
+      properties:
+        order_id: { type: string, format: uuid }
+        status:
+          type: string
+          enum: [PENDING_PAYMENT, PAID, EXPIRED, CANCELLED, REFUNDED, CHARGEBACK]
+        raffle_id:
+          type: string
+          format: uuid
+          description: Una orden, un sorteo (RN-06-ter).
+        quantity: { type: integer }
+        unit_price: { $ref: '#/components/schemas/Money' }
+        gross_amount: { $ref: '#/components/schemas/Money' }
+        refund_credit_applied: { $ref: '#/components/schemas/Money' }
+        cash_amount: { $ref: '#/components/schemas/Money' }
+        resulting_probability: { $ref: '#/components/schemas/Probability' }
+        reserved_until: { type: string, format: date-time }
+        payment:
+          type: object
+          properties:
+            provider: { type: string }
+            preference_id: { type: string }
+            checkout_url: { type: string, format: uri }
+        trace_id: { type: string, format: uuid }
+
+    DrawProof:
+      type: object
+      description: Documento de prueba público. No divulga identidad ni concentración (R-10).
+      required: [algorithm_version, raffle_id, raffle_code, pool, commitment, beacon, reveal, derivation, winners]
+      properties:
+        algorithm_version: { type: string, example: libox-draw-1.0 }
+        raffle_id: { type: string, format: uuid }
+        raffle_code: { type: string }
+        sequence: { type: integer, description: 2 indica re-sorteo }
+        pool:
+          type: object
+          properties:
+            size: { type: integer }
+            canonical_string_prefix: { type: string }
+            hash: { type: string, pattern: '^[0-9a-f]{64}$' }
+            snapshot_url: { type: string, format: uri }
+            snapshot_hash: { type: string, pattern: '^[0-9a-f]{64}$' }
+        commitment:
+          type: object
+          properties:
+            value: { type: string, pattern: '^[0-9a-f]{64}$' }
+            published_at: { type: string, format: date-time }
+            earliest_execution_at: { type: string, format: date-time }
+        beacon:
+          type: object
+          description: |
+            round_kind, round_value y round_time son la propiedad INTRÍNSECA de la ronda.
+            Son lo que permite verificar contra la fuente pública que la ronda no existía
+            al comprometer. retrieved_at es operativo y carece de valor probatorio.
+          properties:
+            source: { type: string }
+            source_url: { type: string, format: uri }
+            ref: { type: string }
+            round_kind: { type: string, enum: [ROUND_NUMBER, BLOCK_HEIGHT, ROUND_TIME] }
+            round_value: { type: string }
+            round_time: { type: string, format: date-time }
+            value: { type: string }
+            retrieved_at: { type: string, format: date-time }
+        reveal:
+          type: object
+          properties:
+            server_seed: { type: string, pattern: '^[0-9a-f]{64}$' }
+        derivation:
+          type: object
+          properties:
+            seed_material: { type: string, pattern: '^[0-9a-f]{64}$' }
+            formula: { type: string }
+        winners:
+          type: array
+          items:
+            type: object
+            properties:
+              position: { type: integer }
+              index: { type: integer }
+              ticket_number: { type: integer }
+        redraw_chain:
+          type: array
+          nullable: true
+          items: { type: string, format: uuid }
+        verification_steps:
+          type: array
+          items: { type: string }
+
+    Attestation:
+      type: object
+      required: [evidence_ids, statement]
+      properties:
+        evidence_ids:
+          type: array
+          items: { type: string, format: uuid }
+        winner_confirmed: { type: boolean }
+        statement: { type: string, minLength: 20 }
+        second_signer_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Obligatorio en P-C1 y P-C2 (RN-85). Debe ser otra persona (INC-09).
+
+    Settlement:
+      type: object
+      properties:
+        settlement_id: { type: string, format: uuid }
+        status: { type: string, enum: [ACCRUED, ELIGIBLE, APPROVED, PAID, HELD, REVERSED] }
+        gross_collected: { $ref: '#/components/schemas/Money' }
+        libox_fee_amount: { $ref: '#/components/schemas/Money' }
+        tax_amount:
+          allOf: [{ $ref: '#/components/schemas/Money' }]
+          description: Incluido en la comisión, nunca añadido sobre ella (INV-34).
+        chargeback_reserve: { $ref: '#/components/schemas/Money' }
+        net_payable: { $ref: '#/components/schemas/Money' }
+        gates:
+          type: object
+          description: Evaluación determinista. Sin los seis no se alcanza ELIGIBLE (INV-23).
+          properties:
+            g1_draw: { type: boolean }
+            g2_delivery: { type: boolean }
+            g3_disputes: { type: boolean }
+            g4_chargeback: { type: boolean }
+            g5_payout: { type: boolean }
+            g6_ledger: { type: boolean }
+        hold_until: { type: string, format: date-time, nullable: true }
+        hold_reason:
+          type: string
+          nullable: true
+          description: Obligatorio cuando status es HELD (RN-102).
+
+    SpendingLimitChange:
+      type: object
+      required: [window_kind, amount]
+      properties:
+        window_kind: { type: string, enum: [DAY, WEEK, MONTH] }
+        amount: { $ref: '#/components/schemas/Money' }
+        effective_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Reducir aplica de inmediato; aumentar espera 24 h (RN-133).
+
+  responses:
+    BadRequest: { description: Solicitud inválida, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    Unauthorized: { description: No autenticado, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    Forbidden: { description: Sin permiso, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    Conflict: { description: Conflicto de estado, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    Unprocessable: { description: Regla de negocio incumplida, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    PreconditionRequired:
+      description: Requisito previo pendiente. Cubre los tramos de acreditación sin revelar análisis (RN-142).
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+
+paths:
+  /raffles:
+    get:
+      tags: [Catálogo]
+      summary: Listado de oportunidades
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+        - { name: category, in: query, schema: { type: string } }
+        - { name: max_ticket_price, in: query, schema: { type: integer } }
+      responses:
+        '200':
+          description: Lista con costo, probabilidad y pool en cada elemento
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items: { type: array, items: { $ref: '#/components/schemas/RaffleSummary' } }
+                  next_cursor: { type: string, nullable: true }
+
+  /raffles/{slug}:
+    get:
+      tags: [Catálogo]
+      summary: Detalle de oportunidad
+      security: []
+      parameters: [{ name: slug, in: path, required: true, schema: { type: string } }]
+      responses:
+        '200':
+          description: |
+            Incluye costo, probabilidad, pool, valor verificado, plazos, ruta de
+            resolución y costo estimado de recepción (BR-08). Nunca identidad de
+            participantes ni concentración (R-10).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RaffleSummary' }
+        '404': { $ref: '#/components/responses/BadRequest' }
+
+  /public/draws/{slug}:
+    get:
+      tags: [Verificación pública]
+      summary: Prueba verificable de un sorteo ejecutado
+      security: []
+      parameters: [{ name: slug, in: path, required: true, schema: { type: string } }]
+      responses:
+        '200':
+          description: Sin autenticación, indexable y cacheable. Sin datos personales.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DrawProof' }
+
+  /public/draws/{slug}/pool:
+    get:
+      tags: [Verificación pública]
+      summary: Instantánea completa del pool
+      security: []
+      parameters: [{ name: slug, in: path, required: true, schema: { type: string } }]
+      responses:
+        '200':
+          description: Números de ticket ordenados ascendentemente. Nunca identidad.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  raffle_id: { type: string, format: uuid }
+                  size: { type: integer }
+                  ticket_numbers: { type: array, items: { type: integer } }
+                  hash: { type: string }
+
+  /public/pricing-simulator:
+    post:
+      tags: [Catálogo]
+      summary: Simulador de recaudación
+      security: []
+      description: Público y sin registro. Usa la fórmula real (RN-39).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [target_net_amount, currency]
+              properties:
+                target_net_amount: { type: integer }
+                currency: { type: string }
+                ticket_price: { type: integer, nullable: true }
+      responses:
+        '200':
+          description: Incluye el plazo máximo estimado hasta el cobro (RN-105)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  gross_required: { $ref: '#/components/schemas/Money' }
+                  libox_fee_amount: { $ref: '#/components/schemas/Money' }
+                  client_net_amount: { $ref: '#/components/schemas/Money' }
+                  ticket_price: { $ref: '#/components/schemas/Money' }
+                  total_tickets: { type: integer }
+                  max_days_to_payout: { type: integer }
+
+  /orders:
+    post:
+      tags: [Compra]
+      summary: Crear orden de compra
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/TraceId'
+      description: |
+        Orden de validación, de prohibición absoluta a disponibilidad:
+        autoexclusión → verificación de identidad → tramo de cumplimiento →
+        autocompra → concentración → límite propio → importe mínimo → inventario.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OrderCreate' }
+      responses:
+        '201':
+          description: Orden creada con reserva de inventario
+          content: { application/json: { schema: { $ref: '#/components/schemas/Order' } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403':
+          description: ERR_LIMIT_SELF_EXCLUDED · ERR_IDENTITY_VERIFICATION_REQUIRED · ERR_ORDER_SELF_PURCHASE
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+        '409':
+          description: ERR_ORDER_INSUFFICIENT_INVENTORY · ERR_ORDER_IDEMPOTENCY_CONFLICT · ERR_RAFFLE_NOT_ACTIVE
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+        '422':
+          description: ERR_ORDER_MIN_AMOUNT · ERR_LIMIT_CONCENTRATION · ERR_LIMIT_SELF_IMPOSED
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+
+  /orders/{id}:
+    get:
+      tags: [Compra]
+      summary: Estado real de la orden
+      description: |
+        Punto de recuperación tras pérdida de conexión (RN-218). Devuelve estado
+        inequívoco. Ante incertidumbre, PENDING_PAYMENT: nunca una afirmación
+        que podría ser falsa.
+      parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses:
+        '200': { description: Estado, content: { application/json: { schema: { $ref: '#/components/schemas/Order' } } } }
+
+  /me/tickets:
+    get:
+      tags: [Compra]
+      summary: Participaciones del usuario
+      parameters: [ { $ref: '#/components/parameters/Cursor' }, { $ref: '#/components/parameters/Limit' } ]
+      responses:
+        '200':
+          description: Incluye el aviso de independencia probabilística, persistente y no descartable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        raffle_code: { type: string }
+                        ticket_numbers: { type: array, items: { type: integer } }
+                        pool: { $ref: '#/components/schemas/Pool' }
+                        probability: { $ref: '#/components/schemas/Probability' }
+                  independence_notice:
+                    type: string
+                    example: Los resultados anteriores no aumentan ni reducen la probabilidad de este sorteo. Cada sorteo es independiente.
+
+  /webhooks/psp/{provider}:
+    post:
+      tags: [Pagos]
+      summary: Recepción de notificación del proveedor
+      security: []
+      parameters:
+        - { name: provider, in: path, required: true, schema: { type: string } }
+        - { name: x-signature, in: header, required: true, schema: { type: string } }
+      description: |
+        Firma validada con ventana anti repetición. Deduplicación por
+        provider_event_id en tabla no particionada. Se responde 200 incluso ante
+        duplicado: un error haría reintentar indefinidamente al proveedor.
+      responses:
+        '200': { description: Recibido, procesado o duplicado }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /rooms/{id}/attest:
+    post:
+      tags: [Resolución]
+      summary: Atestar la entrega
+      description: |
+        SUPPORT atesta un hecho operativo. NO mueve dinero (INV-07). Alimenta el
+        gate G2. La respuesta devuelve el estado de los seis gates tras evaluar,
+        para que el operador vea de inmediato si algo más bloquea el pago.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+        - $ref: '#/components/parameters/TraceId'
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/Attestation' } } }
+      responses:
+        '201':
+          description: Atestación registrada con estado de gates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  attestation_id: { type: string, format: uuid }
+                  settlement: { $ref: '#/components/schemas/Settlement' }
+        '403':
+          description: ERR_RESOLUTION_ATTEST_FORBIDDEN · INC-06 · INC-07
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+        '428':
+          description: ERR_RBAC_SECOND_SIGNATURE_REQUIRED
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+
+  /settlements/{id}:
+    get:
+      tags: [Liquidación]
+      summary: Detalle de liquidación con sus seis gates
+      parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses:
+        '200':
+          description: El estado HELD siempre acompaña motivo y fecha estimada
+          content: { application/json: { schema: { $ref: '#/components/schemas/Settlement' } } }
+
+  /settlements/{id}/execute:
+    post:
+      tags: [Liquidación]
+      summary: Ejecutar el pago al organizador
+      description: Único punto donde el dinero se mueve. Exclusivo de ADMIN_FINANCE.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200': { description: Pago ejecutado, content: { application/json: { schema: { $ref: '#/components/schemas/Settlement' } } } }
+        '409':
+          description: ERR_SETTLEMENT_GATES_UNMET · ERR_SETTLEMENT_PAYOUT_UNVERIFIED · ERR_SETTLEMENT_PAYOUT_FROZEN
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+
+  /me/limits:
+    put:
+      tags: [Protección del usuario]
+      summary: Fijar o modificar un límite propio
+      description: |
+        Asimetría obligatoria (RN-133): reducir aplica de inmediato, aumentar
+        requiere 24 horas. Se impone también en el esquema.
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/SpendingLimitChange' } } }
+      responses:
+        '200':
+          description: Cambio registrado con su fecha de efecto
+          content: { application/json: { schema: { $ref: '#/components/schemas/SpendingLimitChange' } } }
+
+  /me/self-exclusion:
+    post:
+      tags: [Protección del usuario]
+      summary: Autoexcluirse
+      description: |
+        Irreversible durante el plazo elegido. Sin fricción, sin retención comercial
+        y sin oferta de disuasión (RN-129). No impide reclamar premios pendientes
+        ni disponer del saldo.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [duration_kind]
+              properties:
+                duration_kind: { type: string, enum: [D7, D30, D90, PERMANENT] }
+      responses:
+        '201':
+          description: Autoexclusión activa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  starts_at: { type: string, format: date-time }
+                  ends_at: { type: string, format: date-time, nullable: true }
+                  reversible: { type: boolean, example: false }
+
+  /me/refund-credit:
+    get:
+      tags: [Saldo de reembolso]
+      summary: Saldo y movimientos
+      description: No expira, no admite carga voluntaria y computa como gasto (INV-26).
+      responses:
+        '200':
+          description: Saldo por moneda
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance: { $ref: '#/components/schemas/Money' }
+                  withdrawable: { type: boolean, example: true }
+                  withdrawal_requires_kyc: { type: boolean, example: true }
+
+  /markets/{code}/suspend:
+    post:
+      tags: [Mercado]
+      summary: Suspender la operación de un mercado
+      description: |
+        Cuatro niveles. INV-33: ningún nivel puede impedir reclamar premio,
+        recibir reembolso ni disponer del saldo propio.
+      parameters: [{ name: code, in: path, required: true, schema: { type: string } }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [level, reason]
+              properties:
+                level: { type: string, enum: [L1_SALES, L2_PUBLISHING, L3_REGISTRATION, L4_TOTAL] }
+                reason: { type: string, minLength: 20 }
+      responses:
+        '200': { description: Mercado suspendido y usuarios notificados }
+        '403': { $ref: '#/components/responses/Forbidden' }

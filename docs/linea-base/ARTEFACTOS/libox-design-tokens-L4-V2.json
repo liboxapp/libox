@@ -1,0 +1,451 @@
+{
+  "$meta": {
+    "name": "LIBOX Design Tokens",
+    "version": "V2",
+    "level": "L4",
+    "governedBy": "Design System L4 V1",
+    "consumes": "VIES V3",
+    "note": "Los colores de marca provienen de VIES V3 y no se alteran. Los estados de producto se derivan con contraste verificado."
+  },
+  "brand": {
+    "purple": "#6D28D9",
+    "navy": "#0B1020",
+    "violet": "#8B5CF6",
+    "green": "#10B981",
+    "gray": "#E5E7EB",
+    "white": "#FFFFFF"
+  },
+  "text": {
+    "primary": "#0B1020",
+    "secondary": "#3E4661",
+    "muted": "#667085",
+    "onDark": "#FFFFFF"
+  },
+  "surface": {
+    "canvas": "#F7F8FA",
+    "attraction": "#F6F1FE",
+    "card": "#FFFFFF",
+    "border": "#E5E7EB",
+    "overlay": "rgba(11,16,32,0.60)",
+    "skeleton": "#EDEFF3",
+    "skeletonHighlight": "#F7F8FA"
+  },
+  "state": {
+    "success": {
+      "text": "#047857",
+      "bg": "#D1FAE5"
+    },
+    "warning": {
+      "text": "#B45309",
+      "bg": "#FEF3C7"
+    },
+    "danger": {
+      "text": "#B91C1C",
+      "bg": "#FEE2E2"
+    },
+    "info": {
+      "text": "#1D4ED8",
+      "bg": "#DBEAFE"
+    },
+    "held": {
+      "text": "#3E4661",
+      "bg": "#E9ECF3"
+    },
+    "brand": {
+      "text": "#5B21B6",
+      "bg": "#EDE9FE"
+    }
+  },
+  "accent": {
+    "rank": "#A16207",
+    "live": "#047857"
+  },
+  "gradient": {
+    "brand": "linear-gradient(135deg,#6D28D9,#8B5CF6)",
+    "hero": "linear-gradient(135deg,#4C1D95,#6D28D9)",
+    "trust": "linear-gradient(180deg,#0B1020,#1E2947)",
+    "textOverlay": "rgba(11,16,32,0.35)"
+  },
+  "typography": {
+    "family": "Manrope, system-ui, sans-serif",
+    "weights": {
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    },
+    "wordmarkOnly": {
+      "extrabold": 800
+    },
+    "scale": {
+      "display": {
+        "mobile": [
+          28,
+          34
+        ],
+        "desktop": [
+          40,
+          46
+        ],
+        "weight": 700
+      },
+      "h1": {
+        "mobile": [
+          24,
+          30
+        ],
+        "desktop": [
+          32,
+          38
+        ],
+        "weight": 700
+      },
+      "h2": {
+        "mobile": [
+          20,
+          26
+        ],
+        "desktop": [
+          24,
+          30
+        ],
+        "weight": 600
+      },
+      "h3": {
+        "mobile": [
+          17,
+          23
+        ],
+        "desktop": [
+          18,
+          24
+        ],
+        "weight": 600
+      },
+      "body": {
+        "mobile": [
+          16,
+          24
+        ],
+        "desktop": [
+          15,
+          23
+        ],
+        "weight": 400
+      },
+      "caption": {
+        "mobile": [
+          14,
+          20
+        ],
+        "desktop": [
+          13,
+          18
+        ],
+        "weight": 400
+      },
+      "micro": {
+        "mobile": [
+          12,
+          16
+        ],
+        "desktop": [
+          11,
+          15
+        ],
+        "weight": 600
+      },
+      "money": {
+        "mobile": [
+          24,
+          30
+        ],
+        "desktop": [
+          28,
+          32
+        ],
+        "weight": 700
+      },
+      "probability": {
+        "mobile": [
+          16,
+          24
+        ],
+        "desktop": [
+          15,
+          23
+        ],
+        "weight": 700
+      },
+      "bodyStrong": {
+        "mobile": [
+          16,
+          24
+        ],
+        "desktop": [
+          15,
+          23
+        ],
+        "weight": 600
+      }
+    },
+    "numeric": "font-variant-numeric: tabular-nums en importes, contadores, cuentas atras y numeros de ticket"
+  },
+  "radius": {
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 20,
+    "pill": 999
+  },
+  "spacing": [
+    4,
+    8,
+    12,
+    16,
+    20,
+    24,
+    32,
+    40,
+    48,
+    64,
+    80
+  ],
+  "shadow": {
+    "card": "0 1px 3px rgba(11,16,32,.08)",
+    "hover": "0 4px 12px rgba(11,16,32,.12)",
+    "raised": "0 8px 24px rgba(11,16,32,.16)",
+    "decision": "0 1px 2px rgba(11,16,32,.10)"
+  },
+  "motion": {
+    "attraction": {
+      "hover": 160,
+      "state": 220,
+      "screen": 240
+    },
+    "calm": {
+      "hover": 120,
+      "state": 160,
+      "screen": 180
+    },
+    "drawReveal": {
+      "enter": 200,
+      "reveal": 400,
+      "settle": 200,
+      "total": 800
+    },
+    "easing": {
+      "standard": "cubic-bezier(0.2,0,0,1)",
+      "enter": "cubic-bezier(0,0,0,1)"
+    },
+    "hardLimits": {
+      "maxDecisionMs": 240,
+      "infiniteInDecision": false
+    },
+    "skeleton": {
+      "durationMs": 1200,
+      "opacityFrom": 0.6,
+      "opacityTo": 1.0,
+      "rule": "Solo mientras hay peticion en curso. Al resolverse cesa: un esqueleto latiendo sin peticion viva es repeticion infinita en zona de decision."
+    }
+  },
+  "breakpoints": {
+    "xs": 360,
+    "sm": 640,
+    "md": 768,
+    "lg": 1024,
+    "xl": 1280
+  },
+  "touch": {
+    "minTarget": 44,
+    "minGap": 8
+  },
+  "focus": {
+    "ring": {
+      "width": 2,
+      "offset": 2,
+      "color": "#6D28D9",
+      "style": "solid"
+    },
+    "ringOnDark": {
+      "width": 2,
+      "offset": 2,
+      "color": "#A78BFA",
+      "style": "solid"
+    },
+    "rule": "AC-02. Nunca suprimido. Visible en todo elemento operable por teclado."
+  },
+  "zIndex": {
+    "base": 0,
+    "raised": 10,
+    "sticky": 100,
+    "drawer": 200,
+    "overlay": 300,
+    "modal": 400,
+    "toast": 500,
+    "tooltip": 600,
+    "rule": "Ningun valor arbitrario fuera de esta escala."
+  },
+  "drawer": {
+    "maxWidth": 480,
+    "radius": 20,
+    "shadow": "0 8px 24px rgba(11,16,32,.16)",
+    "enterMs": 180,
+    "zIndex": 200,
+    "rule": "El cajon de evidencia se abre sin navegacion de pagina. Es lo que mide P5."
+  },
+  "overlay": {
+    "scrim": "rgba(11,16,32,0.60)",
+    "textOnGradient": "rgba(11,16,32,0.35)",
+    "zIndex": 300
+  },
+  "partner": {
+    "mercadoPago": {
+      "value": "#00B1EA",
+      "rule": "Solo como logotipo de aliado. Nunca como color de texto."
+    }
+  },
+  "components": {
+    "VerifiedOpportunityCard": {
+      "zone": "attraction|decision",
+      "radius": 16,
+      "padding": 16,
+      "gap": 12,
+      "shadow": "{shadow.card}",
+      "background": "{surface.card}",
+      "border": "1px solid {surface.border}",
+      "requiredSlots": [
+        "header",
+        "value",
+        "decision",
+        "rules",
+        "evidence",
+        "action"
+      ],
+      "lint": "LINT-002: sin decision, rules o evidence el componente no compila"
+    },
+    "ProbabilityBlock": {
+      "zone": "decision",
+      "typography": "{typography.scale.probability}",
+      "color": "{text.primary}",
+      "format": "1 de 1.000 · 0,10 % · 1 por cada 1.000 tickets",
+      "rule": "Mismo peso y bloque visual que el precio. DP-03."
+    },
+    "PoolProgress": {
+      "height": 8,
+      "radius": 999,
+      "track": "#DDD3F7",
+      "fill": "{brand.purple}",
+      "trackOnDark": "rgba(255,255,255,0.22)",
+      "fillOnDark": "#FFFFFF",
+      "rule": "Siempre acompanada de la cifra literal. Sin bucle ni aceleracion."
+    },
+    "CountdownChip": {
+      "radius": 999,
+      "padding": "4px 10px",
+      "background": "{surface.card}",
+      "border": "1px solid {surface.border}",
+      "color": "{text.secondary}",
+      "rule": "Ligado a end_at real y sincronizado con hora de servidor. Sin pulso en decision."
+    },
+    "StatusChip": {
+      "radius": 999,
+      "padding": "4px 10px",
+      "typography": "{typography.scale.micro}",
+      "variants": {
+        "pagado": "{state.success}",
+        "pendiente": "{state.warning}",
+        "retenido": "{state.held}",
+        "revertido": "{state.danger}",
+        "enProceso": "{state.info}"
+      },
+      "rule": "AC-06: el color acompana, el texto identifica."
+    },
+    "RankBadge": {
+      "size": 34,
+      "offset": -6,
+      "background": "{accent.rank}",
+      "color": "#FFFFFF",
+      "rule": "Exige metadata de razon visible en una interaccion. LINT-006."
+    },
+    "CheckoutSummary": {
+      "zone": "decision",
+      "radius": 16,
+      "background": "{surface.card}",
+      "shadow": "{shadow.decision}",
+      "rule": "El total es la cifra de mayor peso. La probabilidad sigue visible en el paso final."
+    },
+    "PaymentStatus": {
+      "zone": "decision",
+      "states": [
+        "processing",
+        "confirmed",
+        "failed",
+        "expired",
+        "unknown"
+      ],
+      "successMs": 180,
+      "rule": "Sin confeti, sin sonido. El estado unknown es obligatorio."
+    },
+    "ProofViewer": {
+      "zone": "decision",
+      "background": "{surface.card}",
+      "externalLink": true,
+      "rule": "Enlace a la fuente de baliza fuera del dominio. Sin identidad ni concentracion."
+    },
+    "EvidenceDrawer": {
+      "zone": "decision",
+      "enterMs": 180,
+      "zIndex": 200,
+      "rule": "Se abre en la misma superficie, sin navegacion. Mide P5."
+    },
+    "ResolutionRoom": {
+      "zone": "decision",
+      "messageRadius": 12,
+      "internalNoteBackground": "{state.held.bg}",
+      "rule": "La interfaz no ofrece editar ni eliminar. Retractarse publica una correccion."
+    },
+    "SettlementTable": {
+      "zone": "decision",
+      "rowHeight": 56,
+      "headerBackground": "{surface.canvas}",
+      "rule": "El estado Retenido siempre con motivo y fecha estimada."
+    },
+    "SpendPanel": {
+      "zone": "decision",
+      "rule": "Neutro y no culpabilizante. No se muestra durante la compra."
+    },
+    "AlarmCard": {
+      "radius": 12,
+      "severityColors": {
+        "alta": "{state.danger}",
+        "media": "{state.warning}",
+        "informativa": "{state.info}"
+      },
+      "rule": "Dueno nominal obligatorio. Resolver exige motivo, tambien la no accion."
+    }
+  },
+  "accessibility": {
+    "target": "WCAG 2.1 AA",
+    "minContrastBody": 4.5,
+    "minContrastLarge": 3.0,
+    "minTouchTarget": 44,
+    "minTouchGap": 8,
+    "verified": {
+      "text.primary": 18.93,
+      "text.secondary": 9.32,
+      "text.muted": 4.97,
+      "state.success.text": 5.48,
+      "state.warning.text": 5.02,
+      "state.danger.text": 6.47,
+      "state.info.text": 6.7,
+      "state.held.text": 9.32,
+      "accent.rank": 4.92,
+      "brand.purple": 7.1
+    },
+    "forbiddenAsText": {
+      "brand.violet": "4.23:1 solo en 18pt o superior",
+      "brand.green": "2.54:1 nunca como texto"
+    }
+  }
+}

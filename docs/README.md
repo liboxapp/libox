@@ -1,65 +1,54 @@
 ---
 title: Libox — Índice del wiki
-status: vivo
-tags: [libox, indice, wiki]
-updated: 2026-06-21
+status: vigente
+tags: [libox, wiki, indice, linea-base]
+updated: 2026-08-30
 ---
 
 # Libox — Wiki del proyecto
 
-Marketplace web de rifas digitales con boleto pagado, operado bajo regulación peruana. Estado actual: **pre-código** — sin aplicación todavía, pero ya con repositorio git y tooling de versionado (SemVer, Conventional Commits, release-please, CI). El contenido es un **wiki de documentación** que captura decisiones de producto, arquitectura, stack y análisis regulatorio antes de la primera línea de código.
+Marketplace de sorteos donde terceros verificados publican oportunidades. LIBOX no organiza ni pone premios: cobra comisión sobre la recaudación, idéntica gane quien gane. Mercado inicial: Perú.
+
+## Regla de uso
+
+> **Si un documento no figura en el §1 del Registro Maestro, no rige.**
+
+Empieza por [`linea-base/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V6.md`](linea-base/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V6.md). Toda versión distinta a las de la línea base está derogada, aunque siga circulando.
 
 ## Mapa
 
-| Carpeta / archivo | Contenido | Cuándo abrirlo |
+| Ruta | Contenido | Cuándo abrirlo |
 |---|---|---|
-| [`prd/`](prd/) | PRD del socio, **V12.3** en dos manuales: **MVP** (monolito modular, Role Books, Raffle Engine T1-T8, Anexo K legal Perú-first) y **Enterprise** (estado objetivo: microservicios, event-driven). V11 (PDF) queda como histórico citado por los ADRs. | Fuente autoritativa de producto y arquitectura técnica. ⚠️ V12.3 contiene mecánicas en conflicto con ADRs cerrados (settlement con gates vs Z.1, pricing target-based, T8 en MVP vs Z.5) — esos puntos se resuelven por el proceso de decisiones (sigue Z.9), no se asumen. |
-| [`plans/libox-plan.md`](plans/libox-plan.md) | Plan inicial de producto, arquitectura, stack y roadmap. Incluye el **Anexo Z — Bitácora de decisiones cerradas**. | Léelo para el camino completo del MVP, dominios del sistema, decisiones pendientes, próximos pasos. |
-| [`decisions/`](decisions/) | ADRs autocontenidos — uno por decisión cerrada. Versión canónica para compartir con socios e inversionistas. | Léelo cuando quieras compartir o consultar una decisión específica sin todo el contexto del plan. |
-| [`compliance-peru.md`](compliance-peru.md) | Documento de trabajo sobre el marco regulatorio peruano (SUNAT, autorización municipal, retención de impuestos, KYC, PLAFT, T&C). | Léelo antes de cualquier conversación con el abogado, y para entender por qué el PRD por sí solo no cubre todo. |
-| [`glosario.md`](glosario.md) | Glosario de términos técnicos, de producto y regulatorios (T1–T8, fairness del sorteo, arquitectura, pagos, compliance). | Consúltalo cuando un término no se entienda. |
-| [`benchmark-stack.md`](benchmark-stack.md) | Benchmark de mercado (julio 2026) que sustenta el cierre de las sub-decisiones de Z.6: comparativas Supabase/Neon, auth por MAU, Drizzle/Prisma, hosting y proyección de costos. | Léelo para entender por qué se eligió cada pieza del stack y cuáles son las rutas de salida. |
-| [`onboarding.md`](onboarding.md) | Checklist de incorporación de desarrolladores: accesos, entorno de Claude Code versionado, lectura obligatoria y flujo diario. | Es lo primero que lee un dev nuevo; Diego lo usa al asignar cada seat. |
+| [`linea-base/`](linea-base/) | **El corpus canónico** (V6): Registro Maestro · LBPF V3 (L0) · Product Strategy V3 (L1) · **PRD MVP V9** · Enterprise V3 (L2) · Especificación Técnica V7 · Matriz de Casos de Uso V1 · Guía de Extensión V1 (L3) · Design System V2 (L4) · VIES V3 · Backlog V3 · Dossier Legal · Evaluación · 2 auditorías | Fuente autoritativa de todo: producto, técnica, plan y marca |
+| [`linea-base/ARTEFACTOS/`](linea-base/ARTEFACTOS/) | `libox_schema_L3_V7.sql` (135 tablas, cero errores en PG16) · `libox_openapi_L3_V7.yaml` (16/~30 rutas, incompleto — T-1) · tokens L4 V2 · Backlog xlsx | Migraciones, generación de tipos, implementación de UI |
+| [`../verify_corpus.py`](../verify_corpus.py) | Verificador de coherencia, 10 controles. `python3 verify_corpus.py --dir docs/linea-base` | En cada emisión y cada PR que toque el corpus (CD-10: cero fallos) |
+| [`operacion/`](operacion/) | Vacío. Destino del futuro Manual de Operación (T-3, 13 SP) | Al redactarlo en R3 |
+| [`archive/`](archive/) | **Histórico nulo o superseded** — no se consulta ni se cita (Registro §2) | Solo para trazabilidad |
+| [`glosario.md`](glosario.md) · [`onboarding.md`](onboarding.md) · [`flujos/`](flujos/) | Documentos de trabajo, no normativos | Consulta |
 
-## Cómo se relacionan los documentos
+## Precedencia ante conflicto
 
 ```
-                    PRD Libox v11 (socio)
-                  blueprint técnico, agnóstico geográfico
-                              ↓
-                         Plan Libox
-                  hoja de ruta MVP + decisiones técnicas
-                              │
-              ┌───────────────┼───────────────┐
-              ↓               ↓               ↓
-        Anexo Z       compliance-peru   stack/roadmap
-        (decisiones)  (vive aparte      (Next.js, PG,
-                       del PRD)          PSP, etc.)
-              │
-              └→ decisions/<código>.md
-                 (versión canónica compartible)
+L0   sobre todo
+L2   sobre L4 en materia de reglas
+L3   sobre L4 en materia técnica
+VIES sobre L4 en identidad de marca
 ```
 
-## Decisiones cerradas
+## Versionado del corpus
 
-El índice canónico de decisiones vive en **[decisions/README.md](decisions/README.md)** — ahí está la tabla completa y la convención para agregar nuevas. **Z.1–Z.8 cerradas** (custodia del dinero, PSP, tipo de organizador, motor de sorteo, T8 LIVE, stack, versionamiento, roles de memoria/contexto). La próxima es Z.9.
+V1 → V2 → V3, sin subversiones. Toda emisión: `verify_corpus.py` con cero fallos (CD-10) + alta en `BASELINE` y en Registro §1 + clasificación (CD-11), en el mismo acto. **La línea base está congelada** — hallazgos al backlog de cambio (CD-07); solo rompe el congelamiento lo que impida construir o exponga a riesgo legal/patrimonial.
 
-## Obsidian
+## Espejo en Outline
 
-Este wiki está pensado para abrirse como **vault de Obsidian** (abre la carpeta raíz del proyecto en Obsidian). El graph view y los backlinks te dan navegación visual entre documentos. La config compartida (`.obsidian/app.json`) **fuerza links en markdown estándar** (`[texto](ruta.md)`), no wikilinks `[[...]]`, para que los documentos sigan funcionando en GitHub y cualquier viewer cuando los compartas con socios o el abogado. El estado por-máquina de Obsidian está en `.gitignore`.
+La colección **Libox — Negocio** (liboxapp.getoutline.com) contiene el espejo navegable del corpus ("LIBOX — Línea Base documental"), la capa operativa de negocio (00–21) y el registro vivo de asunciones y cambios (doc 20: ASS-\*/CHANGE-\*). **Para el corpus, la fuente canónica es este repo**; se edita aquí vía PR y se republica el espejo.
 
-## Convenciones
+## Pendientes críticos (ninguno documental)
 
-- **Idioma**: español (mercado peruano).
-- **Frontmatter**: cada documento lleva `title`, `status`, `tags` y `updated` en YAML para filtrar y buscar dentro de Obsidian.
-- **Términos legales**: marcados `[LEGAL→ABOGADO]` cuando son lectura del autor sobre normativa pública y requieren ratificación.
-- **Vínculos**: relativos al root de `docs/` para que el wiki funcione tanto en el editor como en cualquier renderer Markdown.
-- **Decisiones**: cuando una se cierra, se documenta primero como entrada **Z.N** en el plan, y simultáneamente como ADR autocontenido en `decisions/`. La canonicidad la indica el propio ADR.
-
-## Pendientes activos
-
-- Los 4 conflictos originales PRD vs plan están **cerrados** (Z.1–Z.5), más Z.6–Z.8. Sigue Z.9.
-- Validaciones externas pendientes: llamada comercial a Mercado Pago (split/Yape, Z.2) y ratificación legal `[LEGAL→ABOGADO]` (custodia Z.1, autorización municipal Z.3).
-- Recortar el plan a un MVP-1 ejecutable en 8-12 semanas con 1 dev.
-- Convertir [`compliance-peru.md`](compliance-peru.md) de stub a documento cerrado con apoyo del abogado.
-- Wireframes de los 5 flujos críticos.
+1. **Dictamen legal L-01** — el Dossier está listo; falta encargarlo. Bloquea operar.
+2. **F0: veinte conversaciones con organizadores** — cero a la fecha. Valida la hipótesis central.
+3. `openapi.yaml` completo (~14 rutas, 8 SP) — bloquea sprint 4.
+4. Diseño de 41/62 superficies — bloquea frontend.
+5. Arte maestro de marca (VIES Anexo A).
+6. Manual de operación (13 SP).
+7. **ASS-001** (custodia) y **ASS-002** (stack) — ratificación de socios pendiente; ver doc 20 en Outline.
