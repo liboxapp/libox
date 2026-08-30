@@ -14,7 +14,7 @@ sin auth, sin pagos.
 
 ## Contexto y decisiones de entrada
 
-- **Stack cerrado** por [ADR Z.6](../../decisions/Z6-stack-tecnologico.md):
+- **Stack cerrado** por [ADR Z.6](../../archive/decisions/Z6-stack-tecnologico.md):
   Next.js (App Router) + TypeScript, Tailwind CSS + shadcn/ui, Vercel.
   Esta rebanada no introduce dependencias fuera del stack.
 - **Identidad visual congelada**: existe el estándar
@@ -137,7 +137,7 @@ Reglas duras (guardrails de [src/CLAUDE.md](../../../src/CLAUDE.md)):
 - **Selector de tickets**: stepper 1–20 con subtotal calculado en S/.
 - **CTA "Comprar tickets" deshabilitado** con nota "Disponible próximamente".
 - Sección "Cómo funciona" en 3 pasos: participa → sorteo auditable con
-  prueba criptográfica ([ADR Z.4](../../decisions/Z4-tipos-de-sorteo.md)) →
+  prueba criptográfica ([ADR Z.4](../../archive/decisions/Z4-tipos-de-sorteo.md)) →
   entrega del premio.
 - Rifa finalizada: muestra ganador mock y oculta selector y CTA.
 - Slug inexistente → `notFound()` con 404 en español.

@@ -92,7 +92,7 @@ Cada fase tiene: objetivo, entregables, criterio de salida (DoD) y dependencias.
 - **`trace_id` transversal**: middleware + AsyncLocalStorage; presente en logs, DB y respuestas.
 - **Outbox**: tabla `event_outbox` + worker en el job runner con retries y DLQ.
 - Observabilidad: Sentry + logs estructurados JSON; PostHog básico.
-- **Rate limiting transversal** ([spec](../superpowers/specs/2026-08-11-rate-limiting-design.md)): Upstash Redis vía marketplace de Vercel, helper `rateLimit()` + registro de políticas por endpoint, reglas WAF baseline en modo log.
+- **Rate limiting transversal** ([spec](../../superpowers/specs/2026-08-11-rate-limiting-design.md)): Upstash Redis vía marketplace de Vercel, helper `rateLimit()` + registro de políticas por endpoint, reglas WAF baseline en modo log.
 - **DoD:** un evento de dominio de prueba viaja `acción → tx con outbox → worker → audit_event` con el mismo `trace_id` visible en logs; tests de la hash-chain y del helper de rate limiting.
 
 ### Fase 2 — Identidad y onboarding de organizadores (1.5 semanas) — [Z.3]
@@ -159,7 +159,7 @@ Cada fase tiene: objetivo, entregables, criterio de salida (DoD) y dependencias.
 
 - Suite E2E de los 5 flujos críticos (los mismos de los wireframes del plan).
 - Los **7 invariantes del PRD** como suite de release gate en CI.
-- Revisión de seguridad: **auditoría de cobertura de rate limiting** (todo endpoint sensible tiene política o exención declarada; endurecer reglas WAF con los datos del modo log — [spec](../superpowers/specs/2026-08-11-rate-limiting-design.md)), headers, validación de inputs (zod en todos los boundaries), revisión de permisos DB, dependencias (`npm audit` en CI).
+- Revisión de seguridad: **auditoría de cobertura de rate limiting** (todo endpoint sensible tiene política o exención declarada; endurecer reglas WAF con los datos del modo log — [spec](../../superpowers/specs/2026-08-11-rate-limiting-design.md)), headers, validación de inputs (zod en todos los boundaries), revisión de permisos DB, dependencias (`npm audit` en CI).
 - Runbooks mínimos: webhook caído, sorteo no disparado, conciliación descuadrada.
 - **Piloto**: onboarding manual de 3–5 organizadores reales en staging/producción limitada.
 - Checklist legal previo a lanzamiento (compliance-peru con abogado) — gate de **lanzamiento**, no de construcción.
@@ -185,7 +185,7 @@ F0 Gates+scaffold ─┬─► F1 Fundaciones ─► F2 Onboarding ─► F3 Sor
 - **Property-based testing** del motor de sorteo (release gate, PRD §IX).
 - Los 7 invariantes del PRD viven como tests en CI desde la fase que los introduce.
 - Cada PR: rebase-and-merge, Conventional Commits, checks verdes (política Z.7 + ruleset).
-- **Rate limiting como política estándar**: todo Route Handler / Server Action nuevo declara su política en el registro, o su exención explícita (webhooks, jobs). Regla en [`src/CLAUDE.md`](../../src/CLAUDE.md); diseño en el [spec](../superpowers/specs/2026-08-11-rate-limiting-design.md).
+- **Rate limiting como política estándar**: todo Route Handler / Server Action nuevo declara su política en el registro, o su exención explícita (webhooks, jobs). Regla en [`src/CLAUDE.md`](../../../src/CLAUDE.md); diseño en el [spec](../../superpowers/specs/2026-08-11-rate-limiting-design.md).
 
 ## 6. Decisiones que los socios deben tomar ahora
 

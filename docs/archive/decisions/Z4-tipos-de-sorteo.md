@@ -12,7 +12,7 @@ updated: 2026-06-05
 **Estado**: Cerrada (2026-06-05).
 **Decisor**: Diego.
 **Documento canónico**: este archivo. Mirror en [`docs/plans/libox-plan.md`](../plans/libox-plan.md#z4--tipos-de-sorteo-en-mvp-1-cerrada-el-2026-06-05) (Anexo Z.4).
-**Glosario**: la definición de T1–T8 y de los términos de fairness está en [glosario.md](../glosario.md).
+**Glosario**: la definición de T1–T8 y de los términos de fairness está en [glosario.md](../../glosario.md).
 **Relacionada**: T8 (LIVE) se decide aparte en [Z.5](Z5-t8-live.md).
 
 ---

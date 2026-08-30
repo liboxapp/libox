@@ -12,7 +12,7 @@ updated: 2026-08-03
 Adaptar a Libox el CLAUDE.md de reglas de código que funcionó en el proyecto
 keikogobierna, sin duplicar lo que ya es canónico aquí
 ([`CONTRIBUTING.md`](../../../CONTRIBUTING.md), ADR
-[Z.6](../../decisions/Z6-stack-tecnologico.md), CLAUDE.md raíz), y codificando
+[Z.6](../../archive/decisions/Z6-stack-tecnologico.md), CLAUDE.md raíz), y codificando
 el flujo **Superpowers SDD** (spec → plan → ejecución verificada) como método
 de trabajo para todo el código de la app.
 

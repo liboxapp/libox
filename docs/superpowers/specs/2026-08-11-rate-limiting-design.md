@@ -10,12 +10,12 @@ description: Diseño en capas del rate limiting (Vercel WAF + Upstash Redis). En
 
 Aprobado por Diego (2026-08-11). Hasta ahora el rate limiting existía solo
 como bullet de revisión en Fase 7 (hardening) del
-[plan de fases](../../plans/mvp1-fases-desarrollo.md); con el backend
+[plan de fases](../../archive/plans/mvp1-fases-desarrollo.md); con el backend
 entrando en las próximas rebanadas, se adelanta como **fundación de Fase 1**
 y queda como **política estándar** en
 [`src/CLAUDE.md`](../../../src/CLAUDE.md). La pieza nueva de stack
 (Upstash Redis) se registra como sub-decisión en
-[ADR Z.6](../../decisions/Z6-stack-tecnologico.md).
+[ADR Z.6](../../archive/decisions/Z6-stack-tecnologico.md).
 
 ## Decisión de enfoque
 

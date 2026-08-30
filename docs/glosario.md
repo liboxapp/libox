@@ -7,13 +7,13 @@ updated: 2026-06-05
 
 # Glosario de términos
 
-Referencia de los términos técnicos, de producto y regulatorios que aparecen en el [PRD](prd/), el [plan](plans/libox-plan.md) y las [decisiones](decisions/). Pensado para consultar cuando un término no se entienda. Se actualiza a medida que aparecen términos nuevos.
+Referencia de los términos técnicos, de producto y regulatorios que aparecen en el [PRD](archive/prd/), el [plan](archive/plans/libox-plan.md) y las [decisiones](archive/decisions/). Pensado para consultar cuando un término no se entienda. Se actualiza a medida que aparecen términos nuevos.
 
 ---
 
 ## 1. Tipos de sorteo (T1–T8)
 
-El PRD modela 8 "tipos" de sorteo. **No son 8 motores distintos**: son **presets** de un mismo motor configurable (`draw_config`), que combinan unos pocos ejes ortogonales (condición de disparo, número de ganadores, quién ejecuta). Ver análisis en [Z.4](decisions/Z4-tipos-de-sorteo.md).
+El PRD modela 8 "tipos" de sorteo. **No son 8 motores distintos**: son **presets** de un mismo motor configurable (`draw_config`), que combinan unos pocos ejes ortogonales (condición de disparo, número de ganadores, quién ejecuta). Ver análisis en [Z.4](archive/decisions/Z4-tipos-de-sorteo.md).
 
 | Tipo | Nombre | Cuándo se sortea | Ganadores | Quién dispara |
 |---|---|---|---|---|
@@ -65,12 +65,12 @@ El PRD modela 8 "tipos" de sorteo. **No son 8 motores distintos**: son **presets
 
 ## 4. Pagos, custodia y contabilidad
 
-- **PSP (Payment Service Provider)** — proveedor que procesa los pagos (ej. Mercado Pago, Culqi). Ver [Z.2](decisions/Z2-eleccion-psp.md).
+- **PSP (Payment Service Provider)** — proveedor que procesa los pagos (ej. Mercado Pago, Culqi). Ver [Z.2](archive/decisions/Z2-eleccion-psp.md).
 - **split payment / application fee** — capacidad del PSP de **dividir un pago** entre varios beneficiarios en una sola transacción (ej. 80% al organizador, 20% a Libox). Es la restricción dura que define qué PSP sirve.
 - **marketplace (modelo)** — arquitectura donde una plataforma facilita pagos entre compradores y múltiples vendedores, cobrando una comisión vía split.
 - **merchant of record** — el comercio que figura legalmente como vendedor ante el participante y emite el comprobante. Bajo Modelo C, es el **organizador**.
 - **escrow** — figura donde un tercero custodia el dinero hasta que se cumplan condiciones, y recién entonces lo libera.
-- **Modelo A / B / C** — las tres formas de custodia evaluadas en [Z.1](decisions/Z1-custodia-del-dinero.md): **A** = split directo puro (Libox no toca el dinero); **B** = escrow real (Libox custodia, requiere licencia); **C** = escrow conceptual (opera como A pero lleva contabilidad como B). **Libox usa C.**
+- **Modelo A / B / C** — las tres formas de custodia evaluadas en [Z.1](archive/decisions/Z1-custodia-del-dinero.md): **A** = split directo puro (Libox no toca el dinero); **B** = escrow real (Libox custodia, requiere licencia); **C** = escrow conceptual (opera como A pero lleva contabilidad como B). **Libox usa C.**
 - **payout** — el desembolso del dinero al organizador.
 - **chargeback (contracargo)** — cuando un participante reclama a su banco/tarjeta y se revierte el cobro. Bajo Modelo C lo absorbe primero el PSP.
 - **reconciliation (conciliación)** — cruzar lo que reporta el PSP contra el ledger interno para detectar diferencias. Gate `PSP_RECONCILED`.
@@ -92,9 +92,9 @@ El PRD modela 8 "tipos" de sorteo. **No son 8 motores distintos**: son **presets
 
 ## 6. Marco regulatorio Perú
 
-Ver detalle en [compliance-peru.md](compliance-peru.md). Todo aquí es referencia, no asesoría legal.
+Ver detalle en [compliance-peru.md](archive/compliance-peru.md). Todo aquí es referencia, no asesoría legal.
 
-- **RUC (Registro Único de Contribuyentes)** — identificador tributario. Lo tienen **tanto personas jurídicas como naturales con negocio**. Requisito para ser organizador (ver [Z.3](decisions/Z3-tipo-de-organizador.md)).
+- **RUC (Registro Único de Contribuyentes)** — identificador tributario. Lo tienen **tanto personas jurídicas como naturales con negocio**. Requisito para ser organizador (ver [Z.3](archive/decisions/Z3-tipo-de-organizador.md)).
 - **SUNAT** — autoridad tributaria y aduanera de Perú.
 - **PSE (Proveedor de Servicios Electrónicos)** — empresa autorizada para emitir comprobantes electrónicos en nombre de un contribuyente (ej. Nubefact, Bizlinks).
 - **factura / boleta** — comprobantes electrónicos. **Factura** = operación B2B (receptor con RUC). **Boleta** = consumidor final (persona natural).

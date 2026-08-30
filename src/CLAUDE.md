@@ -1,7 +1,7 @@
 # CLAUDE.md — Application code rules
 
 This file governs all work under `src/` — the Libox application: a Next.js
-(App Router) modular monolith, per [ADR Z.6](../docs/decisions/Z6-stack-tecnologico.md).
+(App Router) modular monolith, per [ADR Z.6](../docs/archive/decisions/Z6-stack-tecnologico.md).
 The root [CLAUDE.md](../CLAUDE.md) is the wiki/operations guide and wins on
 naming (**Libox**), conversation language (Spanish), and the no-AI-co-author
 rule. Normative engineering and git rules live in
