@@ -1,0 +1,27 @@
+name: verify-corpus
+
+# Regla CD-10 del Registro Maestro: ninguna versión de ningún documento del
+# corpus se emite sin que verify_corpus.py pase con cero fallos.
+# Un fallo detiene la integración igual que una prueba en rojo.
+
+on:
+  pull_request:
+    paths:
+      - "docs/linea-base/**"
+      - "verify_corpus.py"
+  push:
+    branches: [main]
+    paths:
+      - "docs/linea-base/**"
+      - "verify_corpus.py"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verificación de coherencia documental (CD-10)
+        run: python3 verify_corpus.py --dir docs/linea-base
