@@ -26,3 +26,6 @@ ignores:
   - ".github"
   - ".claude"   # skills compartidas: código de terceros, no prosa del wiki
   - ".agents"   # copia local previa de skills (no versionada)
+  - "docs/linea-base"   # corpus canónico congelado: se emite verbatim por versiones
+                        # (CD-10/CD-11); su coherencia la valida verify_corpus.py,
+                        # no el lint de estilo del wiki
