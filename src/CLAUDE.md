@@ -1,5 +1,10 @@
 # CLAUDE.md — Application code rules
 
+> ⚠️ **Congelado por ASS-002.** El stack (Next.js vs .NET 8) espera ratificación de los
+> socios; hasta entonces no se crea ni extiende código bajo `src/` (guard E2, ver
+> [`.claude/rules/src-congelado.md`](../.claude/rules/src-congelado.md)). Este archivo
+> sigue siendo la spec de código para cuando se levante el freeze.
+
 This file governs all work under `src/` — the Libox application: a Next.js
 (App Router) modular monolith, per [ADR Z.6](../docs/archive/decisions/Z6-stack-tecnologico.md).
 The root [CLAUDE.md](../CLAUDE.md) is the wiki/operations guide and wins on
@@ -56,16 +61,10 @@ for every feature/fix → **systematic-debugging** before proposing fixes →
 
 ## Model orchestration (Fable → Opus)
 
-When the session model is Fable, orchestrate instead of typing: delegate
-substantial hands-on work (multi-file features, refactors, UI builds, test
-suites, debugging) to a `general-purpose` agent with `model: "opus"` — this
-is standing authorization. Briefs must be self-contained: goal, files in
-scope, the rules from this file, acceptance checks, what to report back.
-Don't delegate trivial edits, pure analysis, or git/PR operations; if a
-worker fails the same brief twice, take over. **Review gate**: never relay a
-worker's "done" unverified — read the diff, rerun the checks. Broad recon can
-use the `Explore` agent with `model: "sonnet"`. On Opus or lower, ignore
-this section and work directly.
+Canonical in [`docs/equipo/sistema-operativo-ia.md`](../docs/equipo/sistema-operativo-ia.md)
+(section "Orquestación"): Fable orchestrates, Opus executes via the repo agents or a
+`general-purpose` agent with `model: "opus"`; self-contained briefs; never relay a
+worker's "done" unverified.
 
 ## Hard engineering rules
 
