@@ -3,8 +3,9 @@
 
   E1  bloquea editar in-place un archivo versionado (_V<n> o -V<n>) existente en docs/linea-base/
   E2  bloquea escribir en src/** o en la config del scaffold mientras ASS-002 siga abierto
-  E3  pregunta al usuario si el contenido nuevo introduce nombres legacy fuera de docs/archive/
-Válvulas de escape por entorno: LIBOX_PERMITIR_INPLACE=1, LIBOX_DESCONGELAR_SRC=1.
+  E3  bloquea contenido nuevo con nombres legacy (Sortibox/ALAZAR) fuera de la allowlist
+Válvulas de escape por entorno: LIBOX_PERMITIR_INPLACE=1, LIBOX_DESCONGELAR_SRC=1,
+LIBOX_PERMITIR_LEGACY=1.
 Ante cualquier error propio, permite (exit 0).
 """
 import json
@@ -22,7 +23,12 @@ FROZEN_FILES = {
 FROZEN_EXEMPT_BASENAMES = {"CLAUDE.md"}
 # ---------------------------------------------------------------------------------
 CANON_PREFIX = "docs/linea-base/"
-ARCHIVE_PREFIX = "docs/archive/"
+# Rutas que pueden nombrar los nombres legacy porque enuncian la regla de naming o son histórico
+LEGACY_ALLOWLIST_FILES = {"CLAUDE.md", "CONTRIBUTING.md"}
+LEGACY_ALLOWLIST_PREFIXES = (
+    "docs/archive/", ".claude/rules/", ".claude/agents/", ".claude/skills/",
+    "docs/equipo/", "docs/superpowers/",
+)
 VERSIONED_RE = re.compile(r"[_-]V\d+\.")
 LEGACY_RE = re.compile(r"\b(sortibox|alazar)\b", re.I)
 
@@ -38,9 +44,10 @@ MSG_E2 = (
     "Para fixes al PR #15 o exigencias del CI, con acuerdo explícito: LIBOX_DESCONGELAR_SRC=1."
 )
 MSG_E3 = (
-    "El contenido nuevo de `{path}` menciona un nombre legacy (Sortibox/ALAZAR). "
-    "El producto es Libox; esos nombres solo se admiten al enunciar la regla de naming o en docs/archive/. "
-    "¿Confirmas la escritura?"
+    "🚫 El contenido nuevo de `{path}` menciona un nombre legacy (Sortibox/ALAZAR). "
+    "El producto es Libox; esos nombres solo se admiten al enunciar la regla de naming "
+    "(CLAUDE.md, CONTRIBUTING.md, .claude/rules|agents|skills, docs/equipo, docs/superpowers) "
+    "o en docs/archive/. Si es legítimo, con acuerdo explícito: LIBOX_PERMITIR_LEGACY=1."
 )
 
 
@@ -81,8 +88,11 @@ def decide(tool_input: dict, root: str, env: Dict[str, str],
             absolute = fp if os.path.isabs(fp) else os.path.join(root, fp)
             if exists(absolute) and env.get("LIBOX_PERMITIR_INPLACE") != "1":
                 return "deny", MSG_E1.format(path=rel)
-        if not rel.startswith(ARCHIVE_PREFIX) and LEGACY_RE.search(new_content(tool_input)):
-            return "ask", MSG_E3.format(path=rel)
+        if (rel not in LEGACY_ALLOWLIST_FILES
+                and not rel.startswith(LEGACY_ALLOWLIST_PREFIXES)
+                and LEGACY_RE.search(new_content(tool_input))
+                and env.get("LIBOX_PERMITIR_LEGACY") != "1"):
+            return "deny", MSG_E3.format(path=rel)
         return "allow", ""
     except Exception:  # noqa: BLE001 — un fallo del guard nunca bloquea al usuario
         return "allow", ""
@@ -98,14 +108,6 @@ def main() -> int:
     if kind == "deny":
         sys.stderr.write(reason + "\n")
         return 2
-    if kind == "ask":
-        sys.stdout.write(json.dumps({
-            "hookSpecificOutput": {
-                "hookEventName": "PreToolUse",
-                "permissionDecision": "ask",
-                "permissionDecisionReason": reason,
-            }
-        }))
     return 0
 
 

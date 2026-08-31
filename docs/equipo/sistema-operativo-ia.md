@@ -62,7 +62,7 @@ veredicto aprobar/cambios).
 | B4 | commit con correo fuera de `@liboxapp.com` | `git config user.email <tu>@liboxapp.com`. |
 | E1 | editar in-place un archivo `_V<n>` existente del canon | `LIBOX_PERMITIR_INPLACE=1` (solo con acuerdo explícito). |
 | E2 | escribir en `src/**` o en la config del scaffold (ASS-002); `src/**/CLAUDE.md` exento | `LIBOX_DESCONGELAR_SRC=1` para fixes al PR #15 o exigencias del CI. |
-| E3 | pregunta si el contenido nuevo menciona Sortibox/ALAZAR fuera de `docs/archive/` | Confirmar en el prompt. |
+| E3 | escribir Sortibox/ALAZAR en contenido nuevo fuera de los archivos que enuncian la regla (`CLAUDE.md`, `CONTRIBUTING.md`, `.claude/rules\|agents\|skills`, `docs/equipo`, `docs/superpowers`) y de `docs/archive/` | `LIBOX_PERMITIR_LEGACY=1` (solo con acuerdo explícito). |
 
 Las variables se ponen en el entorno al lanzar Claude Code o en `"env"` de
 `.claude/settings.local.json` (personal, gitignorado). Un fallo interno de un guard nunca
