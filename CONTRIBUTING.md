@@ -69,7 +69,7 @@ Todos los commits llevan como autor un correo **`@liboxapp.com`** — la autorí
 - Configura el correo **local a este repo** (no toca tus otros proyectos): `git config user.email "tu@liboxapp.com"`.
 - Desactiva *Settings → Emails → "Block command line pushes that expose my email"*: con ese toggle activo, GitHub rechaza tus pushes con el error **GH007**.
 
-Detalle paso a paso en [`docs/onboarding.md`](docs/onboarding.md).
+Detalle paso a paso en [`docs/equipo/onboarding.md`](docs/equipo/onboarding.md).
 
 ## Protección de la rama `main` (configurar en GitHub)
 

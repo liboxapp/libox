@@ -1,7 +1,7 @@
 # Dueños de código: revisión obligatoria de Diego en las rutas sensibles
 # del proyecto. Se hace efectivo cuando el ruleset de `main` active
 # "require code owner review" (junto con approvals >= 1, al entrar los
-# nuevos devs — ver docs/onboarding.md).
+# nuevos devs — ver docs/equipo/onboarding.md).
 
 # Decisiones de arquitectura y reglas del proyecto
 /docs/decisions/    @DianCotrina
@@ -15,3 +15,6 @@
 # CI y automatización
 /.github/           @DianCotrina
 /scripts/           @DianCotrina
+
+# Manual del equipo y del sistema operativo de IA
+/docs/equipo/       @DianCotrina
