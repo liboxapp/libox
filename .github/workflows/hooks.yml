@@ -1,0 +1,49 @@
+name: hooks
+
+# Los guards del OS de IA (scripts/hooks/) son código de infraestructura del
+# equipo: se prueban como cualquier otro. Matriz 3.9/3.12 porque las máquinas
+# de desarrollo corren Python 3.9 y el CI 3.12.
+
+on:
+  pull_request:
+    paths:
+      - "scripts/hooks/**"
+      - ".claude/settings.json"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/hooks/**"
+      - ".claude/settings.json"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.9", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Tests de los guards
+        run: python3 -m unittest discover -s scripts/hooks/tests -v
+      - name: settings.json es JSON válido y sus hooks apuntan a scripts existentes
+        run: |
+          python3 - <<'PY'
+          import json, re, os, sys
+          cfg = json.load(open(".claude/settings.json"))
+          missing = []
+          for event, groups in cfg.get("hooks", {}).items():
+              for group in groups:
+                  for h in group.get("hooks", []):
+                      for m in re.findall(r"\$\{CLAUDE_PROJECT_DIR\}/([^\"]+)", h.get("command", "")):
+                          if not os.path.exists(m):
+                              missing.append(m)
+          if missing:
+              sys.exit("hooks referencian scripts inexistentes: %s" % missing)
+          print("settings.json OK")
+          PY

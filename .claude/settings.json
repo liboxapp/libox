@@ -5,7 +5,33 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash scripts/team-digest.sh"
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/scripts/team-digest.sh\""
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/scripts/hooks/session_status.py\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/scripts/hooks/guard_bash.py\"",
+            "timeout": 90
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/scripts/hooks/guard_edit.py\"",
+            "timeout": 15
           }
         ]
       }
@@ -22,7 +48,9 @@
     "claude-security@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
     "pr-review-toolkit@claude-plugins-official": true,
-    "vercel@claude-plugins-official": true
+    "vercel@claude-plugins-official": true,
+    "claude-mem@thedotmack": false,
+    "vercel-plugin@vercel": false
   },
   "extraKnownMarketplaces": {
     "context-mode": {
