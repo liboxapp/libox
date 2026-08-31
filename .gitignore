@@ -61,3 +61,7 @@ yarn-error.log*
 #                     en cada cambio de comando. Es la convención de create-next-app 16.
 *.tsbuildinfo
 next-env.d.ts
+
+# Python (tests de hooks)
+__pycache__/
+*.pyc
