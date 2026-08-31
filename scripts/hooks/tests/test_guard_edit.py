@@ -79,26 +79,40 @@ class E1CanonInPlace(unittest.TestCase):
 
 
 class E3NamingLegacy(unittest.TestCase):
-    def test_pregunta_ante_sortibox(self):
+    def test_bloquea_sortibox(self):
         kind, msg = g.decide(write(ROOT + "/docs/glosario.md", "Sortibox era el nombre"), ROOT, {})
-        self.assertEqual(kind, "ask")
+        self.assertEqual(kind, "deny")
         self.assertIn("Libox", msg)
+        self.assertIn("LIBOX_PERMITIR_LEGACY", msg)
 
-    def test_pregunta_ante_alazar_en_edit(self):
-        self.assertEqual(g.decide(edit(ROOT + "/docs/x.md", new="ver ALAZAR"), ROOT, {})[0], "ask")
+    def test_bloquea_alazar_en_edit(self):
+        self.assertEqual(g.decide(edit(ROOT + "/docs/x.md", new="ver ALAZAR"), ROOT, {})[0], "deny")
 
-    def test_pregunta_en_multiedit(self):
+    def test_bloquea_en_multiedit(self):
         ti = {"file_path": ROOT + "/docs/x.md", "edits": [{"old_string": "a", "new_string": "alazar"}]}
-        self.assertEqual(g.decide(ti, ROOT, {})[0], "ask")
+        self.assertEqual(g.decide(ti, ROOT, {})[0], "deny")
 
-    def test_no_pregunta_en_archive(self):
+    def test_permite_en_archive(self):
         self.assertEqual(g.decide(write(ROOT + "/docs/archive/prd.md", "ALAZAR"), ROOT, {})[0], "allow")
 
-    def test_no_pregunta_por_subcadena(self):
+    def test_permite_subcadena(self):
         self.assertEqual(g.decide(write(ROOT + "/docs/x.md", "salazar"), ROOT, {})[0], "allow")
 
     def test_permite_contenido_normal(self):
         self.assertEqual(g.decide(write(ROOT + "/docs/x.md", "Libox es el producto"), ROOT, {})[0], "allow")
+
+    def test_permite_en_claude_md_raiz(self):
+        self.assertEqual(g.decide(write(ROOT + "/CLAUDE.md", "Sortibox es nombre legacy"), ROOT, {})[0], "allow")
+
+    def test_permite_en_rules(self):
+        self.assertEqual(g.decide(write(ROOT + "/.claude/rules/git.md", "Sortibox es nombre legacy"), ROOT, {})[0], "allow")
+
+    def test_permite_en_docs_equipo(self):
+        self.assertEqual(g.decide(write(ROOT + "/docs/equipo/x.md", "ALAZAR es nombre legacy"), ROOT, {})[0], "allow")
+
+    def test_valvula_legacy(self):
+        env = {"LIBOX_PERMITIR_LEGACY": "1"}
+        self.assertEqual(g.decide(write(ROOT + "/docs/glosario.md", "ALAZAR"), ROOT, env)[0], "allow")
 
 
 class Robustez(unittest.TestCase):
