@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Guard PreToolUse (matcher Edit|Write|MultiEdit) del OS de IA de Libox. Python 3.9+.
 
-  E1  bloquea editar in-place un archivo versionado (_V<n>) existente en docs/linea-base/
+  E1  bloquea editar in-place un archivo versionado (_V<n> o -V<n>) existente en docs/linea-base/
   E2  bloquea escribir en src/** o en la config del scaffold mientras ASS-002 siga abierto
   E3  pregunta al usuario si el contenido nuevo introduce nombres legacy fuera de docs/archive/
 Válvulas de escape por entorno: LIBOX_PERMITIR_INPLACE=1, LIBOX_DESCONGELAR_SRC=1.
@@ -23,7 +23,7 @@ FROZEN_EXEMPT_BASENAMES = {"CLAUDE.md"}
 # ---------------------------------------------------------------------------------
 CANON_PREFIX = "docs/linea-base/"
 ARCHIVE_PREFIX = "docs/archive/"
-VERSIONED_RE = re.compile(r"_V\d+\.")
+VERSIONED_RE = re.compile(r"[_-]V\d+\.")
 LEGACY_RE = re.compile(r"\b(sortibox|alazar)\b", re.I)
 
 MSG_E1 = (

@@ -50,6 +50,7 @@ class E1CanonInPlace(unittest.TestCase):
     V9 = ROOT + "/docs/linea-base/LIBOX_PRD_BLUEPRINT_MVP_V9.md"
     V10 = ROOT + "/docs/linea-base/LIBOX_PRD_BLUEPRINT_MVP_V10.md"
     SQL = ROOT + "/docs/linea-base/ARTEFACTOS/libox_schema_L3_V7.sql"
+    TOKENS = ROOT + "/docs/linea-base/ARTEFACTOS/libox-design-tokens-L4-V2.json"
 
     def test_bloquea_edit_de_version_existente(self):
         kind, msg = g.decide(edit(self.V9), ROOT, {}, exists=exists_factory([self.V9]))
@@ -61,6 +62,9 @@ class E1CanonInPlace(unittest.TestCase):
 
     def test_bloquea_artefacto_versionado_existente(self):
         self.assertEqual(g.decide(edit(self.SQL), ROOT, {}, exists=exists_factory([self.SQL]))[0], "deny")
+
+    def test_bloquea_artefacto_versionado_con_guion(self):
+        self.assertEqual(g.decide(edit(self.TOKENS), ROOT, {}, exists=exists_factory([self.TOKENS]))[0], "deny")
 
     def test_permite_crear_version_nueva(self):
         self.assertEqual(g.decide(write(self.V10), ROOT, {}, exists=exists_factory([self.V9]))[0], "allow")
@@ -104,6 +108,12 @@ class Robustez(unittest.TestCase):
     def test_acepta_alias_path_y_file_text(self):
         ti = {"path": ROOT + "/src/a.ts", "file_text": "x"}
         self.assertEqual(g.decide(ti, ROOT, {})[0], "deny")
+
+    def test_error_interno_permite(self):
+        def boom(_):
+            raise OSError("stat falló")
+        p = ROOT + "/docs/linea-base/LIBOX_PRD_BLUEPRINT_MVP_V9.md"
+        self.assertEqual(g.decide(edit(p), ROOT, {}, exists=boom)[0], "allow")
 
 
 if __name__ == "__main__":
