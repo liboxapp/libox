@@ -71,6 +71,13 @@ class B3VerifyCorpus(unittest.TestCase):
         c["verify_corpus"] = boom
         self.assertEqual(g.decide('git commit -m "docs: glosario"', c)[0], "allow")
 
+    def test_permite_si_verify_no_puede_ejecutarse(self):
+        def unavailable():
+            raise RuntimeError("no existe verify_corpus.py")
+        c = ctx(staged=["docs/linea-base/LIBOX_PRD_BLUEPRINT_MVP_V10.md"])
+        c["verify_corpus"] = unavailable
+        self.assertEqual(g.decide('git commit -m "docs: prd v10"', c)[0], "allow")
+
     def test_commit_dash_a_incluye_cambios_sin_stage(self):
         c = ctx(staged=[], changed=["docs/linea-base/LIBOX_BACKLOG_MVP_V4.md"], verify=(False, "RESULTADO: 1 fallo"))
         self.assertEqual(g.decide('git commit -am "docs: backlog"', c)[0], "deny")
