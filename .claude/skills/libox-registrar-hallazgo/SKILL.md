@@ -22,7 +22,9 @@ Entrada: `$ARGUMENTS` = descripción libre del hallazgo.
    |---|---|---|---|---|---|---|
    | `<TIPO>-<nnn>` | `YYYY-MM-DD` | doc/sección o PR que lo originó | una o dos frases | qué bloquea o qué cambia si se confirma | persona | `abierto` |
 
-4. **Si es `CHANGE-`**, añade además una línea en el backlog de cambio del corpus
-   (`docs/linea-base/LIBOX_BACKLOG_MVP_V3.md` **no se edita in-place**: el backlog de
-   cambio vive en el doc 20; cuando se apruebe, el cambio se aplica con `libox-versionar-doc`).
+4. **Si es `CHANGE-`**, márcala en el doc 20 como candidata al **backlog de cambio** (CD-07):
+   añade la columna/etiqueta `backlog: sí` en la fila y enlaza el documento del canon afectado
+   por nombre (p. ej. `LIBOX_BACKLOG_MVP_V3.md`). **El canon no se toca**: ningún archivo de
+   `docs/linea-base/` se edita in-place; cuando el cambio se apruebe, se aplica emitiendo la
+   versión siguiente con `libox-versionar-doc`.
 5. **Devuelve al usuario** el ID asignado, el enlace al documento y la frase exacta registrada.
