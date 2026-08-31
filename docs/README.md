@@ -24,7 +24,8 @@ Empieza por [`linea-base/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V6.md`](linea-base/LI
 | [`../verify_corpus.py`](../verify_corpus.py) | Verificador de coherencia, 10 controles. `python3 verify_corpus.py --dir docs/linea-base` | En cada emisión y cada PR que toque el corpus (CD-10: cero fallos) |
 | [`operacion/`](operacion/) | Vacío. Destino del futuro Manual de Operación (T-3, 13 SP) | Al redactarlo en R3 |
 | [`archive/`](archive/) | **Histórico nulo o superseded** — no se consulta ni se cita (Registro §2) | Solo para trazabilidad |
-| [`glosario.md`](glosario.md) · [`onboarding.md`](onboarding.md) · [`flujos/`](flujos/) | Documentos de trabajo, no normativos | Consulta |
+| [`equipo/`](equipo/) | Cómo trabaja el equipo: [sistema operativo de IA](equipo/sistema-operativo-ia.md) (capas, guards, skills, agentes, orquestación) · [estilo de documentación](equipo/estilo-documentacion.md) · [onboarding](equipo/onboarding.md) | Al incorporarte y cada vez que extiendas la configuración de Claude |
+| [`glosario.md`](glosario.md) · [`flujos/`](flujos/) · [`superpowers/`](superpowers/) | Documentos de trabajo, no normativos (glosario, flujos, specs y planes aprobados) | Consulta |
 
 ## Precedencia ante conflicto
 
