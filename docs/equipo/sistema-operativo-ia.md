@@ -95,3 +95,10 @@ Cuando los socios ratifiquen el stack, el PR que cierre ASS-002 borra
 `.claude/rules/src-congelado.md` y las constantes `FROZEN_*` de `guard_edit.py`, actualiza
 `src/CLAUDE.md` y añade agentes `ejecutor-feature`, `tester` y `depurador` más una rule de
 desarrollo para `src/`. Nada de esta capa cambia.
+
+## Auditoría compartida
+
+El [harness activo](ai-audit-harness.md) incorpora la skill
+`libox-system-design-audit` y los agentes `libox-audit-fable` / `libox-audit-opus`.
+Su selección explícita de modelos prevalece sobre la convención genérica de agentes
+en esta tarea. Codex comparte el procedimiento mediante `AGENTS.md`.

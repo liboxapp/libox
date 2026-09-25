@@ -1,9 +1,9 @@
 ---
 title: Diseño del harness de auditoría compartida — Libox
-status: borrador
+status: aprobado
 tags: [libox, harness, auditoria, system-design]
 updated: 2026-09-25
-description: Protocolo propuesto para revisar el OS de IA y la arquitectura con Fable 5.1, Opus 5.5 y Codex, sobre evidencia comparable.
+description: Diseño aprobado del protocolo para revisar el OS de IA y la arquitectura con Fable 5.1, Opus 5.5 y Codex, sobre evidencia comparable.
 ---
 
 # Harness de auditoría compartida
@@ -16,8 +16,9 @@ Codex complementa la revisión de forma independiente. Los resultados deben qued
 documentados y versionados. La prioridad del producto es facilitar implementación
 y operación de sus flujos; ninguna tecnología recibe preferencia automática.
 
-Este documento diseña el protocolo. No activa agentes, instala skills, cambia
-permisos, ratifica ASS-002 ni modifica el corpus o el código congelados.
+Diego solicitó activar este diseño el 2026-09-25. La configuración operativa y
+el lanzamiento están en el [manual vigente](../../equipo/ai-audit-harness.md).
+La activación no ratifica ASS-002 ni modifica el corpus o el código congelados.
 La primera auditoría evalúa el **harness**, incluida su capacidad de revisar system
 design. Auditar y decidir la arquitectura de producto será una ejecución posterior.
 

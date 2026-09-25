@@ -1,3 +1,10 @@
+Instrucciones compartidas de Libox.
+
+Lee `CLAUDE.md` y las reglas aplicables en `.claude/rules/` antes de trabajar.
+El corpus y el scaffold conservan sus restricciones de cambio.
+Para auditorías usa `.claude/skills/libox-system-design-audit/SKILL.md` en modo
+revisor Codex y `docs/equipo/ai-audit-harness.md`. No simules revisiones de Claude.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know

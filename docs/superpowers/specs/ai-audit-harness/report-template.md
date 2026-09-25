@@ -1,6 +1,6 @@
 ---
 title: Plantilla de informe independiente y síntesis — Libox
-status: borrador
+status: vigente
 tags: [harness, auditoria, plantilla]
 updated: 2026-09-25
 description: Campos obligatorios para comparar informes sin perder evidencia, incertidumbre ni desacuerdos.
