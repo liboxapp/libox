@@ -1,6 +1,6 @@
 ---
 title: Contrato y escenarios de auditoría — Libox
-status: borrador
+status: vigente
 tags: [harness, auditoria, system-design]
 updated: 2026-09-25
 description: Entradas, preguntas y criterios de evidencia comunes a los revisores del harness y de la futura arquitectura.

@@ -51,3 +51,10 @@ La línea de ADRs Z.1–Z.8 es histórica (`docs/archive/decisions/`).
 `scripts/hooks/` y las reglas hookify están **versionados**: todo el equipo hereda el mismo
 entorno al clonar. `.claude/settings.local.json` es personal y nunca se commitea. La
 auto-memory es personal por máquina: lo valioso se promueve a `docs/` por PR.
+
+## Auditoría compartida activa
+
+`/libox-system-design-audit` inicia el audit del harness; procedimiento en
+[el manual](docs/equipo/ai-audit-harness.md). Para esta tarea se usan
+`libox-audit-fable` y `libox-audit-opus` con sus modelos explícitos, como excepción
+a la delegación genérica anterior. Codex aporta una revisión independiente.

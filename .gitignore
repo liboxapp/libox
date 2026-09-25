@@ -49,7 +49,10 @@ yarn-error.log*
 .claude/worktrees/
 
 # Tooling de agentes local (copia previa de skills; la fuente ahora es .claude/skills/)
-.agents/
+.agents/*
+!.agents/skills/
+.agents/skills/*
+!.agents/skills/libox-system-design-audit
 
 # Archivos temporales de FUSE (FS montado)
 .fuse_hidden*
