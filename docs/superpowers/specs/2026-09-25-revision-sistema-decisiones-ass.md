@@ -40,6 +40,7 @@ En serverless cada punto pide un rodeo: cron externo, jobs en un tercero, auth g
 | Jobs y workers | Nativo (`BackgroundService`, Hangfire, Quartz) | Maduro (pg-boss, BullMQ) |
 | Dinero | Tipado fuerte, `long` en céntimos | TS estricto; exige `bigint` o enteros validados, nunca `number` flotante |
 | Contratación en Perú | Amplia en banca y enterprise | Amplia en startups |
+| Documentación de API (Scalar, decidido) | `Scalar.AspNetCore` | `@scalar/nestjs-api-reference` o `@scalar/fastify-api-reference` |
 
 Dos datos cambian el peso de la columna izquierda:
 

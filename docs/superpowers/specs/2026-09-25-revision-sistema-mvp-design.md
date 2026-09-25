@@ -61,6 +61,14 @@ L3 no declara estilo ni trae diagrama, pero todo apunta a un **monolito modular 
 
 Camino crítico del dinero: el webhook del PSP entra firmado y se deduplica; en **una sola transacción** se confirma el pago, se emiten los tickets, se asienta el ledger y se escribe el evento en el outbox. El worker despacha los efectos (notificaciones, cierres, sorteos) de forma idempotente.
 
+**Documentación de API: Scalar** (decisión de Diego, 2026-09-25). El backend publica su referencia de API con [Scalar](https://scalar.com), que renderiza el OpenAPI del canon con un cliente de prueba y ejemplos de código. Es neutral respecto de ASS-002: tiene integración con ASP.NET Core (`Scalar.AspNetCore`) y con Node (NestJS, Fastify). Tiene tres condiciones:
+
+1. El OpenAPI debe estar completo y ser 3.1 válido: hoy le faltan rutas (T-1) y usa `nullable`, que 3.1 no reconoce.
+2. La referencia pública expone solo rutas públicas y de participante. Las de administración y liquidación van en una referencia interna con autenticación.
+3. El cliente de prueba apunta a sandbox, nunca a producción.
+
+Entra al canon con L3 V8 (§0.3), por la vía de CD-07.
+
 **Escala.** No es el riesgo del MVP: L1 enciende con 3 sorteos simultáneos en el mes 11, y la capacidad de referencia (50 órdenes/s) está órdenes de magnitud por debajo de lo que sostiene un Postgres primario. El riesgo es la **correctitud**: concurrencia sobre el inventario de un sorteo popular, idempotencia de webhooks y cuadre del ledger. Por eso las zonas sin IA están donde están.
 
 ## 3. Construido frente a lo que pide el canon
@@ -85,7 +93,7 @@ Lo reutilizable es el front: el canon manda un cliente Next.js, así que el mock
 
 1. Socios: ratificar ASS-002 con el encuadre de la [nota de trade-offs](2026-09-25-revision-sistema-decisiones-ass.md) y encargar los dictámenes L-01 y de custodia. [LEGAL→ABOGADO]
 2. Registrar los [hallazgos](2026-09-25-revision-sistema-hallazgos-l3.md) por CD-07 y emitir **L3 V8**: runtime soportado, ledger corregido, SQL desplegable, RPO/RTO.
-3. Completar el OpenAPI (T-1), condición bloqueante del equipo técnico.
+3. Completar el OpenAPI (T-1), condición bloqueante del equipo técnico y fuente única de los tipos generados y de la referencia en Scalar.
 4. Alinear gobernanza: `CONTRIBUTING.md` todavía exige Drizzle, Supabase e Inngest, contra el canon.
 5. CI de código: build, lint, typecheck, test y migraciones contra una base efímera.
 6. En paralelo, fuera de ingeniería: fichas de superficies (T-2) y F0 (20 conversaciones, hoy en cero).
