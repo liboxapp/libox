@@ -45,7 +45,7 @@ Propuesta para H-01 y H-03: diferir T-04, T-05 y T-06 al momento "liquidación e
 
 | # | Sev | Hallazgo | Referencia |
 |---|---|---|---|
-| H-13 | B | **(v)** El OpenAPI tiene 16 operaciones y L3 §11 enumera al menos 43 rutas distintas. La Evaluación estimó ~30 y cotizó T-1 en 8 SP: probablemente subestimado. Usa `nullable`, que no existe en OpenAPI 3.1. | OpenAPI · §11 (l.3752–3864) |
+| H-13 | B | **(v)** El OpenAPI tiene 16 operaciones y L3 §11 enumera al menos 43 rutas distintas. La Evaluación estimó ~30 y cotizó T-1 en 8 SP: probablemente subestimado. Usa `nullable`, que no existe en OpenAPI 3.1; eso también afecta a la referencia publicada con Scalar. | OpenAPI · §11 (l.3752–3864) |
 | H-14 | A | **(v)** `document_number_hash` es un SHA-256 del documento. Con ~10⁸ DNI posibles se revierte por fuerza bruta: debe ser un HMAC con clave secreta. | l.379 |
 | H-15 | A | **(v)** L3 no define RPO, RTO, backups ni recuperación ante desastres, en un sistema con ledger de solo agregación. | L3 completo |
 | H-16 | M | Pago aprobado después de expirar la reserva o de congelar el pool: no hay política, con riesgo de ticket fuera del pool. | l.1492–1496, 3884 |
