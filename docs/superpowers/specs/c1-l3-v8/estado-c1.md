@@ -31,6 +31,9 @@ financieras del producto. SQL y artefactos mantienen estado de borrador.
 
 ## Aportes necesarios para cerrar C1
 
+Las decisiones de dominio que bloquean la integración están reunidas, con opciones
+y recomendación, en el [paquete de decisiones](decisiones-c1.md).
+
 | Pendiente | Entrega concreta | Responsable |
 |---|---|---|
 | H-04 | Integridad del ledger en DB: cuenta/moneda, cuadre y líneas tardías; pruebas negativas | Diego, implementación humana |
