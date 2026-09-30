@@ -6,7 +6,8 @@
   E3  bloquea contenido nuevo con nombres legacy (Sortibox/ALAZAR) fuera de la allowlist
 Válvulas de escape por entorno: LIBOX_PERMITIR_INPLACE=1, LIBOX_DESCONGELAR_SRC=1,
 LIBOX_PERMITIR_LEGACY=1, LIBOX_EDITAR_OS=1.
-E4 protege el OS; el freeze usa allowlist. Errores: permite con AVISO visible.
+E4 protege el OS; E5 impide sobrescribir informes sin válvula de escape.
+El freeze usa allowlist. Errores: permite con AVISO visible.
 """
 import json
 import os
@@ -14,6 +15,7 @@ import re
 import sys
 
 from guard_paths import candidates, warn
+from audit_reports import is_existing_report
 from typing import Callable, Dict, Optional, Tuple
 
 # --- D1: borrar estas tres constantes (y sus tests) al levantar el freeze ---
@@ -86,6 +88,9 @@ def decide(tool_input: dict, root: str, env: Dict[str, str],
             return 'allow', ''
         if not os.path.isabs(fp) and os.path.normpath(fp).startswith('..' + os.sep):
             return 'deny', 'Ruta relativa fuera del proyecto; use una ruta absoluta verificable.'
+        absolute_input = os.path.abspath(os.path.join(root, fp))
+        if is_existing_report(absolute_input):
+            return 'deny', 'E5: informe existente inmutable; crear un nuevo intento sin sobrescribir.'
         for rel, absolute in candidates(fp, root):
             key = rel.casefold()
             base = key.rsplit('/', 1)[-1]
