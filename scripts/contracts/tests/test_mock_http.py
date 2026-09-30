@@ -7,6 +7,7 @@ import threading
 import unittest
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
+from urllib.parse import urlencode
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from mock_server import create_server
@@ -29,13 +30,46 @@ class MockHttpContract(unittest.TestCase):
         cls.server.server_close()
         cls.thread.join(timeout=2)
 
-    def test_all_61_examples_round_trip_over_http(self):
+    def test_all_examples_round_trip_over_http(self):
+        """Inventario L3 y auxiliares C1; el mock no prueba permisos ni seguridad."""
         for path, method, op in self.contract.operations(self.doc):
-            url = re.sub(r'\{[^}]+\}', 'fixture', path)
+            url = path
+            headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer synthetic-fixture'}
+            query = {}
+            for parameter in op['parameters']:
+                if not parameter.get('required') and parameter['name'] != 'x-request-id':
+                    continue
+                schema = parameter['schema']
+                if 'enum' in schema:
+                    value = schema['enum'][0]
+                elif schema.get('type') == 'integer':
+                    value = schema.get('minimum', 1)
+                elif schema.get('format') == 'uuid':
+                    value = '00000000-0000-4000-8000-000000000001'
+                elif schema.get('format') == 'date':
+                    value = '2026-09-30'
+                elif parameter['name'] == 'code':
+                    value = 'PE'
+                elif parameter['name'] == 'data.id':
+                    value = '999999999'
+                else:
+                    value = 'synthetic-fixture'
+                self.contract.validator(self.doc, schema).validate(value)
+                if parameter['in'] == 'path':
+                    url = url.replace('{' + parameter['name'] + '}', str(value))
+                elif parameter['in'] == 'header':
+                    headers[parameter['name']] = str(value)
+                elif parameter['in'] == 'query':
+                    query[parameter['name']] = str(value)
+            if query:
+                url += '?' + urlencode(query)
+            if op['operationId'] == 'receivePspWebhook':
+                headers['x-signature'] = 'ts=0,v1=' + '0' * 64  # No firma auténtica.
+            self.assertNotIn('{', url)
             body = op.get('requestBody', {}).get('content', {}).get('application/json', {}).get('example')
             data = json.dumps(body).encode() if body is not None else None
             request = Request(self.base + url, data=data, method=method.upper(),
-                              headers={'Content-Type':'application/json'})
+                              headers=headers)
             with self.subTest(operation=op['operationId']), urlopen(request, timeout=5) as response:
                 schema = op['responses'][str(response.status)]['content']['application/json']['schema']
                 actual = json.load(response)

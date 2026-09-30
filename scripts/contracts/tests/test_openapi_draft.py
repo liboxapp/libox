@@ -23,11 +23,18 @@ class DraftContract(unittest.TestCase):
     def validator(self, doc, schema):
         return Draft202012Validator(schema, resolver=RefResolver.from_schema(doc), format_checker=FormatChecker())
 
+    def inventory_operations(self, doc):
+        """Subconjunto L3 §11; las auxiliares de C1 se prueban en test_auxiliary_contracts."""
+        return [(path, method, op) for path, method, op in self.operations(doc)
+                if op.get('x-origin') == 'l3-inventory']
+
     def test_openapi_31_and_unique_coverage(self):
         doc = self.document()
         validate(doc)
         self.assertEqual(doc['openapi'], '3.1.0')
-        operations = self.operations(doc)
+        all_ids = [op['operationId'] for _, _, op in self.operations(doc)]
+        self.assertEqual(len(all_ids), len(set(all_ids)), 'operationId duplicado')
+        operations = self.inventory_operations(doc)
         self.assertEqual(len(operations), 61)
         ids = [op['operationId'] for _, _, op in operations]
         self.assertEqual(len(set(ids)), 61)

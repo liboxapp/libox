@@ -1,8 +1,9 @@
 openapi: 3.1.0
 info:
   title: Libox API — borrador contractual C1
-  version: 2.0.0-draft.1
-  description: 'Borrador no canónico, 61 operaciones. Esquemas de interfaz; no código de dominio. Money
+  version: 2.0.0-draft.2
+  description: 'Borrador no canónico: 61 operaciones del inventario L3 §11 (x-origin l3-inventory) más
+    operaciones auxiliares C1 (x-origin c1-auxiliary). Esquemas de interfaz; no código de dominio. Money
     string ratificado el 2026-09-30. No desplegar: quedan decisiones indicadas en x-authorization-status
     y adaptadores externos. Fixtures sintéticos, no vectores financieros ni criptográficos. Cambio incompatible
     respecto V7: destino /api/v2 propuesto antes de emisión C2; no servir como reemplazo silencioso de
@@ -11,6 +12,9 @@ info:
   x-target-document: L3 V8 (no emitido)
   x-implements: PRD MVP V9
   x-status: draft-not-for-deployment
+  x-origin-values:
+  - l3-inventory
+  - c1-auxiliary
 servers:
 - url: /api/v2
   description: Base candidata por cambio incompatible de Money; pendiente de emisión C2.
@@ -20,6 +24,7 @@ paths:
   /auth/register:
     post:
       operationId: register
+      x-origin: l3-inventory
       summary: Solicitar registro
       tags:
       - auth
@@ -81,6 +86,7 @@ paths:
   /auth/verify-contact:
     post:
       operationId: verifyContact
+      x-origin: l3-inventory
       summary: Verificar contacto
       tags:
       - auth
@@ -140,6 +146,7 @@ paths:
   /auth/login:
     post:
       operationId: login
+      x-origin: l3-inventory
       summary: Iniciar sesión
       tags:
       - auth
@@ -205,6 +212,7 @@ paths:
   /auth/refresh:
     post:
       operationId: refresh
+      x-origin: l3-inventory
       summary: Renovar sesión
       tags:
       - auth
@@ -269,6 +277,7 @@ paths:
   /identity/verify:
     post:
       operationId: verifyIdentity
+      x-origin: l3-inventory
       summary: Solicitar verificación de identidad
       tags:
       - identity
@@ -335,6 +344,7 @@ paths:
   /identity/liveness:
     post:
       operationId: verifyLiveness
+      x-origin: l3-inventory
       summary: Validar prueba de vida
       tags:
       - identity
@@ -400,6 +410,7 @@ paths:
   /clients:
     post:
       operationId: createClient
+      x-origin: l3-inventory
       summary: Crear organizador
       tags:
       - clients
@@ -441,7 +452,7 @@ paths:
               example:
                 client_id: 00000000-0000-4000-8000-000000000001
                 display_name: Organizador de prueba
-                status: PENDING_VERIFICATION
+                status: PENDING_KYB
                 trace_id: 00000000-0000-4000-8000-000000000001
         '400':
           $ref: '#/components/responses/Error400_dba09dea'
@@ -468,6 +479,7 @@ paths:
   /clients/{id}/kyb:
     post:
       operationId: submitKyb
+      x-origin: l3-inventory
       summary: Enviar verificación del organizador
       tags:
       - clients
@@ -542,6 +554,7 @@ paths:
   /clients/{id}/members:
     post:
       operationId: inviteMember
+      x-origin: l3-inventory
       summary: Invitar miembro
       tags:
       - clients
@@ -614,6 +627,75 @@ paths:
               email: member@example.invalid
               subrole: CLIENT_OPERATOR
   /clients/{id}/payout:
+    get:
+      operationId: getPayout
+      x-origin: c1-auxiliary
+      summary: Consultar destino de cobro
+      tags:
+      - clients
+      description: Lectura versionada previa a updatePayout. Borrador auxiliar C1; no implica implementación
+        ni autorización por sí mismo.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles:
+      - CLIENT_OWNER
+      - CLIENT_VIEWER
+      - ADMIN_FINANCE
+      - ADMIN_COMPLIANCE
+      - ADMIN_SUPER
+      x-authorization: Fila "Datos de cobro" de L3 §7.1; solo cuenta enmascarada, nunca número ni titular
+        en claro.
+      x-authorization-status: proposed
+      x-internal-session: Roles internos con JWT válido + aal2 + sesión Libox activa; 30 min sin interacción
+        humana revoca acceso interno.
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPayoutResponse'
+              example:
+                status: VERIFIED
+                masked_account: '****1234'
+                effective_at: '2026-09-30T12:00:00-05:00'
+                version: 3
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '401':
+          $ref: '#/components/responses/Error401_d24337c4'
+        '403':
+          $ref: '#/components/responses/Error403_4f4b65b2'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
     put:
       operationId: updatePayout
       summary: Actualizar destino de cobro
@@ -629,6 +711,7 @@ paths:
       x-authorization: Solo dueño y reautenticación reciente; verificar titularidad; cambio activa retención
         conforme al canon.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -672,7 +755,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/UpdatePayoutResponse'
               example:
-                status: PENDING_VERIFICATION
+                status: PENDING
                 masked_account: '****1234'
                 effective_at: '2026-09-30T12:00:00-05:00'
                 version: 1
@@ -701,6 +784,71 @@ paths:
               payout_token: synthetic-bank-token
               expected_version: 1
   /clients/{id}/capabilities:
+    get:
+      operationId: getCapabilities
+      x-origin: c1-auxiliary
+      summary: Consultar capacidades del cliente
+      tags:
+      - clients
+      description: Lectura versionada previa a updateCapabilities. Solo capa de cliente; la resolución
+        en tres capas (INV-45) queda pendiente. Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles:
+      - ADMIN_RISK
+      - ADMIN_SUPER
+      x-authorization: Fila "Capacidades del cliente" de L3 §7.1; ámbito del cliente.
+      x-authorization-status: proposed
+      x-internal-session: JWT válido + aal2 + sesión Libox activa; 30 min sin interacción humana revoca
+        acceso interno.
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCapabilitiesResponse'
+              example:
+                enabled_raffle_types:
+                - T1
+                - T2
+                version: 2
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '401':
+          $ref: '#/components/responses/Error401_d24337c4'
+        '403':
+          $ref: '#/components/responses/Error403_4f4b65b2'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
     put:
       operationId: updateCapabilities
       summary: Actualizar capacidades
@@ -717,6 +865,7 @@ paths:
       x-authorization: Ámbito del cliente, permiso privilegiado y motivo auditado; no habilita un tipo
         prohibido por mercado.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -795,6 +944,7 @@ paths:
       x-allowed-roles: []
       x-authorization: Solo sorteos publicados y campos públicos.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -894,6 +1044,7 @@ paths:
       x-authorization: Cliente propio y capacidades/mercado vigentes; precio y régimen sujetos a validación
         de dominio.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -965,6 +1116,7 @@ paths:
       x-allowed-roles: []
       x-authorization: Slug público, nunca borradores ni datos privados.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -1056,6 +1208,7 @@ paths:
       x-authorization: UUID de sorteo propio en estado editable; optimistic version; bases congeladas
         al publicar.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -1131,6 +1284,7 @@ paths:
       x-allowed-roles: []
       x-authorization: Versión publicada e inmutable.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -1191,6 +1345,7 @@ paths:
       x-authorization: Sorteo propio completo, documentos y capacidades válidos; no equivale a aprobar
         publicación.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -1255,6 +1410,7 @@ paths:
   /raffles/{raffle_ref}/prize-valuation:
     post:
       operationId: submitPrizeValuation
+      x-origin: l3-inventory
       summary: Presentar evidencias de valoración
       tags:
       - raffles
@@ -1304,7 +1460,7 @@ paths:
                 $ref: '#/components/schemas/SubmitPrizeValuationResponse'
               example:
                 valuation_id: 00000000-0000-4000-8000-000000000001
-                status: SUBMITTED
+                status: PENDING
                 trace_id: 00000000-0000-4000-8000-000000000001
         '400':
           $ref: '#/components/responses/Error400_dba09dea'
@@ -1334,6 +1490,7 @@ paths:
   /raffles/{raffle_ref}/pc-stages/{stage}:
     post:
       operationId: submitPcStage
+      x-origin: l3-inventory
       summary: Presentar documentación de etapa registral
       tags:
       - raffles
@@ -1396,7 +1553,7 @@ paths:
                 $ref: '#/components/schemas/SubmitPcStageResponse'
               example:
                 stage: E1
-                status: SUBMITTED
+                status: IN_REVIEW
                 trace_id: 00000000-0000-4000-8000-000000000001
         '400':
           $ref: '#/components/responses/Error400_dba09dea'
@@ -1438,6 +1595,7 @@ paths:
       x-authorization: Sujeto verificado; autoexclusión, KYC, cumplimiento, no autocompra, concentración,
         límites, mínimo e inventario, en ese orden. Importes calculados por servidor.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -1544,6 +1702,7 @@ paths:
       - USER_VERIFIED
       x-authorization: Solo orden propia. Estados durables, sin afirmar PAID por timeout o incertidumbre.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -1629,6 +1788,7 @@ paths:
       - USER_VERIFIED
       x-authorization: Recurso propio; verificar principal y pertenencia, además del subrol.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -1697,6 +1857,7 @@ paths:
   /me/tickets/{raffle_id}:
     get:
       operationId: getRaffleTickets
+      x-origin: l3-inventory
       summary: Consultar tickets propios del sorteo
       tags:
       - me
@@ -1796,6 +1957,7 @@ paths:
       x-authorization: Solo prueba publicada tras ejecución; seed no visible antes del reveal. Sin identidad
         de ganadores.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -1874,6 +2036,7 @@ paths:
   /public/draws/{slug}/pool:
     get:
       operationId: getPublicPool
+      x-origin: l3-inventory
       summary: Consultar snapshot público completo
       tags:
       - public
@@ -1951,6 +2114,7 @@ paths:
       x-authorization: Participante o operador asignado. No editar/eliminar mensajes; filtrar contacto
         externo y ofertas monetarias.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -2037,6 +2201,7 @@ paths:
       x-authorization: Participante o asignado; upload propio, hash/tipo/tamaño y cuarentena antes de
         aceptación.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -2115,6 +2280,7 @@ paths:
       x-authorization: Solo ganador de la sala dentro de SLA; autoexclusión/suspensión de mercado no impiden
         reclamar.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -2178,6 +2344,7 @@ paths:
   /rooms/{id}/shipping-quotes:
     post:
       operationId: createShippingQuote
+      x-origin: l3-inventory
       summary: Agregar cotización de envío
       tags:
       - rooms
@@ -2260,6 +2427,7 @@ paths:
   /rooms/{id}/shipping-selection:
     post:
       operationId: selectShipping
+      x-origin: l3-inventory
       summary: Seleccionar envío
       tags:
       - rooms
@@ -2349,6 +2517,7 @@ paths:
       x-authorization: 'INC-06/07/09/11: quien valoró no atesta; finanzas excluidas; firma separada válida
         para P-C1/P-C2, no basta aportar un ID. No mueve dinero.'
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -2424,6 +2593,7 @@ paths:
   /rooms/{id}/sla-extension:
     post:
       operationId: extendSla
+      x-origin: l3-inventory
       summary: Solicitar extensión de plazo
       tags:
       - rooms
@@ -2501,6 +2671,7 @@ paths:
   /rooms/{id}/forensic-export:
     get:
       operationId: exportRoom
+      x-origin: l3-inventory
       summary: Obtener export forense autorizado
       tags:
       - rooms
@@ -2590,6 +2761,7 @@ paths:
       x-authorization: Cliente propio para roles de cliente; ámbito asignado para internos. RN-102 motivo/fecha
         siempre en HELD.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -2703,6 +2875,7 @@ paths:
       x-authorization: Ámbito de cliente/caso, no basta conocer UUID. Los seis gates son calculados por
         servidor.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -2793,6 +2966,7 @@ paths:
       x-authorization: Exclusivo ADMIN_FINANCE; seis gates satisfechos, versión actual, destino verificado
         y sin freeze de payout.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -2891,6 +3065,7 @@ paths:
   /settlements/batch-execute:
     post:
       operationId: executeSettlementBatch
+      x-origin: l3-inventory
       summary: Solicitar ejecución por lote
       tags:
       - settlements
@@ -2973,18 +3148,22 @@ paths:
   /webhooks/psp/{provider}:
     post:
       operationId: receivePspWebhook
+      x-origin: l3-inventory
       summary: Recibir evento PSP
       tags:
       - webhooks
-      description: Esquema PSP orientativo pendiente de proveedor y fixtures firmados; no publicar este
-        webhook hasta cerrar el adaptador. Ante fallo de persistencia responder 503 para reintento.
+      description: Mercado Pago elegido por Diego el 2026-09-30. Contrato de notificación payment; fixtures
+        sintéticos, sandbox pendiente. Ante fallo de persistencia responder 503. No habilitar producción
+        sin prueba del adaptador y aceptación comercial.
       security:
       - pspSignature: []
       x-access-class: webhook
       x-allowed-roles: []
-      x-authorization: Verificar firma sobre bytes originales, timestamp, proveedor y recurso por consulta
-        autenticada. Dedupe durable antes del 200; duplicado válido retorna 200. Firma no implica pago
-        aprobado.
+      x-authorization: Validar HMAC-SHA256 de id:<data.id>;request-id:<x-request-id>;ts:<ts>; según Mercado
+        Pago. data.id proviene del query, normalizado según proveedor; exigir coincidencia con cuerpo.
+        La firma no cubre el cuerpo completo ni acredita pago aprobado. Consultar recurso por API autenticada
+        y comprobar aplicación/cuenta, modo, orden, moneda e importe. Dedupe durable antes del 200; duplicado
+        válido retorna 200. Timestamp y reintentos requieren política verificada en sandbox.
       x-authorization-status: proposed
       parameters:
       - name: X-Trace-Id
@@ -3000,8 +3179,22 @@ paths:
         required: true
         schema:
           type: string
+          enum:
+          - mercadopago
+      - name: x-request-id
+        in: header
+        required: true
+        schema:
+          type: string
           minLength: 1
-          maxLength: 100
+        description: Entrada de firma Mercado Pago; no sustituir por otro identificador.
+      - name: data.id
+        in: query
+        required: true
+        schema:
+          type: string
+          minLength: 1
+        description: Entrada de firma Mercado Pago; no sustituir por otro identificador.
       responses:
         '200':
           description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
@@ -3039,13 +3232,24 @@ paths:
             schema:
               $ref: '#/components/schemas/PspNotification'
             example:
-              id: synthetic-event
+              id: 12345
+              live_mode: false
               type: payment
+              date_created: '2026-09-30T12:00:00Z'
+              user_id: 44444
+              api_version: v1
+              action: payment.updated
               data:
-                id: synthetic-payment
+                id: '999999999'
+      x-signature-inputs:
+      - data.id
+      - x-request-id
+      - ts
+      x-signature-covers-body: false
   /reconciliation/{date}:
     get:
       operationId: getReconciliation
+      x-origin: l3-inventory
       summary: Consultar conciliación diaria
       tags:
       - reconciliation
@@ -3117,6 +3321,7 @@ paths:
   /reconciliation/exceptions/{id}/resolve:
     post:
       operationId: resolveReconciliation
+      x-origin: l3-inventory
       summary: Resolver excepción de conciliación
       tags:
       - reconciliation
@@ -3208,6 +3413,7 @@ paths:
   /raffles/{raffle_ref}/freeze:
     post:
       operationId: freezeRaffle
+      x-origin: l3-inventory
       summary: Congelar pool
       tags:
       - raffles
@@ -3295,6 +3501,7 @@ paths:
   /raffles/{raffle_ref}/execute-draw:
     post:
       operationId: executeDraw
+      x-origin: l3-inventory
       summary: Solicitar sorteo determinista
       tags:
       - raffles
@@ -3382,6 +3589,7 @@ paths:
   /raffles/{raffle_ref}/redraw:
     post:
       operationId: redraw
+      x-origin: l3-inventory
       summary: Solicitar re-sorteo previsto
       tags:
       - raffles
@@ -3469,6 +3677,7 @@ paths:
   /disputes:
     post:
       operationId: createDispute
+      x-origin: l3-inventory
       summary: Abrir controversia
       tags:
       - disputes
@@ -3559,6 +3768,7 @@ paths:
       - ADMIN_SUPER
       x-authorization: Parte/asignado al caso; evidencia propia e inmutable; autorización de objeto.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -3638,6 +3848,7 @@ paths:
       x-authorization: 'INC-08: no adjudica quien atestó; segunda firma independiente cuando corresponda;
         resolución no ejecuta pago.'
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -3730,6 +3941,7 @@ paths:
       x-authorization: Solo saldo propio; autoexclusión y suspensión no impiden disponer. Sin expiración
         ni carga voluntaria.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -3792,6 +4004,7 @@ paths:
       x-authorization: Titular verificado, destino propio verificado, saldo disponible y bloqueo autoritativo;
         no cargar saldo.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -3874,6 +4087,7 @@ paths:
       - USER_VERIFIED
       x-authorization: Recurso propio; verificar principal y pertenencia, además del subrol.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -3947,6 +4161,7 @@ paths:
       x-authorization: Reducción inmediata, aumento tras 24 h; effective_at es calculado por servidor,
         no enviado por usuario.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -4019,6 +4234,7 @@ paths:
       x-authorization: Inmediata e irreversible durante plazo; sin retención comercial ni fricción; mantiene
         acceso a reclamo y retiro.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -4085,6 +4301,7 @@ paths:
       - USER_VERIFIED
       x-authorization: Recurso propio; verificar principal y pertenencia, además del subrol.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -4153,6 +4370,7 @@ paths:
       - ADMIN_SUPER
       x-authorization: Ámbito y propósito autorizado; lista mínima sin documentos ni DNI.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -4229,6 +4447,7 @@ paths:
       x-authorization: Caso asignado y evidencia protegida; autorización previa y separación de funciones,
         no libera fondos directamente.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -4321,6 +4540,7 @@ paths:
       - ADMIN_SUPER
       x-authorization: Filtrar por ámbito, privilegio y asignación; sin payloads sensibles en lista.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -4398,6 +4618,7 @@ paths:
       x-authorization: Acción privilegiada según matriz L3 7.1; solo marca atención, no corrige estado
         del negocio.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -4479,6 +4700,7 @@ paths:
       - ADMIN_SUPER
       x-authorization: Motivo trazable y condición resuelta; no omitir controles patrimoniales.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -4562,6 +4784,7 @@ paths:
       - ADMIN_SUPER
       x-authorization: Mercado autorizado; no exponer credenciales ni secretos de infraestructura.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -4631,6 +4854,7 @@ paths:
       x-authorization: Versionado y razón auditada; no modifica bases publicadas ni sobrepasa habilitación
         legal.
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -4715,6 +4939,7 @@ paths:
       x-authorization: 'INV-33: ninguno de los cuatro niveles impide premios, reembolsos ni saldo. Mantener
         acciones de salida disponibles.'
       x-authorization-status: derived-from-L3-7.1
+      x-origin: l3-inventory
       parameters:
       - name: X-Trace-Id
         in: header
@@ -4782,6 +5007,7 @@ paths:
   /public/pricing-simulator:
     post:
       operationId: simulatePricing
+      x-origin: l3-inventory
       summary: Estimar costos de sorteo
       tags:
       - public
@@ -4853,6 +5079,2152 @@ paths:
               ticket_price:
                 amount: '2500'
                 currency: PEN
+  /clients/{id}:
+    get:
+      operationId: getClient
+      x-origin: c1-auxiliary
+      summary: Consultar organizador
+      tags:
+      - clients
+      description: Lectura versionada del organizador y estado KYB. Borrador auxiliar C1; no implica implementación
+        ni autorización por sí mismo.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles:
+      - CLIENT_OWNER
+      - CLIENT_MANAGER
+      - CLIENT_OPERATOR
+      - CLIENT_VIEWER
+      - ADMIN_RISK
+      - ADMIN_COMPLIANCE
+      - ADMIN_SUPER
+      x-authorization: Miembro activo del cliente o interno autorizado; §7.1 no tiene fila propia para
+        esta lectura. Fuera de ámbito responde 404.
+      x-authorization-status: proposed
+      x-internal-session: Roles internos con JWT válido + aal2 + sesión Libox activa; 30 min sin interacción
+        humana revoca acceso interno.
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetClientResponse'
+              example:
+                client_id: 00000000-0000-4000-8000-000000000001
+                display_name: Organizador sintético
+                kind: LEGAL
+                market: PE
+                status: ACTIVE
+                kyb_status: APPROVED
+                version: 4
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '401':
+          $ref: '#/components/responses/Error401_d24337c4'
+        '403':
+          $ref: '#/components/responses/Error403_4f4b65b2'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+  /raffles/{raffle_ref}/management:
+    get:
+      operationId: getRaffleManagement
+      x-origin: c1-auxiliary
+      summary: Consultar sorteo en gestión
+      tags:
+      - raffles
+      description: Vista privada con versión para updateRaffle, submitRaffle y decisiones. Recibe UUID,
+        no slug. No incluye configuración por tipo T1–T8, pendiente de diseño cerrado. Borrador auxiliar
+        C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles:
+      - CLIENT_OWNER
+      - CLIENT_MANAGER
+      - CLIENT_OPERATOR
+      - CLIENT_VIEWER
+      - SUPPORT_L1
+      - SUPPORT_L2
+      - SUPPORT_VALUATOR
+      - SUPPORT_SUPERVISOR
+      - ADMIN_MODERATION
+      - ADMIN_RISK
+      - ADMIN_FINANCE
+      - ADMIN_LEGAL_COMPLIANCE
+      - ADMIN_COMPLIANCE
+      - ADMIN_SUPER
+      x-authorization: Fila "Sorteo propio" de L3 §7.1; miembros solo de su cliente. Fuera de ámbito responde
+        404.
+      x-authorization-status: proposed
+      x-internal-session: Roles internos con JWT válido + aal2 + sesión Libox activa; 30 min sin interacción
+        humana revoca acceso interno.
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: raffle_ref
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetRaffleManagementResponse'
+              example:
+                raffle_id: 00000000-0000-4000-8000-000000000001
+                client_id: 00000000-0000-4000-8000-000000000001
+                title: Sorteo sintético
+                raffle_type: T1
+                base_type: null
+                prize_category: P_A
+                ticket_price:
+                  amount: '500'
+                  currency: PEN
+                terms_document_id: 00000000-0000-4000-8000-000000000001
+                status: DRAFT
+                config_version: null
+                version: 1
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '401':
+          $ref: '#/components/responses/Error401_d24337c4'
+        '403':
+          $ref: '#/components/responses/Error403_4f4b65b2'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+  /raffles/{raffle_ref}/pc-stages:
+    get:
+      operationId: listPcStages
+      x-origin: c1-auxiliary
+      summary: Consultar etapas P-C
+      tags:
+      - raffles
+      description: Estado y versión de E1–E7. No expone checklist por etapa hasta que exista la lista
+        cerrada de RN-29. Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles:
+      - CLIENT_OWNER
+      - CLIENT_MANAGER
+      - CLIENT_OPERATOR
+      - CLIENT_VIEWER
+      - SUPPORT_L1
+      - SUPPORT_L2
+      - SUPPORT_VALUATOR
+      - SUPPORT_SUPERVISOR
+      - ADMIN_MODERATION
+      - ADMIN_RISK
+      - ADMIN_LEGAL_COMPLIANCE
+      - ADMIN_COMPLIANCE
+      - ADMIN_SUPER
+      x-authorization: Fila "Etapas P-C" de L3 §7.1; sorteo del propio cliente o interno autorizado.
+      x-authorization-status: proposed
+      x-internal-session: Roles internos con JWT válido + aal2 + sesión Libox activa; 30 min sin interacción
+        humana revoca acceso interno.
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: raffle_ref
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListPcStagesResponse'
+              example:
+                items:
+                - stage: E1
+                  status: APPROVED
+                  sla_due_at: '2026-09-30T12:00:00-05:00'
+                  approved_at: '2026-09-30T12:00:00-05:00'
+                  version: 3
+                - stage: E2
+                  status: IN_REVIEW
+                  sla_due_at: '2026-10-02T12:00:00-05:00'
+                  approved_at: null
+                  version: 2
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '401':
+          $ref: '#/components/responses/Error401_d24337c4'
+        '403':
+          $ref: '#/components/responses/Error403_4f4b65b2'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+  /valuations/{id}:
+    get:
+      operationId: getValuation
+      x-origin: c1-auxiliary
+      summary: Consultar valoración de premio
+      tags:
+      - raffles
+      description: Lectura versionada previa a decideValuation. Banda y desviación las calcula el servidor
+        (implementación humana). Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles:
+      - CLIENT_OWNER
+      - CLIENT_MANAGER
+      - CLIENT_VIEWER
+      - SUPPORT_L1
+      - SUPPORT_L2
+      - SUPPORT_VALUATOR
+      - SUPPORT_SUPERVISOR
+      - ADMIN_MODERATION
+      - ADMIN_RISK
+      - ADMIN_LEGAL_COMPLIANCE
+      - ADMIN_SUPER
+      x-authorization: Fila "Valoración de premio" de L3 §7.1; sorteo del propio cliente o interno autorizado.
+      x-authorization-status: proposed
+      x-internal-session: Roles internos con JWT válido + aal2 + sesión Libox activa; 30 min sin interacción
+        humana revoca acceso interno.
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetValuationResponse'
+              example:
+                valuation_id: 00000000-0000-4000-8000-000000000001
+                raffle_id: 00000000-0000-4000-8000-000000000001
+                band: V1
+                declared_value:
+                  amount: '2500'
+                  currency: PEN
+                deviation_bp: 500
+                outcome: PENDING
+                approved_value: null
+                version: 1
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '401':
+          $ref: '#/components/responses/Error401_d24337c4'
+        '403':
+          $ref: '#/components/responses/Error403_4f4b65b2'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+  /disputes/{id}:
+    get:
+      operationId: getDispute
+      x-origin: c1-auxiliary
+      summary: Consultar controversia
+      tags:
+      - disputes
+      description: Lectura versionada previa a adjudicateDispute. Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles:
+      - USER_VERIFIED
+      - ADMIN_LEGAL_COMPLIANCE
+      - ADMIN_SUPER
+      x-authorization: Parte de la controversia o adjudicador según fila "Adjudicar controversia" de L3
+        §7.1; sin datos de otros participantes.
+      x-authorization-status: proposed
+      x-internal-session: Roles internos con JWT válido + aal2 + sesión Libox activa; 30 min sin interacción
+        humana revoca acceso interno.
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDisputeResponse'
+              example:
+                dispute_id: 00000000-0000-4000-8000-000000000001
+                status: UNDER_REVIEW
+                version: 2
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '401':
+          $ref: '#/components/responses/Error401_d24337c4'
+        '403':
+          $ref: '#/components/responses/Error403_4f4b65b2'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+  /markets/{code}/config/versions/{version}:
+    get:
+      operationId: getMarketConfigVersion
+      x-origin: c1-auxiliary
+      summary: Consultar versión congelada de configuración
+      tags:
+      - markets
+      description: Versión inmutable usada por sorteos publicados (INV-15). El documento expone solo las
+        secciones ya tipadas en MarketConfig; el resto de L3 §10.1 sigue pendiente. Borrador auxiliar
+        C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles:
+      - ADMIN_LEGAL_COMPLIANCE
+      - ADMIN_COMPLIANCE
+      - ADMIN_SUPER
+      x-authorization: Fila "Configuración de mercado" de L3 §7.1; sin credenciales ni secretos de adaptadores.
+      x-authorization-status: proposed
+      x-internal-session: JWT válido + aal2 + sesión Libox activa; 30 min sin interacción humana revoca
+        acceso interno.
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          pattern: ^[A-Z]{2}(?![\s\S])
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetMarketConfigVersionResponse'
+              example:
+                market: PE
+                version: 1
+                effective_from: '2026-09-30T00:00:00-05:00'
+                effective_to: null
+                config_hash: '0000000000000000000000000000000000000000000000000000000000000000'
+                config:
+                  market: PE
+                  currency: PEN
+                  timezone: America/Lima
+                  enabled_prize_categories:
+                  - P_A
+                  - P_B
+                  version: 1
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '401':
+          $ref: '#/components/responses/Error401_d24337c4'
+        '403':
+          $ref: '#/components/responses/Error403_4f4b65b2'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+  /platform/capabilities:
+    get:
+      operationId: listPlatformCapabilities
+      x-origin: c1-auxiliary
+      summary: Consultar capacidades de plataforma
+      tags:
+      - markets
+      description: Capa superior de INV-45. El apagado con segunda firma queda pendiente de la política
+        de firmantes. Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles:
+      - ADMIN_SUPER
+      x-authorization: Solo ADMIN_SUPER; §7.1 no tiene fila propia, se deriva de "Suspensión de mercado".
+      x-authorization-status: proposed
+      x-internal-session: JWT válido + aal2 + sesión Libox activa; 30 min sin interacción humana revoca
+        acceso interno.
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListPlatformCapabilitiesResponse'
+              example:
+                items:
+                - capability: T1
+                  enabled: true
+                  disable_scope: null
+                  disabled_at: null
+                  version: 1
+                - capability: P_C2
+                  enabled: false
+                  disable_scope: REGULATORY
+                  disabled_at: '2026-09-30T12:00:00-05:00'
+                  version: 2
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '401':
+          $ref: '#/components/responses/Error401_d24337c4'
+        '403':
+          $ref: '#/components/responses/Error403_4f4b65b2'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+  /auth/mfa/factors:
+    get:
+      operationId: listMfaFactors
+      x-origin: c1-auxiliary
+      summary: Listar factores MFA propios
+      tags:
+      - auth
+      description: Sin secretos ni URIs de enrolamiento. Adaptador TOTP de Supabase en R1. Borrador auxiliar
+        C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles: []
+      x-authorization: Solo factores del sujeto autenticado.
+      x-authorization-status: proposed
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListMfaFactorsResponse'
+              example:
+                items:
+                - factor_id: 00000000-0000-4000-8000-000000000001
+                  factor_kind: TOTP
+                  status: VERIFIED
+                  created_at: '2026-09-30T12:00:00-05:00'
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '401':
+          $ref: '#/components/responses/Error401_d24337c4'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+    post:
+      operationId: enrollMfaFactor
+      x-origin: c1-auxiliary
+      summary: Enrolar factor TOTP
+      tags:
+      - auth
+      description: Devuelve la URI de enrolamiento una sola vez. Exige reautenticación reciente. Borrador
+        auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles: []
+      x-authorization: Sujeto autenticado con reautenticación reciente; la URI nunca se registra en logs.
+      x-authorization-status: proposed
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      responses:
+        '201':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MfaEnrollResponse'
+              example:
+                factor_id: 00000000-0000-4000-8000-000000000001
+                factor_kind: TOTP
+                status: UNVERIFIED
+                otpauth_uri: otpauth://totp/Libox:synthetic?secret=SYNTHETICNOTASECRET&issuer=Libox
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_dba09dea'
+        '401':
+          $ref: '#/components/responses/Error401_reauth_required'
+        '429':
+          $ref: '#/components/responses/Error429_a527e774'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MfaEnroll'
+            example:
+              factor_kind: TOTP
+  /auth/mfa/factors/{id}/verify:
+    post:
+      operationId: verifyMfaFactor
+      x-origin: c1-auxiliary
+      summary: Verificar factor enrolado
+      tags:
+      - auth
+      description: Activa el factor y eleva la sesión a aal2. Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles: []
+      x-authorization: Factor propio en estado UNVERIFIED; límite de intentos por cuenta seudónima e IP.
+      x-authorization-status: proposed
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MfaSessionResponse'
+              example:
+                access_token: synthetic-access-token
+                refresh_token: synthetic-refresh-token
+                token_type: Bearer
+                expires_in: 900
+                session_id: 00000000-0000-4000-8000-000000000001
+                aal: aal2
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_dba09dea'
+        '401':
+          $ref: '#/components/responses/Error401_7e222e8d'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '429':
+          $ref: '#/components/responses/Error429_a527e774'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MfaCode'
+            example:
+              code: '123456'
+  /auth/mfa/factors/{id}/revoke:
+    post:
+      operationId: revokeMfaFactor
+      x-origin: c1-auxiliary
+      summary: Revocar factor propio
+      tags:
+      - auth
+      description: POST por llevar motivo auditado. Una cuenta interna no puede quedar sin factor verificado.
+        Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles: []
+      x-authorization: Factor propio; aal2 y reautenticación reciente.
+      x-authorization-status: proposed
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MfaFactorRevokeResponse'
+              example:
+                factor_id: 00000000-0000-4000-8000-000000000001
+                status: REVOKED
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_dba09dea'
+        '401':
+          $ref: '#/components/responses/Error401_reauth_required'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '409':
+          $ref: '#/components/responses/Error409_mfa_last_factor'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MfaFactorRevoke'
+            example:
+              reason: Cambio de dispositivo sintético.
+  /auth/mfa/challenge:
+    post:
+      operationId: challengeMfa
+      x-origin: c1-auxiliary
+      summary: Completar segundo factor
+      tags:
+      - auth
+      description: El adaptador crea y verifica el desafío del proveedor en una sola llamada; devuelve
+        sesión aal2. Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles: []
+      x-authorization: Sesión aal1 propia y factor verificado propio; límite de intentos.
+      x-authorization-status: proposed
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MfaSessionResponse'
+              example:
+                access_token: synthetic-access-token
+                refresh_token: synthetic-refresh-token
+                token_type: Bearer
+                expires_in: 900
+                session_id: 00000000-0000-4000-8000-000000000001
+                aal: aal2
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_dba09dea'
+        '401':
+          $ref: '#/components/responses/Error401_7e222e8d'
+        '429':
+          $ref: '#/components/responses/Error429_a527e774'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MfaChallenge'
+            example:
+              factor_id: 00000000-0000-4000-8000-000000000001
+              code: '123456'
+  /auth/reauthenticate:
+    post:
+      operationId: reauthenticate
+      x-origin: c1-auxiliary
+      summary: Reautenticar para acción sensible
+      tags:
+      - auth
+      description: Registra la reautenticación en la sesión aplicativa; la ventana es configurable (propuesta
+        5 min, sin ratificar). Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles: []
+      x-authorization: Sesión propia; refresh o polling no cuentan como reautenticación.
+      x-authorization-status: proposed
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReauthenticationResponse'
+              example:
+                reauthenticated_at: '2026-09-30T12:00:00-05:00'
+                valid_until: '2026-09-30T12:05:00-05:00'
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_dba09dea'
+        '401':
+          $ref: '#/components/responses/Error401_7e222e8d'
+        '429':
+          $ref: '#/components/responses/Error429_a527e774'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reauthentication'
+            example:
+              method: TOTP
+              factor_id: 00000000-0000-4000-8000-000000000001
+              code: '123456'
+  /auth/sessions/revoke:
+    post:
+      operationId: revokeSessions
+      x-origin: c1-auxiliary
+      summary: Cerrar sesión actual o todas
+      tags:
+      - auth
+      description: Revoca la sesión actual o la familia completa; efectivo en el siguiente acceso. Borrador
+        auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles: []
+      x-authorization: Sesiones del sujeto autenticado.
+      x-authorization-status: proposed
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRevokeResponse'
+              example:
+                scope: ALL
+                status: REVOKED
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_dba09dea'
+        '401':
+          $ref: '#/components/responses/Error401_d24337c4'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionRevoke'
+            example:
+              scope: ALL
+  /auth/recovery:
+    post:
+      operationId: requestRecovery
+      x-origin: c1-auxiliary
+      summary: Solicitar recuperación de contraseña
+      tags:
+      - auth
+      description: AC-04. Respuesta genérica exista o no la cuenta. Borrador auxiliar C1.
+      security: []
+      x-access-class: credential-exchange
+      x-allowed-roles: []
+      x-authorization: Sin revelar existencia de la cuenta; límite por contacto seudónimo e IP.
+      x-authorization-status: proposed
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      responses:
+        '202':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecoveryRequestResponse'
+              example:
+                message: Si corresponde, recibirás instrucciones para continuar.
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_dba09dea'
+        '429':
+          $ref: '#/components/responses/Error429_a527e774'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecoveryRequest'
+            example:
+              email: example@example.invalid
+  /auth/recovery/complete:
+    post:
+      operationId: completeRecovery
+      x-origin: c1-auxiliary
+      summary: Completar recuperación de contraseña
+      tags:
+      - auth
+      description: Revoca todas las sesiones y familias de refresh, emite evento de riesgo y no entrega
+        tokens; una cuenta interna vuelve a exigir MFA. Borrador auxiliar C1.
+      security: []
+      x-access-class: credential-exchange
+      x-allowed-roles: []
+      x-authorization: Token de recuperación vigente y de un solo uso, vinculado a la cuenta y a la acción.
+      x-authorization-status: proposed
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordResetResponse'
+              example:
+                status: PASSWORD_RESET
+                sessions_revoked: true
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_dba09dea'
+        '401':
+          $ref: '#/components/responses/Error401_7e222e8d'
+        '429':
+          $ref: '#/components/responses/Error429_a527e774'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecoveryComplete'
+            example:
+              recovery_token: synthetic-recovery-token
+              new_password: synthetic-not-a-secret-456
+  /auth/password/change:
+    post:
+      operationId: changePassword
+      x-origin: c1-auxiliary
+      summary: Cambiar contraseña
+      tags:
+      - auth
+      description: Incluye el cambio obligatorio de la credencial semilla (RN-05-sexies); revoca las demás
+        sesiones. Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles: []
+      x-authorization: Sujeto autenticado; exige contraseña actual.
+      x-authorization-status: proposed
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordChangeResponse'
+              example:
+                status: PASSWORD_CHANGED
+                other_sessions_revoked: true
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_dba09dea'
+        '401':
+          $ref: '#/components/responses/Error401_7e222e8d'
+        '429':
+          $ref: '#/components/responses/Error429_a527e774'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+            example:
+              current_password: synthetic-not-a-secret-123
+              new_password: synthetic-not-a-secret-456
+  /internal-users/{id}/mfa-reset:
+    post:
+      operationId: requestInternalMfaReset
+      x-origin: c1-auxiliary
+      summary: Solicitar reinicio de MFA interno
+      tags:
+      - auth
+      description: Sin recuperación autoservicio para internos. Crea una solicitud de segunda firma; al
+        firmarse se revocan factores y sesiones y la cuenta queda restringida hasta nuevo enrolamiento
+        y verificación con prueba de vida. No revoca el subrol (INV-38). Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles:
+      - ADMIN_SUPER
+      x-authorization: ADMIN_SUPER sobre otra persona; la firma la aporta otra persona elegible según
+        la política de firmantes pendiente (I-04).
+      x-authorization-status: proposed
+      x-internal-session: JWT válido + aal2 + sesión Libox activa + reautenticación reciente.
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '202':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignatureRequestReceipt'
+              example:
+                signature_request_id: 00000000-0000-4000-8000-000000000001
+                action_code: MFA_RESET_INTERNAL
+                status: PENDING
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_dba09dea'
+        '401':
+          $ref: '#/components/responses/Error401_reauth_required'
+        '403':
+          $ref: '#/components/responses/Error403_4f4b65b2'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InternalMfaReset'
+            example:
+              reason: Pérdida de dispositivo reportada por canal verificado.
+  /uploads:
+    post:
+      operationId: createUpload
+      x-origin: c1-auxiliary
+      summary: Iniciar subida privada
+      tags:
+      - evidence
+      description: Emite una URL de subida de corta vigencia ligada a propósito, destino, tamaño y hash
+        declarados. Tipos permitidos y tamaño máximo por propósito pendientes de decisión; el patrón solo
+        valida forma. Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles: []
+      x-authorization: El servidor comprueba que quien llama puede adjuntar al destino según el propósito;
+        nunca acepta object_key del cliente.
+      x-authorization-status: proposed
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 120
+        description: 'Generada por cliente por intento. Mismo principal, ruta, clave y cuerpo: mismo resultado;
+          cuerpo distinto: 409.'
+      responses:
+        '201':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadTicketResponse'
+              example:
+                upload_id: 00000000-0000-4000-8000-000000000001
+                upload_url: https://storage.example.invalid/upload/synthetic
+                method: PUT
+                content_type: application/pdf
+                expires_at: '2026-09-30T12:05:00-05:00'
+                status: PENDING_UPLOAD
+                version: 1
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_285c49ea'
+        '401':
+          $ref: '#/components/responses/Error401_d24337c4'
+        '403':
+          $ref: '#/components/responses/Error403_4f4b65b2'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '409':
+          $ref: '#/components/responses/Error409_cd1d0750'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadCreate'
+            example:
+              purpose: ROOM_EVIDENCE
+              target_id: 00000000-0000-4000-8000-000000000001
+              content_type: application/pdf
+              size_bytes: 20480
+              sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+  /uploads/{id}:
+    get:
+      operationId: getUpload
+      x-origin: c1-auxiliary
+      summary: Consultar estado de subida
+      tags:
+      - evidence
+      description: ACCEPTED exige escaneo antimalware y copia independiente confirmada. Borrador auxiliar
+        C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles: []
+      x-authorization: Solo quien creó la subida o un interno con acceso al destino.
+      x-authorization-status: proposed
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+              example:
+                upload_id: 00000000-0000-4000-8000-000000000001
+                purpose: ROOM_EVIDENCE
+                target_id: 00000000-0000-4000-8000-000000000001
+                status: ACCEPTED
+                rejection_reason: null
+                size_bytes: 20480
+                sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+                version: 3
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '401':
+          $ref: '#/components/responses/Error401_d24337c4'
+        '403':
+          $ref: '#/components/responses/Error403_4f4b65b2'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+  /uploads/{id}/complete:
+    post:
+      operationId: completeUpload
+      x-origin: c1-auxiliary
+      summary: Confirmar bytes subidos
+      tags:
+      - evidence
+      description: El servidor comprueba existencia, tamaño, tipo real y sha256 recalculado y deja la
+        subida en QUARANTINED. Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles: []
+      x-authorization: Solo quien creó la subida, antes de expires_at.
+      x-authorization-status: proposed
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+              example:
+                upload_id: 00000000-0000-4000-8000-000000000001
+                purpose: ROOM_EVIDENCE
+                target_id: 00000000-0000-4000-8000-000000000001
+                status: QUARANTINED
+                rejection_reason: null
+                size_bytes: 20480
+                sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+                version: 2
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_dba09dea'
+        '401':
+          $ref: '#/components/responses/Error401_d24337c4'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '409':
+          $ref: '#/components/responses/Error409_98ba824b'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadComplete'
+            example:
+              expected_version: 1
+  /evidence/{id}/download-url:
+    get:
+      operationId: getEvidenceDownloadUrl
+      x-origin: c1-auxiliary
+      summary: Obtener URL de descarga de evidencia
+      tags:
+      - evidence
+      description: URL firmada de corta vigencia (propuesta 5 min); no es permiso permanente ni va a caches
+        públicos. Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles: []
+      x-authorization: Autorización por recurso según la sala, controversia o expediente al que pertenece
+        la evidencia.
+      x-authorization-status: proposed
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvidenceDownloadResponse'
+              example:
+                evidence_id: 00000000-0000-4000-8000-000000000001
+                download_url: https://storage.example.invalid/download/synthetic
+                expires_at: '2026-09-30T12:05:00-05:00'
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '401':
+          $ref: '#/components/responses/Error401_d24337c4'
+        '403':
+          $ref: '#/components/responses/Error403_4f4b65b2'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '409':
+          $ref: '#/components/responses/Error409_evidence_not_accepted'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+  /valuations/{id}/decisions:
+    post:
+      operationId: decideValuation
+      x-origin: c1-auxiliary
+      summary: Decidir valoración de premio
+      tags:
+      - raffles
+      description: 'Transiciones VALUATION_APPROVED y VALUATION_OBSERVED de L3 §4.1. REJECTED manual queda
+        fuera: no tiene transición en el canon (I-06). Banda, desviación, cofirma y efecto sobre el rango
+        de recaudación los decide el servidor; son implementación humana. Borrador auxiliar C1.'
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles:
+      - SUPPORT_VALUATOR
+      - ADMIN_LEGAL_COMPLIANCE
+      x-authorization: Aprobador de la banda (V1–V2 SUPPORT_VALUATOR; V3–V4 ADMIN_LEGAL_COMPLIANCE). Si
+        la regla exige cofirma o segunda firma, responde PENDING_SECOND_SIGNATURE y no transiciona. Cofirma
+        V2 en conflicto con §7.1 (I-01).
+      x-authorization-status: proposed
+      x-internal-session: JWT válido + aal2 + sesión Libox activa + reautenticación reciente.
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '201':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DecisionReceiptResponse'
+              example:
+                decision_id: 00000000-0000-4000-8000-000000000001
+                status: RECORDED
+                signature_request_id: null
+                subject_version: 2
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_dba09dea'
+        '401':
+          $ref: '#/components/responses/Error401_reauth_required'
+        '403':
+          $ref: '#/components/responses/Error403_incompatible_subrole'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '409':
+          $ref: '#/components/responses/Error409_98ba824b'
+        '422':
+          $ref: '#/components/responses/Error422_valuation_decision'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValuationDecisionCreate'
+            example:
+              expected_version: 1
+              outcome: APPROVED
+              approved_value:
+                amount: '2500'
+                currency: PEN
+              reason: Referencias vigentes y banda satisfecha.
+  /raffles/{raffle_ref}/legal-gate/decisions:
+    post:
+      operationId: decideLegalGate
+      x-origin: c1-auxiliary
+      summary: Decidir gate legal
+      tags:
+      - raffles
+      description: 'Transición LEGAL_GATE_PASSED de L3 §4.1. Observar o rechazar queda fuera: no tiene
+        transición (I-06). En P-C exige E1–E4 aprobadas. Borrador auxiliar C1.'
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles:
+      - ADMIN_LEGAL_COMPLIANCE
+      x-authorization: Fila "Gate legal" de L3 §7.1. Autoridad y documento exigible PENDING_LEGAL_OPINION
+        [LEGAL→ABOGADO].
+      x-authorization-status: proposed
+      x-internal-session: JWT válido + aal2 + sesión Libox activa + reautenticación reciente.
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: raffle_ref
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '201':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DecisionReceiptResponse'
+              example:
+                decision_id: 00000000-0000-4000-8000-000000000001
+                status: RECORDED
+                signature_request_id: null
+                subject_version: 4
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_dba09dea'
+        '401':
+          $ref: '#/components/responses/Error401_reauth_required'
+        '403':
+          $ref: '#/components/responses/Error403_incompatible_subrole'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '409':
+          $ref: '#/components/responses/Error409_legal_gate'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LegalGateDecisionCreate'
+            example:
+              expected_version: 3
+              outcome: PASSED
+              requirement_results:
+              - requirement_key: SYNTHETIC_REQUIREMENT
+                document_upload_id: 00000000-0000-4000-8000-000000000001
+              reason: Requisitos del mercado verificados.
+  /raffles/{raffle_ref}/moderation/decisions:
+    post:
+      operationId: decideModeration
+      x-origin: c1-auxiliary
+      summary: Aprobar publicación
+      tags:
+      - raffles
+      description: Transiciones APPROVE_SCHEDULED y APPROVE_IMMEDIATE de L3 §4.1. REJECT queda fuera hasta
+        definir el enum de motivo estructurado. Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles:
+      - ADMIN_MODERATION
+      x-authorization: Fila "Aprobar sorteo" de L3 §7.1; valida capacidad y categoría efectivas del mercado.
+      x-authorization-status: proposed
+      x-internal-session: JWT válido + aal2 + sesión Libox activa + reautenticación reciente.
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: raffle_ref
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '201':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DecisionReceiptResponse'
+              example:
+                decision_id: 00000000-0000-4000-8000-000000000001
+                status: RECORDED
+                signature_request_id: null
+                subject_version: 5
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_dba09dea'
+        '401':
+          $ref: '#/components/responses/Error401_reauth_required'
+        '403':
+          $ref: '#/components/responses/Error403_incompatible_subrole'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '409':
+          $ref: '#/components/responses/Error409_e522bd49'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModerationDecisionCreate'
+            example:
+              expected_version: 4
+              outcome: APPROVE_SCHEDULED
+              reason: Publicación conforme a capacidad y categoría.
+  /signature-requests:
+    get:
+      operationId: listSignatureRequests
+      x-origin: c1-auxiliary
+      summary: Listar solicitudes de firma
+      tags:
+      - signatures
+      description: Solo devuelve las que quien llama podría firmar según la política por acción, que es
+        dato pendiente (I-04). Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles:
+      - SUPPORT_L1
+      - SUPPORT_L2
+      - SUPPORT_VALUATOR
+      - SUPPORT_SUPERVISOR
+      - SUPPORT_BEHAVIORAL_ANALYST
+      - ADMIN_MODERATION
+      - ADMIN_RISK
+      - ADMIN_FINANCE
+      - ADMIN_LEGAL_COMPLIANCE
+      - ADMIN_COMPLIANCE
+      - ADMIN_BEHAVIORAL
+      - ADMIN_SUPER
+      x-authorization: Filtra por elegibilidad del firmante y excluye las solicitadas por quien llama.
+      x-authorization-status: proposed
+      x-internal-session: JWT válido + aal2 + sesión Libox activa; 30 min sin interacción humana revoca
+        acceso interno.
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum:
+          - PENDING
+          - SIGNED
+          - DECLINED
+          - CANCELLED
+          - EXPIRED
+      - name: cursor
+        in: query
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 1024
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListSignatureRequestsResponse'
+              example:
+                items:
+                - signature_request_id: 00000000-0000-4000-8000-000000000001
+                  action_code: VALUATION_V4
+                  subject_kind: VALUATION
+                  subject_id: 00000000-0000-4000-8000-000000000001
+                  subject_version: 2
+                  requested_by: 00000000-0000-4000-8000-000000000001
+                  status: PENDING
+                  expires_at: '2026-10-01T12:00:00-05:00'
+                  version: 1
+                next_cursor: null
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_dba09dea'
+        '401':
+          $ref: '#/components/responses/Error401_d24337c4'
+        '403':
+          $ref: '#/components/responses/Error403_4f4b65b2'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+  /signature-requests/{id}:
+    get:
+      operationId: getSignatureRequest
+      x-origin: c1-auxiliary
+      summary: Consultar solicitud de firma
+      tags:
+      - signatures
+      description: El firmante consulta el sujeto por su propia lectura versionada. Borrador auxiliar
+        C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles:
+      - SUPPORT_L1
+      - SUPPORT_L2
+      - SUPPORT_VALUATOR
+      - SUPPORT_SUPERVISOR
+      - SUPPORT_BEHAVIORAL_ANALYST
+      - ADMIN_MODERATION
+      - ADMIN_RISK
+      - ADMIN_FINANCE
+      - ADMIN_LEGAL_COMPLIANCE
+      - ADMIN_COMPLIANCE
+      - ADMIN_BEHAVIORAL
+      - ADMIN_SUPER
+      x-authorization: Solicitante o firmante elegible; fuera de ámbito responde 404.
+      x-authorization-status: proposed
+      x-internal-session: JWT válido + aal2 + sesión Libox activa; 30 min sin interacción humana revoca
+        acceso interno.
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignatureRequestResponse'
+              example:
+                signature_request_id: 00000000-0000-4000-8000-000000000001
+                action_code: VALUATION_V4
+                subject_kind: VALUATION
+                subject_id: 00000000-0000-4000-8000-000000000001
+                subject_version: 2
+                requested_by: 00000000-0000-4000-8000-000000000001
+                status: PENDING
+                expires_at: '2026-10-01T12:00:00-05:00'
+                version: 1
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '401':
+          $ref: '#/components/responses/Error401_d24337c4'
+        '403':
+          $ref: '#/components/responses/Error403_4f4b65b2'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+  /signature-requests/{id}/sign:
+    post:
+      operationId: signSignatureRequest
+      x-origin: c1-auxiliary
+      summary: Firmar o declinar
+      tags:
+      - signatures
+      description: Rechaza si el sujeto cambió desde subject_version. INC-09 e INC-11 se comprueban en
+        ejecución (implementación humana). Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles:
+      - SUPPORT_L1
+      - SUPPORT_L2
+      - SUPPORT_VALUATOR
+      - SUPPORT_SUPERVISOR
+      - SUPPORT_BEHAVIORAL_ANALYST
+      - ADMIN_MODERATION
+      - ADMIN_RISK
+      - ADMIN_FINANCE
+      - ADMIN_LEGAL_COMPLIANCE
+      - ADMIN_COMPLIANCE
+      - ADMIN_BEHAVIORAL
+      - ADMIN_SUPER
+      x-authorization: Otra persona con otro subrol elegible para el action_code; nunca quien solicitó.
+      x-authorization-status: proposed
+      x-internal-session: JWT válido + aal2 + sesión Libox activa + reautenticación reciente.
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignatureRequestResponse'
+              example:
+                signature_request_id: 00000000-0000-4000-8000-000000000001
+                action_code: VALUATION_V4
+                subject_kind: VALUATION
+                subject_id: 00000000-0000-4000-8000-000000000001
+                subject_version: 2
+                requested_by: 00000000-0000-4000-8000-000000000001
+                status: SIGNED
+                expires_at: '2026-10-01T12:00:00-05:00'
+                version: 2
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_dba09dea'
+        '401':
+          $ref: '#/components/responses/Error401_reauth_required'
+        '403':
+          $ref: '#/components/responses/Error403_incompatible_subrole'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '409':
+          $ref: '#/components/responses/Error409_signature_conflict'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignatureDecision'
+            example:
+              expected_version: 1
+              decision: SIGN
+              reason: Revisión independiente conforme.
+  /signature-requests/{id}/cancel:
+    post:
+      operationId: cancelSignatureRequest
+      x-origin: c1-auxiliary
+      summary: Cancelar solicitud propia
+      tags:
+      - signatures
+      description: Solo quien la solicitó y mientras siga PENDING. Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles:
+      - SUPPORT_L1
+      - SUPPORT_L2
+      - SUPPORT_VALUATOR
+      - SUPPORT_SUPERVISOR
+      - SUPPORT_BEHAVIORAL_ANALYST
+      - ADMIN_MODERATION
+      - ADMIN_RISK
+      - ADMIN_FINANCE
+      - ADMIN_LEGAL_COMPLIANCE
+      - ADMIN_COMPLIANCE
+      - ADMIN_BEHAVIORAL
+      - ADMIN_SUPER
+      x-authorization: Solicitante de la firma; motivo auditado.
+      x-authorization-status: proposed
+      x-internal-session: JWT válido + aal2 + sesión Libox activa; 30 min sin interacción humana revoca
+        acceso interno.
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '200':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignatureRequestResponse'
+              example:
+                signature_request_id: 00000000-0000-4000-8000-000000000001
+                action_code: VALUATION_V4
+                subject_kind: VALUATION
+                subject_id: 00000000-0000-4000-8000-000000000001
+                subject_version: 2
+                requested_by: 00000000-0000-4000-8000-000000000001
+                status: CANCELLED
+                expires_at: '2026-10-01T12:00:00-05:00'
+                version: 2
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_dba09dea'
+        '401':
+          $ref: '#/components/responses/Error401_d24337c4'
+        '403':
+          $ref: '#/components/responses/Error403_4f4b65b2'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '409':
+          $ref: '#/components/responses/Error409_98ba824b'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionRequest'
+            example:
+              expected_version: 1
+              reason: Solicitud duplicada por error.
 components:
   securitySchemes:
     bearerAuth:
@@ -4864,8 +7236,9 @@ components:
       type: apiKey
       in: header
       name: x-signature
-      description: Firma criptográfica PSP, NO clave estática. Esquema exacto pendiente del PSP; comprobar
-        cuerpo original y anti replay.
+      description: 'HMAC-SHA256 Mercado Pago, header ts=<timestamp>,v1=<firma>. El manifiesto usa data.id
+        del query, x-request-id y ts; no el cuerpo completo. apiKey solo representa el header en OpenAPI:
+        no prueba validación criptográfica.'
     serviceAuth:
       type: http
       scheme: bearer
@@ -5219,10 +7592,12 @@ components:
           minLength: 1
         status:
           type: string
-          enum:
-          - PENDING_VERIFICATION
-          - VERIFIED
+          enum: &id001
+          - PENDING_KYB
+          - ACTIVE
           - SUSPENDED
+          - FROZEN
+          - CLOSED
       required:
       - client_id
       - display_name
@@ -5300,10 +7675,11 @@ components:
       properties:
         status:
           type: string
-          enum:
-          - PENDING_VERIFICATION
+          enum: &id002
+          - PENDING
           - VERIFIED
-          - FROZEN
+          - REJECTED
+          - REPLACED
         masked_account:
           type: string
           minLength: 1
@@ -5345,8 +7721,9 @@ components:
           maximum: 2147483647
         reason:
           type: string
-          minLength: 10
+          minLength: 20
           maxLength: 2000
+          description: Mínimo de feature_toggle_log (L3 §2.1).
       required:
       - enabled_raffle_types
       - expected_version
@@ -5388,7 +7765,8 @@ components:
         title:
           type: string
           minLength: 1
-          maxLength: 200
+          maxLength: 140
+          description: raffles.title VARCHAR(140), L3 §3.1.
         raffle_type:
           type: string
           enum:
@@ -5451,7 +7829,8 @@ components:
         title:
           type: string
           minLength: 1
-          maxLength: 200
+          maxLength: 140
+          description: raffles.title VARCHAR(140), L3 §3.1.
         terms_document_id:
           type: string
           minLength: 1
@@ -5540,10 +7919,12 @@ components:
           format: uuid
         status:
           type: string
-          enum:
-          - SUBMITTED
+          enum: &id003
+          - PENDING
           - APPROVED
+          - OBSERVED
           - REJECTED
+          - AUTO_REJECTED
       required:
       - valuation_id
       - status
@@ -5582,9 +7963,11 @@ components:
           - E7
         status:
           type: string
-          enum:
-          - SUBMITTED
-          - VERIFIED
+          enum: &id004
+          - PENDING
+          - IN_REVIEW
+          - APPROVED
+          - OBSERVED
           - REJECTED
       required:
       - stage
@@ -6733,8 +9116,9 @@ components:
           maxItems: 6
         reason:
           type: string
-          minLength: 10
+          minLength: 20
           maxLength: 2000
+          description: Mínimo de feature_toggle_log (L3 §2.1).
       required:
       - expected_version
       - enabled_prize_categories
@@ -7039,11 +9423,25 @@ components:
       type: object
       properties:
         id:
-          type: string
-          minLength: 1
+          type: integer
+          description: Identificador nativo del evento; preservar precisión al parsear en TypeScript.
+        live_mode:
+          type: boolean
         type:
           type: string
-          minLength: 1
+          const: payment
+        date_created:
+          type: string
+          format: date-time
+        user_id:
+          type: integer
+        api_version:
+          type: string
+        action:
+          type: string
+          enum:
+          - payment.created
+          - payment.updated
         data:
           type: object
           properties:
@@ -7052,14 +9450,15 @@ components:
               minLength: 1
           required:
           - id
-          additionalProperties: false
+          additionalProperties: true
       required:
       - id
       - type
       - data
       additionalProperties: true
-      description: Forma orientativa de sandbox, no contrato universal PSP. El proveedor elegido debe
-        sustituirla por su esquema exacto y fixtures firmados antes de habilitar el webhook.
+      description: Payload externo Mercado Pago para tópico payment; tolera extensiones del proveedor,
+        sin usarlas como autoridad. No representa callbacks de contracargos u otros productos. ID numérico
+        nativo distinto de Money.amount. Sandbox y fixtures firmados pendientes.
     PspAcknowledgement:
       type: object
       properties:
@@ -7171,6 +9570,1546 @@ components:
       - items
       - next_cursor
       additionalProperties: false
+    GetClientResponse:
+      type: object
+      description: Estado con el mismo enum que Client; su divergencia con clients.status de L3 §2.4 está
+        registrada como brecha.
+      properties:
+        client_id:
+          type: string
+          minLength: 1
+          format: uuid
+        display_name:
+          type: string
+          minLength: 1
+          maxLength: 120
+        kind:
+          type: string
+          enum:
+          - NATURAL
+          - LEGAL
+        market:
+          type: string
+          minLength: 1
+          pattern: ^[A-Z]{2}(?![\s\S])
+        status:
+          type: string
+          enum: *id001
+        kyb_status:
+          type:
+          - string
+          - 'null'
+          enum:
+          - PENDING
+          - APPROVED
+          - REJECTED
+          - EXPIRED
+          - null
+        version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - client_id
+      - display_name
+      - kind
+      - market
+      - status
+      - kyb_status
+      - version
+      - trace_id
+      additionalProperties: false
+    GetPayoutResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: *id002
+        masked_account:
+          type: string
+          minLength: 1
+        effective_at:
+          type: string
+          minLength: 1
+          format: date-time
+        version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - status
+      - masked_account
+      - effective_at
+      - version
+      - trace_id
+      additionalProperties: false
+    GetCapabilitiesResponse:
+      type: object
+      properties:
+        enabled_raffle_types:
+          type: array
+          items:
+            type: string
+            enum:
+            - T1
+            - T2
+            - T3
+            - T4
+            - T5
+            - T6
+            - T7
+            - T8
+          minItems: 0
+          maxItems: 8
+        version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - enabled_raffle_types
+      - version
+      - trace_id
+      additionalProperties: false
+    GetRaffleManagementResponse:
+      type: object
+      properties:
+        raffle_id:
+          type: string
+          minLength: 1
+          format: uuid
+        client_id:
+          type: string
+          minLength: 1
+          format: uuid
+        title:
+          type: string
+          minLength: 1
+          maxLength: 140
+        raffle_type:
+          type: string
+          enum:
+          - T1
+          - T2
+          - T3
+          - T4
+          - T5
+          - T6
+          - T7
+          - T8
+        base_type:
+          type:
+          - string
+          - 'null'
+          enum:
+          - T1
+          - T2
+          - T3
+          - T4
+          - T5
+          - T6
+          - T7
+          - null
+        prize_category:
+          type: string
+          enum:
+          - P_A
+          - P_B
+          - P_C1
+          - P_C2
+          - P_D
+          - P_E
+        ticket_price:
+          $ref: '#/components/schemas/Money'
+        terms_document_id:
+          type: string
+          minLength: 1
+          format: uuid
+        status:
+          type: string
+          enum:
+          - DRAFT
+          - PENDING_VALUATION
+          - PENDING_LEGAL
+          - PENDING_APPROVAL
+          - REJECTED
+          - SCHEDULED
+          - ACTIVE
+          - PAUSED
+          - SOLD_OUT
+          - ENDED_TIME
+          - THRESHOLD_REACHED
+          - MILESTONE_REACHED
+          - THRESHOLD_FAILED
+          - READY_TO_DRAW
+          - POOL_FROZEN
+          - DRAW_EXECUTED
+          - IN_RESOLUTION
+          - DELIVERY_ATTESTED
+          - SETTLED
+          - CLOSED
+          - CANCELLED
+          - SUSPENDED_MARKET
+        config_version:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+          maximum: 2147483647
+          description: Versión de market_config congelada al publicar (INV-15); null antes de publicar.
+        version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - raffle_id
+      - client_id
+      - title
+      - raffle_type
+      - base_type
+      - prize_category
+      - ticket_price
+      - terms_document_id
+      - status
+      - config_version
+      - version
+      - trace_id
+      additionalProperties: false
+      allOf:
+      - if:
+          properties:
+            raffle_type:
+              const: T8
+        then:
+          properties:
+            base_type:
+              type: string
+        else:
+          properties:
+            base_type:
+              type: 'null'
+    PcStageView:
+      type: object
+      properties:
+        stage:
+          type: string
+          enum:
+          - E1
+          - E2
+          - E3
+          - E4
+          - E5
+          - E6
+          - E7
+        status:
+          type: string
+          enum:
+          - PENDING
+          - IN_REVIEW
+          - APPROVED
+          - OBSERVED
+          - REJECTED
+        sla_due_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        approved_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+      required:
+      - stage
+      - status
+      - sla_due_at
+      - approved_at
+      - version
+      additionalProperties: false
+    ListPcStagesResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PcStageView'
+          minItems: 0
+          maxItems: 7
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - items
+      - trace_id
+      additionalProperties: false
+    GetValuationResponse:
+      type: object
+      properties:
+        valuation_id:
+          type: string
+          minLength: 1
+          format: uuid
+        raffle_id:
+          type: string
+          minLength: 1
+          format: uuid
+        band:
+          type:
+          - string
+          - 'null'
+          enum:
+          - V1
+          - V2
+          - V3
+          - V4
+          - null
+        declared_value:
+          $ref: '#/components/schemas/Money'
+        deviation_bp:
+          type:
+          - integer
+          - 'null'
+          minimum: -10000
+          maximum: 2147483647
+          description: Calculada por el servidor; nunca aceptada del cliente.
+        outcome:
+          type: string
+          enum:
+          - PENDING
+          - APPROVED
+          - OBSERVED
+          - REJECTED
+          - AUTO_REJECTED
+        approved_value:
+          oneOf:
+          - $ref: '#/components/schemas/Money'
+          - type: 'null'
+        version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - valuation_id
+      - raffle_id
+      - band
+      - declared_value
+      - deviation_bp
+      - outcome
+      - approved_value
+      - version
+      - trace_id
+      additionalProperties: false
+    GetDisputeResponse:
+      type: object
+      properties:
+        dispute_id:
+          type: string
+          minLength: 1
+          format: uuid
+        status:
+          type: string
+          enum:
+          - OPEN
+          - UNDER_REVIEW
+          - RESOLVED
+        version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - dispute_id
+      - status
+      - version
+      - trace_id
+      additionalProperties: false
+    GetMarketConfigVersionResponse:
+      type: object
+      properties:
+        market:
+          type: string
+          minLength: 1
+          pattern: ^[A-Z]{2}(?![\s\S])
+        version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        effective_from:
+          type: string
+          minLength: 1
+          format: date-time
+        effective_to:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        config_hash:
+          type: string
+          minLength: 1
+          pattern: ^[0-9a-f]{64}(?![\s\S])
+        config:
+          $ref: '#/components/schemas/MarketConfig'
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - market
+      - version
+      - effective_from
+      - effective_to
+      - config_hash
+      - config
+      - trace_id
+      additionalProperties: false
+    PlatformCapability:
+      type: object
+      properties:
+        capability:
+          type: string
+          enum:
+          - T1
+          - T2
+          - T3
+          - T4
+          - T5
+          - T6
+          - T7
+          - T8
+          - P_A
+          - P_B
+          - P_C1
+          - P_C2
+          - P_D
+          - P_E
+          - P_F
+          - FREE_ENTRY
+          - PROMOTIONAL
+          - LIBOX_CLUB
+          - REFERRALS
+        enabled:
+          type: boolean
+        disable_scope:
+          type:
+          - string
+          - 'null'
+          enum:
+          - COMMERCIAL
+          - REGULATORY
+          - RISK
+          - DEFECT
+          - null
+        disabled_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+      required:
+      - capability
+      - enabled
+      - disable_scope
+      - disabled_at
+      - version
+      additionalProperties: false
+    ListPlatformCapabilitiesResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlatformCapability'
+          minItems: 0
+          maxItems: 100
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - items
+      - trace_id
+      additionalProperties: false
+    MfaFactor:
+      type: object
+      properties:
+        factor_id:
+          type: string
+          minLength: 1
+          format: uuid
+        factor_kind:
+          type: string
+          enum:
+          - TOTP
+        status:
+          type: string
+          enum:
+          - UNVERIFIED
+          - VERIFIED
+        created_at:
+          type: string
+          minLength: 1
+          format: date-time
+      required:
+      - factor_id
+      - factor_kind
+      - status
+      - created_at
+      additionalProperties: false
+    ListMfaFactorsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MfaFactor'
+          minItems: 0
+          maxItems: 100
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - items
+      - trace_id
+      additionalProperties: false
+    MfaEnroll:
+      type: object
+      properties:
+        factor_kind:
+          type: string
+          enum:
+          - TOTP
+      required:
+      - factor_kind
+      additionalProperties: false
+    MfaEnrollResponse:
+      type: object
+      properties:
+        factor_id:
+          type: string
+          minLength: 1
+          format: uuid
+        factor_kind:
+          type: string
+          enum:
+          - TOTP
+        status:
+          type: string
+          enum:
+          - UNVERIFIED
+        otpauth_uri:
+          type: string
+          minLength: 1
+          maxLength: 2048
+          pattern: ^otpauth://totp/
+          description: Se entrega una sola vez; nunca se registra ni se vuelve a mostrar.
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - factor_id
+      - factor_kind
+      - status
+      - otpauth_uri
+      - trace_id
+      additionalProperties: false
+    MfaCode:
+      type: object
+      properties:
+        code:
+          type: string
+          minLength: 6
+          maxLength: 6
+          pattern: ^[0-9]{6}(?![\s\S])
+          writeOnly: true
+      required:
+      - code
+      additionalProperties: false
+    MfaChallenge:
+      type: object
+      properties:
+        factor_id:
+          type: string
+          minLength: 1
+          format: uuid
+        code:
+          type: string
+          minLength: 6
+          maxLength: 6
+          pattern: ^[0-9]{6}(?![\s\S])
+          writeOnly: true
+      required:
+      - factor_id
+      - code
+      additionalProperties: false
+    MfaSessionResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+          minLength: 1
+        refresh_token:
+          type: string
+          minLength: 1
+        token_type:
+          type: string
+          enum:
+          - Bearer
+        expires_in:
+          type: integer
+          const: 900
+        session_id:
+          type: string
+          minLength: 1
+          format: uuid
+        aal:
+          type: string
+          enum:
+          - aal2
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - access_token
+      - refresh_token
+      - token_type
+      - expires_in
+      - session_id
+      - aal
+      - trace_id
+      additionalProperties: false
+    MfaFactorRevoke:
+      type: object
+      properties:
+        reason:
+          type: string
+          minLength: 10
+          maxLength: 500
+      required:
+      - reason
+      additionalProperties: false
+    MfaFactorRevokeResponse:
+      type: object
+      properties:
+        factor_id:
+          type: string
+          minLength: 1
+          format: uuid
+        status:
+          type: string
+          enum:
+          - REVOKED
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - factor_id
+      - status
+      - trace_id
+      additionalProperties: false
+    PasswordReauthentication:
+      type: object
+      properties:
+        method:
+          type: string
+          enum:
+          - PASSWORD
+        password:
+          type: string
+          minLength: 1
+          maxLength: 128
+          writeOnly: true
+      required:
+      - method
+      - password
+      additionalProperties: false
+    TotpReauthentication:
+      type: object
+      properties:
+        method:
+          type: string
+          enum:
+          - TOTP
+        factor_id:
+          type: string
+          minLength: 1
+          format: uuid
+        code:
+          type: string
+          minLength: 6
+          maxLength: 6
+          pattern: ^[0-9]{6}(?![\s\S])
+          writeOnly: true
+      required:
+      - method
+      - factor_id
+      - code
+      additionalProperties: false
+    Reauthentication:
+      oneOf:
+      - $ref: '#/components/schemas/PasswordReauthentication'
+      - $ref: '#/components/schemas/TotpReauthentication'
+      discriminator:
+        propertyName: method
+        mapping:
+          PASSWORD: '#/components/schemas/PasswordReauthentication'
+          TOTP: '#/components/schemas/TotpReauthentication'
+    ReauthenticationResponse:
+      type: object
+      properties:
+        reauthenticated_at:
+          type: string
+          minLength: 1
+          format: date-time
+        valid_until:
+          type: string
+          minLength: 1
+          format: date-time
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - reauthenticated_at
+      - valid_until
+      - trace_id
+      additionalProperties: false
+    SessionRevoke:
+      type: object
+      properties:
+        scope:
+          type: string
+          enum:
+          - CURRENT
+          - ALL
+      required:
+      - scope
+      additionalProperties: false
+    SessionRevokeResponse:
+      type: object
+      properties:
+        scope:
+          type: string
+          enum:
+          - CURRENT
+          - ALL
+        status:
+          type: string
+          enum:
+          - REVOKED
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - scope
+      - status
+      - trace_id
+      additionalProperties: false
+    RecoveryRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          minLength: 1
+          maxLength: 254
+          format: email
+      required:
+      - email
+      additionalProperties: false
+    RecoveryRequestResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          minLength: 1
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - message
+      - trace_id
+      additionalProperties: false
+    RecoveryComplete:
+      type: object
+      properties:
+        recovery_token:
+          type: string
+          minLength: 1
+          maxLength: 2048
+          writeOnly: true
+        new_password:
+          type: string
+          minLength: 12
+          maxLength: 128
+          writeOnly: true
+      required:
+      - recovery_token
+      - new_password
+      additionalProperties: false
+    PasswordResetResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - PASSWORD_RESET
+        sessions_revoked:
+          type: boolean
+          const: true
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - status
+      - sessions_revoked
+      - trace_id
+      additionalProperties: false
+    PasswordChange:
+      type: object
+      properties:
+        current_password:
+          type: string
+          minLength: 1
+          maxLength: 128
+          writeOnly: true
+        new_password:
+          type: string
+          minLength: 12
+          maxLength: 128
+          writeOnly: true
+      required:
+      - current_password
+      - new_password
+      additionalProperties: false
+    PasswordChangeResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - PASSWORD_CHANGED
+        other_sessions_revoked:
+          type: boolean
+          const: true
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - status
+      - other_sessions_revoked
+      - trace_id
+      additionalProperties: false
+    InternalMfaReset:
+      type: object
+      properties:
+        reason:
+          type: string
+          minLength: 20
+          maxLength: 2000
+      required:
+      - reason
+      additionalProperties: false
+    SignatureRequestReceipt:
+      type: object
+      description: Recibo de una solicitud de firma creada por un comando; hoy solo lo usa el reinicio
+        de MFA interno.
+      properties:
+        signature_request_id:
+          type: string
+          minLength: 1
+          format: uuid
+        action_code:
+          type: string
+          enum:
+          - MFA_RESET_INTERNAL
+        status:
+          type: string
+          enum:
+          - PENDING
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - signature_request_id
+      - action_code
+      - status
+      - trace_id
+      additionalProperties: false
+    UploadCreate:
+      type: object
+      description: target_id se interpreta según purpose. Lista de tipos permitidos y tamaño máximo por
+        propósito pendientes; content_type solo valida forma.
+      properties:
+        purpose:
+          type: string
+          enum:
+          - ROOM_EVIDENCE
+          - DISPUTE_EVIDENCE
+          - KYB_DOCUMENT
+          - VALUATION_EVIDENCE
+          - MARKET_REFERENCE_CAPTURE
+          - PC_STAGE_DOCUMENT
+          - LEGAL_GATE_DOCUMENT
+        target_id:
+          type: string
+          minLength: 1
+          format: uuid
+        content_type:
+          type: string
+          minLength: 3
+          maxLength: 127
+          pattern: ^[a-z]+/[a-z0-9.+-]+(?![\s\S])
+        size_bytes:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        sha256:
+          type: string
+          minLength: 1
+          pattern: ^[0-9a-f]{64}(?![\s\S])
+      required:
+      - purpose
+      - target_id
+      - content_type
+      - size_bytes
+      - sha256
+      additionalProperties: false
+    UploadTicketResponse:
+      type: object
+      properties:
+        upload_id:
+          type: string
+          minLength: 1
+          format: uuid
+        upload_url:
+          type: string
+          minLength: 1
+          maxLength: 2048
+          format: uri
+          description: URL firmada de un solo uso; vigencia depende del adaptador de almacenamiento.
+        method:
+          type: string
+          enum:
+          - PUT
+        content_type:
+          type: string
+          minLength: 3
+          maxLength: 127
+          pattern: ^[a-z]+/[a-z0-9.+-]+(?![\s\S])
+        expires_at:
+          type: string
+          minLength: 1
+          format: date-time
+        status:
+          type: string
+          enum:
+          - PENDING_UPLOAD
+        version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - upload_id
+      - upload_url
+      - method
+      - content_type
+      - expires_at
+      - status
+      - version
+      - trace_id
+      additionalProperties: false
+    UploadView:
+      type: object
+      properties:
+        upload_id:
+          type: string
+          minLength: 1
+          format: uuid
+        purpose:
+          type: string
+          enum:
+          - ROOM_EVIDENCE
+          - DISPUTE_EVIDENCE
+          - KYB_DOCUMENT
+          - VALUATION_EVIDENCE
+          - MARKET_REFERENCE_CAPTURE
+          - PC_STAGE_DOCUMENT
+          - LEGAL_GATE_DOCUMENT
+        target_id:
+          type: string
+          minLength: 1
+          format: uuid
+        status:
+          type: string
+          enum:
+          - PENDING_UPLOAD
+          - QUARANTINED
+          - ACCEPTED
+          - REJECTED
+          description: ACCEPTED exige escaneo antimalware y copia independiente confirmada.
+        rejection_reason:
+          type:
+          - string
+          - 'null'
+          enum:
+          - HASH_MISMATCH
+          - SIZE_EXCEEDED
+          - TYPE_NOT_ALLOWED
+          - MALWARE
+          - SCAN_TIMEOUT
+          - EXPIRED_UNCOMPLETED
+          - null
+        size_bytes:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        sha256:
+          type: string
+          minLength: 1
+          pattern: ^[0-9a-f]{64}(?![\s\S])
+        version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+      required:
+      - upload_id
+      - purpose
+      - target_id
+      - status
+      - rejection_reason
+      - size_bytes
+      - sha256
+      - version
+      additionalProperties: false
+    UploadResponse:
+      type: object
+      properties:
+        upload_id:
+          type: string
+          minLength: 1
+          format: uuid
+        purpose:
+          type: string
+          enum:
+          - ROOM_EVIDENCE
+          - DISPUTE_EVIDENCE
+          - KYB_DOCUMENT
+          - VALUATION_EVIDENCE
+          - MARKET_REFERENCE_CAPTURE
+          - PC_STAGE_DOCUMENT
+          - LEGAL_GATE_DOCUMENT
+        target_id:
+          type: string
+          minLength: 1
+          format: uuid
+        status:
+          type: string
+          enum:
+          - PENDING_UPLOAD
+          - QUARANTINED
+          - ACCEPTED
+          - REJECTED
+        rejection_reason:
+          type:
+          - string
+          - 'null'
+          enum:
+          - HASH_MISMATCH
+          - SIZE_EXCEEDED
+          - TYPE_NOT_ALLOWED
+          - MALWARE
+          - SCAN_TIMEOUT
+          - EXPIRED_UNCOMPLETED
+          - null
+        size_bytes:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        sha256:
+          type: string
+          minLength: 1
+          pattern: ^[0-9a-f]{64}(?![\s\S])
+        version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - upload_id
+      - purpose
+      - target_id
+      - status
+      - rejection_reason
+      - size_bytes
+      - sha256
+      - version
+      - trace_id
+      additionalProperties: false
+    UploadComplete:
+      type: object
+      properties:
+        expected_version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+      required:
+      - expected_version
+      additionalProperties: false
+    EvidenceDownloadResponse:
+      type: object
+      properties:
+        evidence_id:
+          type: string
+          minLength: 1
+          format: uuid
+        download_url:
+          type: string
+          minLength: 1
+          maxLength: 2048
+          format: uri
+        expires_at:
+          type: string
+          minLength: 1
+          format: date-time
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - evidence_id
+      - download_url
+      - expires_at
+      - trace_id
+      additionalProperties: false
+    ValuationDecisionCreate:
+      type: object
+      description: approved_value solo con APPROVED. exception_justification (RN-22) solo con APPROVED;
+        si la desviación la exige, el servidor crea solicitud de segunda firma. Banda y desviación no
+        se aceptan del cliente.
+      properties:
+        expected_version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        outcome:
+          type: string
+          enum:
+          - APPROVED
+          - OBSERVED
+        approved_value:
+          $ref: '#/components/schemas/Money'
+        reason:
+          type: string
+          minLength: 10
+          maxLength: 2000
+        exception_justification:
+          type: string
+          minLength: 50
+          maxLength: 2000
+      required:
+      - expected_version
+      - outcome
+      - reason
+      additionalProperties: false
+      allOf:
+      - if:
+          properties:
+            outcome:
+              const: APPROVED
+        then:
+          required:
+          - approved_value
+        else:
+          not:
+            anyOf:
+            - required:
+              - approved_value
+            - required:
+              - exception_justification
+    LegalRequirementResult:
+      type: object
+      properties:
+        requirement_key:
+          type: string
+          minLength: 1
+          maxLength: 60
+          description: Clave de market_legal_requirements (L3 §2.1); sin lista normativa cerrada todavía.
+        document_upload_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - requirement_key
+      - document_upload_id
+      additionalProperties: false
+    LegalGateDecisionCreate:
+      type: object
+      properties:
+        expected_version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        outcome:
+          type: string
+          enum:
+          - PASSED
+        requirement_results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LegalRequirementResult'
+          minItems: 1
+          maxItems: 50
+        reason:
+          type: string
+          minLength: 10
+          maxLength: 2000
+      required:
+      - expected_version
+      - outcome
+      - requirement_results
+      - reason
+      additionalProperties: false
+    ModerationDecisionCreate:
+      type: object
+      properties:
+        expected_version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        outcome:
+          type: string
+          enum:
+          - APPROVE_SCHEDULED
+          - APPROVE_IMMEDIATE
+        reason:
+          type: string
+          minLength: 10
+          maxLength: 2000
+      required:
+      - expected_version
+      - outcome
+      - reason
+      additionalProperties: false
+    DecisionReceipt:
+      type: object
+      properties:
+        decision_id:
+          type: string
+          minLength: 1
+          format: uuid
+        status:
+          type: string
+          enum:
+          - RECORDED
+          - PENDING_SECOND_SIGNATURE
+        signature_request_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        subject_version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+      required:
+      - decision_id
+      - status
+      - signature_request_id
+      - subject_version
+      additionalProperties: false
+      allOf:
+      - if:
+          properties:
+            status:
+              const: PENDING_SECOND_SIGNATURE
+        then:
+          properties:
+            signature_request_id:
+              type: string
+        else:
+          properties:
+            signature_request_id:
+              type: 'null'
+    DecisionReceiptResponse:
+      type: object
+      properties:
+        decision_id:
+          type: string
+          minLength: 1
+          format: uuid
+        status:
+          type: string
+          enum:
+          - RECORDED
+          - PENDING_SECOND_SIGNATURE
+        signature_request_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        subject_version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - decision_id
+      - status
+      - signature_request_id
+      - subject_version
+      - trace_id
+      additionalProperties: false
+      allOf:
+      - if:
+          properties:
+            status:
+              const: PENDING_SECOND_SIGNATURE
+        then:
+          properties:
+            signature_request_id:
+              type: string
+        else:
+          properties:
+            signature_request_id:
+              type: 'null'
+    SignatureRequest:
+      type: object
+      properties:
+        signature_request_id:
+          type: string
+          minLength: 1
+          format: uuid
+        action_code:
+          type: string
+          enum:
+          - VALUATION_V2_COSIGN
+          - VALUATION_V4
+          - VALUATION_EXCEPTION
+          - PC_STAGE_E3
+          - PC_STAGE_E7
+          - ATTEST_PC
+          - CAPABILITY_PLATFORM_DISABLE
+          - MARKET_RESUME
+          - MULTIPLE_OVERRIDE
+          - SUBROLE_GRANT
+          - MFA_RESET_INTERNAL
+        subject_kind:
+          type: string
+          enum:
+          - VALUATION
+          - PC_STAGE
+          - ROOM
+          - PLATFORM_CAPABILITY
+          - MARKET
+          - RAFFLE
+          - SUBROLE_ASSIGNMENT
+          - INTERNAL_USER
+        subject_id:
+          type: string
+          minLength: 1
+          format: uuid
+        subject_version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        requested_by:
+          type: string
+          minLength: 1
+          format: uuid
+        status:
+          type: string
+          enum:
+          - PENDING
+          - SIGNED
+          - DECLINED
+          - CANCELLED
+          - EXPIRED
+        expires_at:
+          type: string
+          minLength: 1
+          format: date-time
+        version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+      required:
+      - signature_request_id
+      - action_code
+      - subject_kind
+      - subject_id
+      - subject_version
+      - requested_by
+      - status
+      - expires_at
+      - version
+      additionalProperties: false
+    ListSignatureRequestsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SignatureRequest'
+          minItems: 0
+          maxItems: 100
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - items
+      - next_cursor
+      - trace_id
+      additionalProperties: false
+    SignatureRequestResponse:
+      type: object
+      properties:
+        signature_request_id:
+          type: string
+          minLength: 1
+          format: uuid
+        action_code:
+          type: string
+          enum:
+          - VALUATION_V2_COSIGN
+          - VALUATION_V4
+          - VALUATION_EXCEPTION
+          - PC_STAGE_E3
+          - PC_STAGE_E7
+          - ATTEST_PC
+          - CAPABILITY_PLATFORM_DISABLE
+          - MARKET_RESUME
+          - MULTIPLE_OVERRIDE
+          - SUBROLE_GRANT
+          - MFA_RESET_INTERNAL
+        subject_kind:
+          type: string
+          enum:
+          - VALUATION
+          - PC_STAGE
+          - ROOM
+          - PLATFORM_CAPABILITY
+          - MARKET
+          - RAFFLE
+          - SUBROLE_ASSIGNMENT
+          - INTERNAL_USER
+        subject_id:
+          type: string
+          minLength: 1
+          format: uuid
+        subject_version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        requested_by:
+          type: string
+          minLength: 1
+          format: uuid
+        status:
+          type: string
+          enum:
+          - PENDING
+          - SIGNED
+          - DECLINED
+          - CANCELLED
+          - EXPIRED
+        expires_at:
+          type: string
+          minLength: 1
+          format: date-time
+        version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        trace_id:
+          type: string
+          minLength: 1
+          format: uuid
+      required:
+      - signature_request_id
+      - action_code
+      - subject_kind
+      - subject_id
+      - subject_version
+      - requested_by
+      - status
+      - expires_at
+      - version
+      - trace_id
+      additionalProperties: false
+    SignatureDecision:
+      type: object
+      properties:
+        expected_version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        decision:
+          type: string
+          enum:
+          - SIGN
+          - DECLINE
+        reason:
+          type: string
+          minLength: 10
+          maxLength: 2000
+      required:
+      - expected_version
+      - decision
+      - reason
+      additionalProperties: false
     Error:
       type: object
       properties:
@@ -7183,6 +11122,7 @@ components:
               - ERR_AUTH_INVALID_CREDENTIALS
               - ERR_AUTH_MFA_REQUIRED
               - ERR_AUTH_RATE_LIMITED
+              - ERR_AUTH_REAUTH_REQUIRED
               - ERR_AUTH_TOKEN_EXPIRED
               - ERR_AUTH_TOKEN_REUSE
               - ERR_COMPLIANCE_PRIOR_APPROVAL_REQUIRED
@@ -7196,6 +11136,7 @@ components:
               - ERR_DRAW_EMPTY_POOL
               - ERR_DRAW_K_EXCEEDS_POOL
               - ERR_DRAW_TOO_EARLY
+              - ERR_EVIDENCE_NOT_ACCEPTED
               - ERR_IDENTITY_DOCUMENT_BLOCKED
               - ERR_IDENTITY_DOCUMENT_EXPIRED
               - ERR_IDENTITY_DOCUMENT_TAKEN
@@ -7438,10 +11379,7 @@ components:
           minLength: 1
         status:
           type: string
-          enum:
-          - PENDING_VERIFICATION
-          - VERIFIED
-          - SUSPENDED
+          enum: *id001
         trace_id:
           type: string
           minLength: 1
@@ -7499,10 +11437,7 @@ components:
       properties:
         status:
           type: string
-          enum:
-          - PENDING_VERIFICATION
-          - VERIFIED
-          - FROZEN
+          enum: *id002
         masked_account:
           type: string
           minLength: 1
@@ -7913,10 +11848,7 @@ components:
           format: uuid
         status:
           type: string
-          enum:
-          - SUBMITTED
-          - APPROVED
-          - REJECTED
+          enum: *id003
         trace_id:
           type: string
           minLength: 1
@@ -7941,10 +11873,7 @@ components:
           - E7
         status:
           type: string
-          enum:
-          - SUBMITTED
-          - VERIFIED
-          - REJECTED
+          enum: *id004
         trace_id:
           type: string
           minLength: 1
@@ -10780,12 +14709,325 @@ components:
               code: ERR_DISPUTE_EVIDENCE_REQUIRED
               message: No fue posible completar la solicitud.
               trace_id: 00000000-0000-4000-8000-000000000001
+    Error401_reauth_required:
+      description: ERR_AUTH_MFA_REQUIRED · ERR_AUTH_REAUTH_REQUIRED · ERR_AUTH_TOKEN_EXPIRED
+      headers:
+        X-Trace-Id:
+          schema:
+            type: string
+            minLength: 1
+            format: uuid
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                    - ERR_AUTH_MFA_REQUIRED
+                    - ERR_AUTH_REAUTH_REQUIRED
+                    - ERR_AUTH_TOKEN_EXPIRED
+                  message:
+                    type: string
+                    minLength: 1
+                    maxLength: 500
+                  trace_id:
+                    type: string
+                    minLength: 1
+                    format: uuid
+                required:
+                - code
+                - message
+                - trace_id
+                additionalProperties: false
+            required:
+            - error
+            additionalProperties: false
+            description: Respuesta segura, sin datos de cuentas, documentos ni detalles técnicos internos.
+              Causas técnicas solo en telemetría protegida.
+          example:
+            error:
+              code: ERR_AUTH_REAUTH_REQUIRED
+              message: No fue posible completar la solicitud.
+              trace_id: 00000000-0000-4000-8000-000000000001
+    Error403_incompatible_subrole:
+      description: ERR_RBAC_FORBIDDEN · ERR_RBAC_INCOMPATIBLE_SUBROLE
+      headers:
+        X-Trace-Id:
+          schema:
+            type: string
+            minLength: 1
+            format: uuid
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                    - ERR_RBAC_FORBIDDEN
+                    - ERR_RBAC_INCOMPATIBLE_SUBROLE
+                  message:
+                    type: string
+                    minLength: 1
+                    maxLength: 500
+                  trace_id:
+                    type: string
+                    minLength: 1
+                    format: uuid
+                required:
+                - code
+                - message
+                - trace_id
+                additionalProperties: false
+            required:
+            - error
+            additionalProperties: false
+            description: Respuesta segura, sin datos de cuentas, documentos ni detalles técnicos internos.
+              Causas técnicas solo en telemetría protegida.
+          example:
+            error:
+              code: ERR_RBAC_INCOMPATIBLE_SUBROLE
+              message: No fue posible completar la solicitud.
+              trace_id: 00000000-0000-4000-8000-000000000001
+    Error409_mfa_last_factor:
+      description: ERR_AUTH_MFA_REQUIRED
+      headers:
+        X-Trace-Id:
+          schema:
+            type: string
+            minLength: 1
+            format: uuid
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                    - ERR_AUTH_MFA_REQUIRED
+                  message:
+                    type: string
+                    minLength: 1
+                    maxLength: 500
+                  trace_id:
+                    type: string
+                    minLength: 1
+                    format: uuid
+                required:
+                - code
+                - message
+                - trace_id
+                additionalProperties: false
+            required:
+            - error
+            additionalProperties: false
+            description: Respuesta segura, sin datos de cuentas, documentos ni detalles técnicos internos.
+              Causas técnicas solo en telemetría protegida.
+          example:
+            error:
+              code: ERR_AUTH_MFA_REQUIRED
+              message: No fue posible completar la solicitud.
+              trace_id: 00000000-0000-4000-8000-000000000001
+    Error409_evidence_not_accepted:
+      description: ERR_EVIDENCE_NOT_ACCEPTED · ERR_RESOURCE_VERSION_CONFLICT
+      headers:
+        X-Trace-Id:
+          schema:
+            type: string
+            minLength: 1
+            format: uuid
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                    - ERR_EVIDENCE_NOT_ACCEPTED
+                    - ERR_RESOURCE_VERSION_CONFLICT
+                  message:
+                    type: string
+                    minLength: 1
+                    maxLength: 500
+                  trace_id:
+                    type: string
+                    minLength: 1
+                    format: uuid
+                required:
+                - code
+                - message
+                - trace_id
+                additionalProperties: false
+            required:
+            - error
+            additionalProperties: false
+            description: Respuesta segura, sin datos de cuentas, documentos ni detalles técnicos internos.
+              Causas técnicas solo en telemetría protegida.
+          example:
+            error:
+              code: ERR_EVIDENCE_NOT_ACCEPTED
+              message: No fue posible completar la solicitud.
+              trace_id: 00000000-0000-4000-8000-000000000001
+    Error409_signature_conflict:
+      description: ERR_RBAC_SELF_SIGNATURE · ERR_RESOURCE_VERSION_CONFLICT
+      headers:
+        X-Trace-Id:
+          schema:
+            type: string
+            minLength: 1
+            format: uuid
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                    - ERR_RBAC_SELF_SIGNATURE
+                    - ERR_RESOURCE_VERSION_CONFLICT
+                  message:
+                    type: string
+                    minLength: 1
+                    maxLength: 500
+                  trace_id:
+                    type: string
+                    minLength: 1
+                    format: uuid
+                required:
+                - code
+                - message
+                - trace_id
+                additionalProperties: false
+            required:
+            - error
+            additionalProperties: false
+            description: Respuesta segura, sin datos de cuentas, documentos ni detalles técnicos internos.
+              Causas técnicas solo en telemetría protegida.
+          example:
+            error:
+              code: ERR_RBAC_SELF_SIGNATURE
+              message: No fue posible completar la solicitud.
+              trace_id: 00000000-0000-4000-8000-000000000001
+    Error409_legal_gate:
+      description: ERR_LEGAL_GATE · ERR_RAFFLE_INVALID_TRANSITION · ERR_REGISTRABLE_STAGE_INCOMPLETE ·
+        ERR_RESOURCE_VERSION_CONFLICT
+      headers:
+        X-Trace-Id:
+          schema:
+            type: string
+            minLength: 1
+            format: uuid
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                    - ERR_LEGAL_GATE
+                    - ERR_RAFFLE_INVALID_TRANSITION
+                    - ERR_REGISTRABLE_STAGE_INCOMPLETE
+                    - ERR_RESOURCE_VERSION_CONFLICT
+                  message:
+                    type: string
+                    minLength: 1
+                    maxLength: 500
+                  trace_id:
+                    type: string
+                    minLength: 1
+                    format: uuid
+                required:
+                - code
+                - message
+                - trace_id
+                additionalProperties: false
+            required:
+            - error
+            additionalProperties: false
+            description: Respuesta segura, sin datos de cuentas, documentos ni detalles técnicos internos.
+              Causas técnicas solo en telemetría protegida.
+          example:
+            error:
+              code: ERR_LEGAL_GATE
+              message: No fue posible completar la solicitud.
+              trace_id: 00000000-0000-4000-8000-000000000001
+    Error422_valuation_decision:
+      description: ERR_PRIZE_DEVIATION_REJECTED · ERR_PRIZE_EVIDENCE_INCOMPLETE · ERR_PRIZE_REFERENCE_STALE
+      headers:
+        X-Trace-Id:
+          schema:
+            type: string
+            minLength: 1
+            format: uuid
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                    - ERR_PRIZE_DEVIATION_REJECTED
+                    - ERR_PRIZE_EVIDENCE_INCOMPLETE
+                    - ERR_PRIZE_REFERENCE_STALE
+                  message:
+                    type: string
+                    minLength: 1
+                    maxLength: 500
+                  trace_id:
+                    type: string
+                    minLength: 1
+                    format: uuid
+                required:
+                - code
+                - message
+                - trace_id
+                additionalProperties: false
+            required:
+            - error
+            additionalProperties: false
+            description: Respuesta segura, sin datos de cuentas, documentos ni detalles técnicos internos.
+              Causas técnicas solo en telemetría protegida.
+          example:
+            error:
+              code: ERR_PRIZE_DEVIATION_REJECTED
+              message: No fue posible completar la solicitud.
+              trace_id: 00000000-0000-4000-8000-000000000001
 tags:
 - name: alarms
 - name: auth
 - name: clients
 - name: compliance
 - name: disputes
+- name: evidence
 - name: identity
 - name: markets
 - name: me
@@ -10795,4 +15037,5 @@ tags:
 - name: reconciliation
 - name: rooms
 - name: settlements
+- name: signatures
 - name: webhooks

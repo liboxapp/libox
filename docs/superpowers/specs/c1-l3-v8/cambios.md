@@ -44,8 +44,9 @@ No suponer que RLS o NOLOGIN implementan por sí solos el permiso requerido.
 
 Inventario existente: 135 CREATE TABLE; 12 particionadas según auditoría original.
 C2 requiere comprobar ese conteo contra el SQL final y sus dependencias. Crear
-particiones no basta si el esquema/índices/FK fallan. Probar insert, mes siguiente,
-retención y recuperación sin pérdida de auditoría ni datos patrimoniales.
+particiones no basta si el esquema/índices/FK fallan. En C1 probar insert, mes siguiente, permisos y límites UTC. La retención y
+recuperación integral se ensayan antes de R1 conforme operación; no presentarlas
+como pruebas ya ejecutadas ni como una puerta adicional del contrato C1.
 
 La matriz de semillas incluye mercado PE, transiciones FSM, cuentas por moneda,
 reglas T1–T8, incompatibilidades y bootstrap seguro. Cuentas/transacciones/triggers
@@ -62,3 +63,9 @@ implementación independiente. El resto exige artefactos o pruebas descritos arr
 La siguiente versión debe ser autónoma: consolidar secciones no modificadas y
 reemplazos aprobados, sin remitir a V7 como norma. Archivar V7 intacta y emitir V8,
 Registro actualizado y BASELINE en un único acto de C2; este paquete no lo ejecuta.
+
+La entrega actual se detalla en [cierre SQL](cierre-sql.md),
+[cierre contractual](cierre-contratos.md) y [estado C1](estado-c1.md).
+H-01–H-03 pueden permanecer registrados por D-05 del programa; no se exige
+su confirmación contable para redactar C1 o emitir C2. Su apertura sí impide
+afirmar preparación para operar con dinero real.
