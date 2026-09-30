@@ -15,12 +15,13 @@ La mención de ASS-002 abierto en la regla antigua no revoca la ratificación.
 Los hooks de `.claude/settings.json` no se ejecutan automáticamente en Codex.
 No asumas que sus guards bloquean tus herramientas: aplica las mismas reglas
 antes de escribir. Los checks obligatorios de CI son la barrera de integración
-común; no son un sandbox local ni sustituyen la revisión humana.
+común; no son un sandbox local. La revisión humana obligatoria está suspendida
+por instrucción explícita de Diego; ver la regla de revisión enlazada abajo.
 
 ## Zonas sin generación asistida
 
-Backlog MVP V3 §1.3: implementación humana y revisión de otra persona, con
-propiedad fija, para estas cinco zonas:
+Backlog MVP V3 §1.3: implementación humana con propiedad fija para estas cinco
+zonas. La segunda revisión está suspendida por la instrucción posterior de Diego:
 
 - Motor de sorteo, serialización canónica y verificación.
 - Asientos contables y transacciones canónicas.
@@ -32,9 +33,11 @@ Incluye las restricciones de rango de recaudación, régimen económico y campa�
 con cupo atómico. Aplica por comportamiento, aunque cambien la ruta o el lenguaje.
 No generes ni modifiques su código; delimita la tarea y remítela al dueño humano.
 El detalle compartido está en [.claude/rules/zonas-sin-ia.md](.claude/rules/zonas-sin-ia.md).
-Diego es el único responsable actual; el segundo revisor está pendiente.
-No interpretes las cero aprobaciones requeridas en GitHub como una excepción
-al backlog. Una revisión por otro agente no sustituye a la segunda persona.
+Diego es el responsable actual. La [regla de revisión humana](.claude/rules/revision-humana.md)
+suspende toda revisión humana obligatoria hasta que él la reactive explícitamente,
+incluso si se incorporan Arom o Martin. No bloquear R0 por falta de segundo
+revisor. Mantener CI, pruebas y revisión automatizada; la prohibición de generar
+el código de estas zonas sigue vigente.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

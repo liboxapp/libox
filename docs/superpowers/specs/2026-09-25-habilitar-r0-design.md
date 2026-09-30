@@ -20,7 +20,7 @@ El programa no decide ASS-001 (custodia) ni edita el canon en su lugar: el canon
 | ID | Decisión | Fecha y alcance |
 |---|---|---|
 | D-01 | **ASS-002 ratificada por los socios: backend TypeScript** en un monolito modular. Next.js (App Router) y TypeScript para interfaz y endpoints; módulos de dominio separados (órdenes, pagos, boletos, sorteos, liquidaciones) que los endpoints solo invocan; PostgreSQL gestionado; un servicio de workflows administrado para lo asíncrono. Registrada en el doc 20 (ASS-002 invalidada, revisión 23) | 2026-09-29 · pendiente de alta como DEC-\* |
-| D-02 | Revisores: Arom B. y Martin G. Diego los invita desde GitHub, y la revisión obligatoria se activa cuando acepten | 2026-09-25 · ruleset y CODEOWNERS |
+| D-02 | Revisores: Arom B. y Martin G. Diego los invita desde GitHub; revisión humana suspendida hasta reactivación explícita de Diego | 2026-09-25 · ruleset y CODEOWNERS |
 | D-03 | Escrituras por shell: el CI es la garantía y el hook añade una heurística | 2026-09-25 · guards y CI |
 | D-04 | Un guard que falla sigue permitiendo, pero con aviso visible | 2026-09-25 · guards |
 | D-05 | L3 V8 incluirá el stack ratificado y las correcciones técnicas. El ledger (H-01, H-03) queda como hallazgo hasta tener confirmación contable. [LEGAL→ABOGADO] | 2026-09-25 · canon |
@@ -37,7 +37,9 @@ R0 queda habilitado cuando se cumplen las cinco condiciones:
 2. ~~Los socios ratifican ASS-002~~: **cumplido el 2026-09-29** (D-01).
 3. L3 V8 está emitida con el stack TypeScript y los proveedores cerrados, y `verify_corpus.py` en cero fallos.
 4. El freeze se levanta en el PR de cierre de ASS-002, con CI de código obligatorio.
-5. La revisión de una segunda persona está activa en el ruleset.
+5. **Suspendida por instrucción explícita de Diego (2026-09-29):** la revisión
+   humana no bloquea R0 hasta que él la reactive explícitamente. La incorporación
+   de colaboradores no la reactiva. Ver [regla operativa](../../../.claude/rules/revision-humana.md).
 
 **Fuera de alcance:** construir historias de R0 y decidir ASS-001. ASS-001 no bloquea el gate de R0, pero sí R1 y R2, y se sigue en el doc 20.
 
@@ -67,7 +69,7 @@ Cada sub-proyecto tiene su propio plan de implementación y su propio PR.
 |---|---|---|---|
 | A0 | PR del OS de IA (rama local `codex/activate-ai-audit`) con el run de auditoría. Soporte de prefijos en `outline-ignore.txt` y alta de `docs/audits/`. PR aparte para el commit de Scalar (`7ca542f`), que quedó fuera de `main` | SY-16 (parte) | CI verde. `outline-sync` en verde en `main` |
 | A1 | `verify-corpus` y `hooks` corren siempre y pasan a ser obligatorios. Job `protected-paths` que falla si se modifica un `docs/linea-base/*_V<n>.*` existente, o si se toca `src/` (salvo los `CLAUDE.md`) o la config del scaffold mientras la regla del freeze exista en la rama del PR. Así el PR de cierre, que borra la regla, puede pasar. Control de trailers de IA en `commitlint` | SY-02, SY-05 | PRs sintéticos rechazados en un repo de prueba |
-| A2 | CODEOWNERS con rutas reales, dueño y revisor fijo por zona sin IA, canon y OS. Regla `zonas-sin-ia.md` replicada en `AGENTS.md`. `CONTRIBUTING.md` y `src/CLAUDE.md` alineados al stack ratificado: reglas de backend neutrales extraídas de L3 §12, y los nombres de proveedor (Drizzle, Supabase, Inngest) marcados "a confirmar en C1". `AGENTS.md` aclara que en Codex no hay guards y que aplica el CI. Ruleset con al menos una aprobación y revisión de dueños, **después** de que acepten los invitados | SY-07, SY-08, SY-09 | `revisor-pr` sobre el PR. Un PR de zona sin aprobación queda bloqueado |
+| A2 | CODEOWNERS con rutas reales, dueño y revisor fijo por zona sin IA, canon y OS. Regla `zonas-sin-ia.md` replicada en `AGENTS.md`. `CONTRIBUTING.md` y `src/CLAUDE.md` alineados al stack ratificado: reglas de backend neutrales extraídas de L3 §12, y los nombres de proveedor (Drizzle, Supabase, Inngest) marcados "a confirmar en C1". `AGENTS.md` aclara que en Codex no hay guards y que aplica el CI. Revisión humana suspendida hasta reactivación explícita de Diego; mantener CI y revisión automatizada | SY-07, SY-08, SY-09 | `revisor-pr` sobre el PR. No exigir aprobación humana mientras dure la suspensión |
 | A3 | `guard_edit`: rutas normalizadas (worktree, `realpath`, mayúsculas); allowlist de escritura durante el freeze; E4 que protege los archivos del OS (`scripts/hooks/`, `.claude/settings.json`, `.claude/rules/`, `.claude/agents/`), con una válvula `LIBOX_EDITAR_OS=1` cuyo uso queda avisado en stderr. `guard_bash`: heurística de escrituras por shell y regex B1–B4 endurecidas. Ambos: aviso visible si fallan y timeouts por debajo de 90 s. `session_status`: "regla ausente, verificar el doc 20" | SY-03, SY-04, SY-05, SY-06, SY-10 | Tests rojos primero en `scripts/hooks/tests/`. El ensayo de guards da DENY en S1–S3, W1–W2, B1b, symlink y `vitest.config.ts` |
 | A4 | `mcp__*` en `disallowedTools` de los revisores. Un worktree fijo al SHA auditado por revisor. Regla para runs concurrentes y modo `resume <run-id>`. Ensayo de guards versionado con fixtures H-01 y H-02. Saneador de credenciales. E5 contra la sobrescritura de informes | SY-11, SY-12, SY-13 | Tests del saneador y de E5. H-01 a H-08 con evidencia o un límite explícito |
 | A5 | `outline-kb-cli` con versión fijada y actions fijadas por SHA. Marketplace de terceros con versión fijada. `outline-skills` limitada a lectura y sin `--api-key` en los ejemplos. Títulos de PR tratados como datos no confiables en el digest. Confirmación humana en `libox-registrar-hallazgo`. Metadata, conteos y docstrings al día | SY-14, SY-15, SY-16 | CI verde con las versiones fijadas |
@@ -95,7 +97,9 @@ Cada sub-proyecto tiene su propio plan de implementación y su propio PR.
 - Suma las rutas de código a CODEOWNERS.
 - Registra la consola interna de operación como épica.
 
-El código de las zonas sin IA lo escribe a mano su dueño y lo revisa la otra persona fija (Backlog V3 §1.3), también en R0.
+El código de las zonas sin IA lo escribe a mano su dueño (Backlog V3 §1.3), también
+en R0. La segunda revisión humana queda suspendida por la instrucción posterior
+de Diego; CI y revisión automatizada se mantienen.
 
 ## Secuencia
 
@@ -105,13 +109,13 @@ A0 ─► A1 ─► A2 ─► A3 ─► A4 ─► A5 ─────────
        └─► C1 borrador L3 V8 + proveedores ─► C2 ─► D1 ─► re-auditoría
 ```
 
-C1 arranca después de A1, así el canon ya corre bajo el gate de CI. A2 activa la revisión obligatoria solo cuando los invitados hayan aceptado. El cierre re-ejecuta `/libox-system-design-audit` (harness) y `/libox-system-design-audit producto`.
+C1 arranca después de A1, así el canon ya corre bajo el gate de CI. A2 mantiene la revisión humana desactivada hasta reactivación explícita de Diego. El cierre re-ejecuta `/libox-system-design-audit` (harness) y `/libox-system-design-audit producto`.
 
 ## Riesgos y mitigaciones
 
 | Riesgo | Mitigación |
 |---|---|
-| Activar la revisión obligatoria con una sola persona bloquea todos los PRs | Activarla al aceptar los invitados, y dejarlo verificado en A2 |
+| Activar la revisión obligatoria con una sola persona bloquea todos los PRs | Mantenerla desactivada hasta reactivación explícita de Diego, incluso si aceptan invitados |
 | Construir sobre el OS sin integrar | A0 va primero; los PRs posteriores se rebasan sobre `main` |
 | Ratificar sin spike deja sin medir los límites del proveedor de workflows | La comparativa de C1 los evalúa contra los requisitos de L3, y F1–F7 los prueban en R1 contra servicios reales |
 | L3 V8 es grande (OpenAPI de 16 a 43 o más operaciones) | Se prepara en paralelo y se estima en el plan de C1. T-1 cotizado en 8 SP es probablemente bajo |

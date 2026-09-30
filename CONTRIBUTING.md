@@ -84,9 +84,11 @@ Los ocho checks obligatorios están activos desde A1:
 | `test (3.9)`, `test (3.12)` | Hooks y políticas de CI |
 | `protected-paths`, `commit-policy` | Canon/freeze y autoría desde código de la base |
 
-Diego trabaja solo: `required_approving_review_count` sigue en cero y la revisión
-obligatoria de CODEOWNERS está desactivada. Activarlas cuando se incorporen los
-revisores; no sustituir la segunda revisión de las zonas críticas por autorrevisión.
+Por instrucción explícita de Diego, `required_approving_review_count` sigue en
+cero y la revisión obligatoria de CODEOWNERS está desactivada. Solo Diego puede
+reactivar la revisión humana mediante una nueva instrucción explícita; incorporar
+colaboradores no la reactiva. Aplica también a las zonas críticas y al gate de R0.
+Ver [regla de revisión humana](.claude/rules/revision-humana.md).
 `release-please` mantiene versiones en pushes a `main`.
 El CI de producto (build, lint, tipos, tests, migraciones y contrato API) entra en D1.
 
@@ -135,6 +137,7 @@ a Supavisor, Upstash o Vercel WAF no constituyen una selección vigente.
 - [ ] Definir permisos, secretos, almacenamiento de evidencias y política de rate limiting.
 - [ ] Correlacionar trazas y alertas; documentar diagnóstico y recuperación.
 
-Las cinco zonas de Backlog MVP V3 §1.3 requieren implementación humana y otra
-persona revisora, ambas con propiedad fija. Diego es el responsable actual;
-la asignación definitiva por zona y la segunda persona están pendientes.
+Las cinco zonas de Backlog MVP V3 §1.3 mantienen implementación humana y propiedad
+fija. Diego es el responsable actual. La segunda revisión humana está suspendida
+por su instrucción posterior; no constituye un bloqueo mientras no la reactive
+explícitamente. La suspensión no autoriza generación asistida en esas zonas.
