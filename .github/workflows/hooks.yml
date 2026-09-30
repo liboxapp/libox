@@ -29,6 +29,19 @@ jobs:
         run: python3 -m unittest discover -s scripts/ci/tests -v
       - name: Tests de ejecuciones de auditoría
         run: python3 -m unittest discover -s scripts/audit/tests -v
+      - name: Dependencias de validación contractual
+        run: python3 -m pip install -r scripts/contracts/requirements.txt
+      - name: OpenAPI, ejemplos y mock HTTP
+        run: python3 -m unittest discover -s scripts/contracts/tests -v
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        if: matrix.python == '3.12'
+        with:
+          node-version: "22"
+      - name: Tipos y cliente TypeScript contra mock local
+        if: matrix.python == '3.12'
+        run: |
+          npm ci --prefix scripts/contracts/typescript --ignore-scripts --no-audit --no-fund
+          python3 scripts/contracts/check_typescript.py
       - name: settings.json es JSON válido y sus hooks apuntan a scripts existentes
         run: |
           python3 - <<'PY'
