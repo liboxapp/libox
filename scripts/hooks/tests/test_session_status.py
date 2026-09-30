@@ -18,8 +18,8 @@ class StatusLines(unittest.TestCase):
         self.assertIn("chore/os-ia", s.status_lines("chore/os-ia", True, True)[1])
 
     def test_reporta_freeze(self):
-        self.assertIn("ASS-002 abierto", s.status_lines("main", True, True)[2])
-        self.assertIn("ASS-002 cerrado", s.status_lines("main", False, True)[2])
+        self.assertIn("congelado hasta D1", s.status_lines("main", True, True)[2])
+        self.assertIn("verificar el doc 20", s.status_lines("main", False, True)[2])
 
     def test_reporta_verify(self):
         self.assertIn("sin fallos", s.status_lines("main", True, True)[3])

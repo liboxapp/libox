@@ -1,108 +1,278 @@
 #!/usr/bin/env python3
-"""Guard PreToolUse (matcher Bash) del OS de IA de Libox. Python 3.9+.
+"""B1–B4 y escrituras obvias: heurística local, no sandbox. Python 3.9+.
 
-Lee el JSON del hook por stdin y bloquea con exit 2 + mensaje por stderr:
-  B1  commit con trailer de co-autoría de IA
-  B2  push a main
-  B3  commit que toca docs/linea-base/ o verify_corpus.py con verify_corpus en rojo
-  B4  commit con correo de autoría fuera de @liboxapp.com
-Ante cualquier error propio, permite (exit 0).
+No ejecuta el comando inspeccionado. Ante error propio permite con AVISO.
+El CI y ruleset siguen siendo la barrera de integración común.
 """
 import json
 import os
 import re
+import shlex
+import stat
 import subprocess
 import sys
-from typing import Callable, Dict, List, Tuple
+import time
+from pathlib import Path
 
 from corpus_check import verify_corpus
+from guard_paths import warn
+import guard_edit
 
-COAUTHOR_RE = re.compile(
-    r"git\s+commit[\s\S]*(Co-Authored-By|Generated with Claude|noreply@anthropic\.com)", re.I
-)
-PUSH_MAIN_RE = re.compile(
-    r"git\s+push\s+(?!--delete)[^\n]*\b(origin\s+main|main:main|HEAD:main|--force\S*\s+origin\s+main)\b"
-)
-COMMIT_RE = re.compile(r"\bgit\b[^|;&\n]*\bcommit\b")
-COMMIT_ALL_RE = re.compile(r"\s(-[a-zA-Z]*a[a-zA-Z]*|--all)(\s|$)")
-CANON_PREFIX = "docs/linea-base/"
-CANON_FILES = {"verify_corpus.py"}
-ORG_DOMAIN = "@liboxapp.com"
-
-MSG_B1 = (
-    "🚫 Trailer de co-autoría de IA detectado en el commit.\n"
-    "Regla firme del repo (CONTRIBUTING.md → \"Autoría: sin co-autores automáticos\"): "
-    "los commits no llevan `Co-Authored-By: Claude ...` ni \"Generated with Claude Code\". "
-    "Reescribe el mensaje sin el trailer y vuelve a intentar."
-)
-MSG_B2 = (
-    "🚫 Push directo a `main` bloqueado.\n"
-    "`main` solo recibe cambios vía Pull Request con rebase-and-merge. "
-    "Crea una rama `<type>/<kebab>`, súbela con `git push -u origin <rama>` y abre el PR (skill `libox-pr`)."
-)
-MSG_B3 = (
-    "🚫 El commit toca el corpus canónico y `verify_corpus.py` tiene fallos (CD-10).\n"
-    "Corrige hasta cero fallos antes de commitear. Últimas líneas:\n{tail}"
-)
-MSG_B4 = (
-    "🚫 Correo de autoría fuera de la organización: {email}.\n"
-    "Configúralo local al repo: `git config user.email <tu>@liboxapp.com` y vuelve a commitear "
-    "(el CI rechaza commits con otros dominios; ver docs/equipo/onboarding.md)."
-)
-
-Ctx = Dict[str, Callable]
+AI_RE = re.compile(r'co-authored-by\s*:.*(?:claude|codex|openai|chatgpt|copilot|gemini|cursor|\bbot\b)|generated\s+with|noreply@anthropic\.com', re.I)
+MSG_B1 = 'B1: co-autoría de IA detectada; reescriba el mensaje sin atribución automática.'
+MSG_B2 = 'B2: main solo recibe cambios por PR con rebase-and-merge.'
+MSG_B3 = 'B3: el corpus tiene fallos; ejecute verify_corpus.py antes del commit.\n{tail}'
+MSG_B4 = 'B4: correo fuera de la organización; use git config user.email <tu>@liboxapp.com.'
+ORG_DOMAIN = '@liboxapp.com'
+CANON_PREFIX = 'docs/linea-base/'
+CANON_FILES = {'verify_corpus.py'}
+Ctx = dict
 
 
-def decide(command: str, ctx: Ctx) -> Tuple[str, str]:
-    if not command:
-        return "allow", ""
-    if COAUTHOR_RE.search(command):
-        return "deny", MSG_B1
-    if PUSH_MAIN_RE.search(command):
-        return "deny", MSG_B2
-    if COMMIT_RE.search(command):
-        try:
-            email = (ctx["user_email"]() or "").strip()
-            if not email.endswith(ORG_DOMAIN):
-                return "deny", MSG_B4.format(email=email or "(vacío)")
-            files = set(ctx["staged_files"]())
-            if COMMIT_ALL_RE.search(command):
-                files |= set(ctx["changed_files"]())
+def segments(command):
+    lexer = shlex.shlex(command, posix=True, punctuation_chars=';&|<>\n')
+    lexer.whitespace = ' \t\r'
+    lexer.whitespace_split = True
+    lexer.commenters = '#'
+    current = []
+    for token in lexer:
+        if re.fullmatch(r'[;&|\n]+', token):
+            if current:
+                yield current
+            current = []
+        else:
+            current.append(token)
+    if current:
+        yield current
+
+
+def git_command(tokens, root):
+    """Devuelve verbo, args, cwd y config inline; no interpreta expansiones."""
+    try:
+        start = next(i for i, t in enumerate(tokens) if os.path.basename(t) == 'git')
+    except StopIteration:
+        return None
+    options = {}
+    i = start + 1
+    while i < len(tokens):
+        t = tokens[i]
+        if t in ('-C', '-c', '--git-dir', '--work-tree'):
+            value = tokens[i + 1]
+            if t == '-C':
+                root = os.path.abspath(os.path.join(root, value))
+            elif t == '-c':
+                k, _, v = value.partition('='); options[k] = v
+            else:
+                options['unsupported'] = True
+            i += 2
+        elif t.startswith('-c') and len(t) > 2:
+            k, _, v = t[2:].partition('='); options[k] = v; i += 1
+        elif t.startswith('-C') and len(t) > 2:
+            root = os.path.abspath(os.path.join(root, t[2:])); i += 1
+        elif t.startswith('--git-dir=') or t.startswith('--work-tree=') or t.startswith('--config-env'):
+            options['unsupported'] = True; i += 1
+        elif t.startswith('-'):
+            i += 1
+        else:
+            return t, tokens[i + 1:], root, options, tokens[:start]
+    return None
+
+
+def values(args, long_name, short_name=None):
+    for i, token in enumerate(args):
+        if token == '--':
+            break
+        if token == long_name or token == short_name:
+            yield args[i + 1]
+        elif token.startswith(long_name + '='):
+            yield token.split('=', 1)[1]
+        elif short_name and token.startswith(short_name) and len(token) > len(short_name):
+            yield token[len(short_name):]
+
+
+def has_pathspec(args):
+    """Detecta operandos sin confundir el texto de -m/-F con rutas."""
+    takes_value = {'-m', '--message', '-F', '--file', '-C', '--reuse-message',
+                   '-c', '--reedit-message', '--author', '--date', '--trailer',
+                   '-t', '--template', '--cleanup', '--fixup', '--squash',
+                   '--pathspec-from-file'}
+    i = 0
+    while i < len(args):
+        arg = args[i]
+        if arg == '--' or arg.startswith('--pathspec-from-file='):
+            return True
+        if arg == '--pathspec-from-file':
+            return True
+        if arg in takes_value:
+            i += 2
+            continue
+        if not arg.startswith('-'):
+            return True
+        i += 1
+    return False
+
+
+def message_file(root, name):
+    if name == '-':
+        raise ValueError('stdin no verificable')
+    path = Path(root) / name
+    info = path.stat()
+    if not stat.S_ISREG(info.st_mode) or info.st_size > 65536:
+        raise ValueError('mensaje no regular o demasiado grande')
+    return path.read_text(encoding='utf-8')
+
+
+def shell_write(tokens, ctx):
+    root = ctx.get('root', '/repo')
+    env = ctx.get('env', {})
+    targets = []
+    for i, token in enumerate(tokens[:-1]):
+        if token in ('>', '>>', '>|', '<>'):
+            targets.append(tokens[i + 1])
+    if not tokens:
+        return None
+    name = os.path.basename(tokens[0])
+    args = [t for t in tokens[1:] if not t.startswith('-')]
+    if name in ('cp', 'mv', 'install') and args:
+        targets.extend(args[-2:] if name == 'mv' else args[-1:])
+    elif name in ('rm', 'touch', 'mkdir', 'truncate', 'tee', 'chmod', 'chown'):
+        targets.extend(args)
+    elif name == 'sed' and any(t == '-i' or t.startswith('-i') for t in tokens[1:]):
+        targets.extend(args[1:])
+    # Intérpretes: solo literales visibles. No pretende analizar código arbitrario.
+    elif name.startswith(('python', 'node', 'ruby', 'perl')):
+        code = ' '.join(tokens[1:])
+        if re.search(r'open\(|write|unlink|remove|rename', code):
+            targets.extend(re.findall(r'[\'\"]([^\'\"]+)[\'\"]', code))
+    for path in targets:
+        if path.startswith('&') or path == '/dev/null':
+            continue
+        kind, reason = guard_edit.decide({'file_path': path}, root, env)
+        if kind == 'deny':
+            return 'deny', 'Escritura shell detectada (heurística): ' + reason
+    return None
+
+
+def decide(command: str, ctx: Ctx):
+    try:
+        chained = False
+        for tokens in segments(command):
+            denial = shell_write(tokens, ctx)
+            if denial:
+                return denial
+            parsed = git_command(tokens, ctx.get('root', os.getcwd()))
+            if not parsed:
+                continue
+            verb, args, root, options, prefix = parsed
+            if verb == 'add':
+                chained = True
+            if verb not in ('commit', 'push'):
+                continue
+            if options.get('unsupported'):
+                return 'deny', 'Opciones de repositorio/configuración no verificables; use git -C y configuración explícita.'
+            effective = ctx.get('context_at', lambda _root: ctx)(root)
+            if verb == 'push':
+                if any(t in ('--all', '--mirror') for t in args):
+                    return 'deny', MSG_B2
+                for arg in args:
+                    dest = arg.lstrip('+').split(':')[-1]
+                    if dest in ('main', 'refs/heads/main'):
+                        return 'deny', MSG_B2
+                # Push sin refspec depende de push.default/remoto: denegar main actual.
+                if len([a for a in args if not a.startswith('-')]) < 2:
+                    branch = effective.get('branch', lambda: '')()
+                    if branch == 'main':
+                        return 'deny', MSG_B2
+                continue
+            if AI_RE.search(' '.join(args)):
+                return 'deny', MSG_B1
+            for filename in values(args, '--file', '-F'):
+                try:
+                    content = message_file(root, filename)
+                except (ValueError, OSError, UnicodeError):
+                    return 'deny', 'B1: no se puede comprobar el archivo del mensaje; use -m o un archivo regular.'
+                if AI_RE.search(content):
+                    return 'deny', MSG_B1
+            for ref in list(values(args, '--reuse-message', '-C')) + list(values(args, '--reedit-message', '-c')):
+                if not re.fullmatch(r'[A-Za-z0-9_./~^{}-]+', ref) or ref.startswith('-'):
+                    return 'deny', 'B1: referencia de mensaje no verificable.'
+                reader = effective.get('commit_message')
+                if reader is None or AI_RE.search(reader(ref)):
+                    return 'deny', MSG_B1
+            email = (effective['user_email']() or '').strip()
+            if 'user.email' in options:
+                email = options['user.email']
+            author_email = effective.get('author_email', lambda: None)()
+            if author_email is not None:
+                email = author_email.strip()
+            if 'author.email' in options:
+                email = options['author.email']
+            environment = dict(ctx.get('env', {}))
+            for item in prefix:
+                key, sep, value = item.partition('=')
+                if sep:
+                    environment[key] = value
+            email = environment.get('GIT_AUTHOR_EMAIL', email)
+            for author in values(args, '--author'):
+                match = re.search(r'<([^<>]+)>', author)
+                email = match.group(1) if match else ''
+            if not email.casefold().endswith(ORG_DOMAIN):
+                return 'deny', MSG_B4
+            files = set(effective['staged_files']())
+            # Une cambios rastreados y no rastreados ante add/commit -a/pathspec.
+            if chained or has_pathspec(args) or any(a in ('--all', '--include', '--only', '--') or re.match(r'^-[^-]*a', a) for a in args):
+                files |= set(effective['changed_files']())
+            files |= {a for a in args if a.startswith(CANON_PREFIX) or a in CANON_FILES}
             if any(f.startswith(CANON_PREFIX) or f in CANON_FILES for f in files):
-                ok, tail = ctx["verify_corpus"]()
+                ok, tail = effective['verify_corpus']()
                 if not ok:
-                    return "deny", MSG_B3.format(tail=tail)
-        except Exception:  # noqa: BLE001 — un fallo del guard nunca bloquea al usuario
-            return "allow", ""
-    return "allow", ""
+                    return 'deny', MSG_B3.format(tail=tail)
+        return 'allow', ''
+    except Exception:
+        warn('guard_bash')
+        return 'allow', ''
 
 
-def _git(root: str, *args: str) -> List[str]:
-    r = subprocess.run(["git", "-C", root] + list(args), capture_output=True, text=True, timeout=20)
-    if r.returncode != 0:
-        return []
-    return [line for line in r.stdout.splitlines() if line.strip()]
-
-
-def main() -> int:
+def main():
     try:
         payload = json.load(sys.stdin)
-    except Exception:  # noqa: BLE001
-        return 0
-    command = (payload.get("tool_input") or {}).get("command") or ""
-    root = os.environ.get("CLAUDE_PROJECT_DIR") or payload.get("cwd") or os.getcwd()
-    ctx = {
-        "staged_files": lambda: _git(root, "diff", "--cached", "--name-only"),
-        "changed_files": lambda: _git(root, "diff", "--name-only"),
-        "user_email": lambda: " ".join(_git(root, "config", "user.email")),
-        "verify_corpus": lambda: verify_corpus(root),
-    }
-    kind, reason = decide(command, ctx)
-    if kind == "deny":
-        sys.stderr.write(reason + "\n")
-        return 2
+        command = (payload.get('tool_input') or {}).get('command') or ''
+        root = payload.get('cwd') or os.environ.get('CLAUDE_PROJECT_DIR') or os.getcwd()
+        deadline = time.monotonic() + 35
+
+        def context_at(where):
+            def git(*args, optional=False):
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    raise TimeoutError()
+                r = subprocess.run(['git', '-C', where, *args], capture_output=True,
+                                   timeout=min(3, remaining))
+                if optional and r.returncode == 1:
+                    return None
+                r.check_returncode()
+                return r.stdout.decode('utf-8', errors='surrogateescape')
+            def verify():
+                repository = git('rev-parse', '--show-toplevel').strip()
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    raise TimeoutError()
+                return verify_corpus(repository, timeout=min(20, remaining))
+            return {'root': where, 'env': dict(os.environ), 'context_at': context_at,
+                    'staged_files': lambda: git('diff', '--cached', '--name-only', '-z').split('\0'),
+                    'changed_files': lambda: git('ls-files', '--full-name', '-m', '-o', '--exclude-standard', '-z').split('\0'),
+                    'user_email': lambda: (git('config', 'user.email', optional=True) or '').strip(),
+                    'author_email': lambda: git('config', '--get', 'author.email', optional=True),
+                    'branch': lambda: git('branch', '--show-current').strip(),
+                    'commit_message': lambda ref: git('show', '-s', '--format=%B', ref),
+                    'verify_corpus': verify}
+        kind, reason = decide(command, context_at(root))
+        if kind == 'deny':
+            print(reason, file=sys.stderr)
+            return 2
+    except Exception:
+        warn('guard_bash: payload o contexto')
     return 0
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     sys.exit(main())

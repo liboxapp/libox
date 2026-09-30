@@ -105,7 +105,7 @@ class E3NamingLegacy(unittest.TestCase):
         self.assertEqual(g.decide(write(ROOT + "/CLAUDE.md", "Sortibox es nombre legacy"), ROOT, {})[0], "allow")
 
     def test_permite_en_rules(self):
-        self.assertEqual(g.decide(write(ROOT + "/.claude/rules/git.md", "Sortibox es nombre legacy"), ROOT, {})[0], "allow")
+        self.assertEqual(g.decide(write(ROOT + "/.claude/rules/git.md", "Sortibox es nombre legacy"), ROOT, {"LIBOX_EDITAR_OS": "1"})[0], "allow")
 
     def test_permite_en_docs_equipo(self):
         self.assertEqual(g.decide(write(ROOT + "/docs/equipo/x.md", "ALAZAR es nombre legacy"), ROOT, {})[0], "allow")

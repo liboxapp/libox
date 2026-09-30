@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""Hook SessionStart: tres líneas de estado del OS de IA (rama, freeze ASS-002, verify_corpus).
+"""Hook SessionStart: cuatro líneas de estado del OS de IA (rama, freeze de desarrollo, verify_corpus).
 
 Lo que imprime por stdout entra al contexto de la sesión: se mantiene corto a propósito.
-Python 3.9+. Ante error, no imprime nada y sale 0.
+Python 3.9+. Ante error emite AVISO y sale 0.
 """
 import os
 import subprocess
 import sys
 from typing import List, Optional
 
+from guard_paths import warn
 from corpus_check import verify_corpus, CorpusCheckUnavailable
 
 FREEZE_RULE = os.path.join(".claude", "rules", "src-congelado.md")
@@ -30,8 +31,8 @@ def status_lines(branch: str, frozen: bool, verify_ok: Optional[bool]) -> List[s
     return [
         "## Estado del OS de IA (auto)",
         "- Rama: `{}`".format(branch or "?"),
-        ("- ASS-002 abierto — `src/` congelado (`.claude/rules/src-congelado.md`)"
-         if frozen else "- ASS-002 cerrado — `src/` habilitado"),
+        ("- TypeScript ratificado (ASS-002) — `src/` congelado hasta D1 (`.claude/rules/src-congelado.md`)"
+         if frozen else "- Regla de freeze ausente — verificar el doc 20 y cierre D1; no inferir habilitación"),
         verify_line,
     ]
 
@@ -50,7 +51,7 @@ def main() -> int:
             ok = None
         sys.stdout.write("\n".join(status_lines(branch, frozen, ok)) + "\n")
     except Exception:  # noqa: BLE001
-        pass
+        warn('session_status')
     return 0
 
 
