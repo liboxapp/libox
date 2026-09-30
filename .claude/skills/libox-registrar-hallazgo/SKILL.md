@@ -1,11 +1,19 @@
 ---
 name: libox-registrar-hallazgo
-description: Registra un supuesto (ASS-), solicitud de cambio (CHANGE-), riesgo (RISK-) o idea (IDEA-) en el doc 20 de Outline y, si aplica, en el backlog de cambio (CD-07), sin abrir una versión del canon. Úsalo cuando aparezca una observación que no justifica romper el freeze.
+description: Registra un supuesto (ASS-), solicitud de cambio (CHANGE-), riesgo (RISK-) o idea (IDEA-) en el doc 20 de Outline y, si aplica, en el backlog de cambio (CD-07), sin abrir una versión del canon. Usar solo ante solicitud explícita del usuario de registrar un hallazgo.
+disable-model-invocation: true
 ---
 
 # Registrar un hallazgo
 
 Entrada: `$ARGUMENTS` = descripción libre del hallazgo.
+
+La invocación explícita de este skill o una solicitud explícita de registrar el
+hallazgo autoriza la escritura externa descrita, sin pedir confirmación repetida.
+Si solo se detectó un hallazgo y no existe esa autorización, preparar y mostrar
+un borrador con destino y texto; solicitar autorización antes de escribir en Outline.
+Esta autorización de escritura externa no es revisión humana del código ni
+reactiva la revisión humana de desarrollo suspendida.
 
 1. **Clasifica** con una sola etiqueta:
    - `ASS-` supuesto sobre el que se está construyendo y que alguien debe ratificar.
