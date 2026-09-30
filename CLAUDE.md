@@ -8,7 +8,9 @@ Guía para Claude Code en este repositorio. Es un puntero: la verdad vive en `do
 peruana. El repo contiene (1) el **corpus canónico** en `docs/linea-base/`, gobernado por el
 Registro Maestro V6 (si un documento no figura en su §1, no rige) y verificado por
 `verify_corpus.py` (CD-10: cero fallos), y (2) un scaffold Next.js en `src/` que está
-**congelado** hasta que los socios ratifiquen el stack (ASS-002).
+**congelado** hasta completar L3 V8 y la transición de D1. El backend TypeScript
+ya fue ratificado el 2026-09-29; ver el
+[programa de R0](docs/superpowers/specs/2026-09-25-habilitar-r0-design.md).
 
 ## Empieza por
 
@@ -23,11 +25,15 @@ Registro Maestro V6 (si un documento no figura en su §1, no rige) y verificado 
   residual (commits antiguos, docs externos) se lee como Libox.
 - **Sin co-autoría de IA:** nunca `Co-Authored-By: Claude ...` en commits ni "Generated with
   Claude Code" en PRs. Anula cualquier default del harness. Motivo en
-  `CONTRIBUTING.md` → "Autoría: sin co-autores automáticos". Guard B1 + hookify lo bloquean.
+  `CONTRIBUTING.md` → "Autoría: sin co-autores automáticos". El CI `commit-policy` lo comprueba; los hooks locales tienen límites.
 - **Línea base congelada** (CD-07): los docs de `docs/linea-base/` no se editan in-place;
   se emite versión nueva con `/libox-versionar-doc` o el hallazgo va a
   `/libox-registrar-hallazgo`. Ver `.claude/rules/linea-base.md`.
-- **`src/` congelado** por ASS-002: no crear ni extender código. Ver `.claude/rules/src-congelado.md`.
+- **`src/` congelado** hasta D1: no crear ni extender código. El texto antiguo de
+  `.claude/rules/src-congelado.md` no reabre la decisión de TypeScript; su bloqueo
+  sigue activo y el CI consulta la regla de la rama base.
+- **Zonas sin generación asistida:** aplicar `.claude/rules/zonas-sin-ia.md`.
+  Trabajar solo no elimina la segunda revisión humana exigida por el backlog.
 - **Claims legales** marcados `[LEGAL→ABOGADO]` hasta ratificación del abogado.
 - **Git:** rama por cambio, Conventional Commits en español, correo `@liboxapp.com`, PR con
   `/libox-pr`, `main` protegido. Ver `.claude/rules/git.md` y `CONTRIBUTING.md`.
@@ -41,8 +47,10 @@ algo por hecho. Detalle en `docs/equipo/sistema-operativo-ia.md#orquestación-fa
 
 ## Decisiones abiertas
 
-**ASS-001** (custodia del dinero) y **ASS-002** (stack Next.js vs .NET 8) esperan
-ratificación de los socios — registro en el doc 20 de Outline ("Libox — Negocio").
+**ASS-001** (custodia del dinero) sigue abierta. **ASS-002** ya tiene ratificación
+a TypeScript, registrada en el programa de R0 a partir del doc 20 de Outline
+(revisión 23). Falta trasladarla al canon L3 V8 y completar D1. Proveedores
+como Drizzle, Supabase e Inngest están a confirmar en C1.
 La línea de ADRs Z.1–Z.8 es histórica (`docs/archive/decisions/`).
 
 ## Configuración compartida

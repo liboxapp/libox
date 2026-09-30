@@ -1,12 +1,13 @@
 # CLAUDE.md — Application code rules
 
-> ⚠️ **Congelado por ASS-002.** El stack (Next.js vs .NET 8) espera ratificación de los
-> socios; hasta entonces no se crea ni extiende código bajo `src/` (guard E2, ver
-> [`.claude/rules/src-congelado.md`](../.claude/rules/src-congelado.md)). Este archivo
-> sigue siendo la spec de código para cuando se levante el freeze.
+> **Freeze activo hasta D1.** TypeScript ya fue ratificado el 2026-09-29.
+> Faltan L3 V8 y la transición revisada del freeze; no crear ni extender código.
+> El estado vigente está en el [programa de R0](../docs/superpowers/specs/2026-09-25-habilitar-r0-design.md).
+> La regla antigua conserva el bloqueo, aunque su texto aún diga ASS-002 abierto.
 
-This file governs all work under `src/` — the Libox application: a Next.js
-(App Router) modular monolith, per [ADR Z.6](../docs/archive/decisions/Z6-stack-tecnologico.md).
+La aplicación será un monolito modular TypeScript con Next.js App Router y
+PostgreSQL; endpoints delgados que invocan módulos de dominio.
+
 The root [CLAUDE.md](../CLAUDE.md) is the wiki/operations guide and wins on
 naming (**Libox**), conversation language (Spanish), and the no-AI-co-author
 rule. Normative engineering and git rules live in
@@ -66,46 +67,29 @@ Canonical in [`docs/equipo/sistema-operativo-ia.md`](../docs/equipo/sistema-oper
 `general-purpose` agent with `model: "opus"`; self-contained briefs; never relay a
 worker's "done" unverified.
 
-## Hard engineering rules
+## Reglas de backend y zonas humanas
 
-Canonical text in [CONTRIBUTING.md](../CONTRIBUTING.md). Summary:
+Aplicar las [reglas de CONTRIBUTING](../CONTRIBUTING.md#reglas-de-backend-independientes-del-proveedor),
+extraídas de L3 V7 §12: atomicidad de estado/auditoría/outbox, bloqueo autoritativo
+en DB, idempotencia por intento y webhooks autenticados, durables y deduplicados.
+Los nombres canónicos son `psp_events` y `event_outbox`; C1/C2 resuelve sus defectos
+sin sustituirlos por convenciones de proveedores. No generar código en las
+[cinco zonas humanas](../.claude/rules/zonas-sin-ia.md), aunque la tarea se presente
+como migración, refactor o adaptación a TypeScript.
 
-1. **Money writes only via a single server-side Drizzle transaction**
-   (`persist → audit_event → outbox`, same commit); `supabase-js` never
-   writes money, tickets, draw, settlement, or audit.
-2. **Webhooks ACK fast (< 2 s), process async** via `webhook_inbox` +
-   idempotency key + Inngest; zero inline business logic.
-3. **Concurrency is solved in the database**: constraints, TTL reservations,
-   explicit locks on draw execution; idempotency keys are the second barrier.
+## Stack y rate limiting
 
-The CONTRIBUTING scaffold checklist ships with the first code PR.
+**Ratificado:** TypeScript, Next.js App Router, monolito modular, PostgreSQL
+gestionado y workflows administrados. Scalar para documentación de API.
 
-## Rate limiting (standing policy)
+**A confirmar en C1:** Drizzle, Supabase, Inngest y los proveedores de auth,
+almacenamiento y rate limiting. La especificación previa de rate limiting sirve
+como antecedente; no impone hoy Upstash, Vercel WAF ni un fallo abierto universal.
+C1 debe concretar identidad, límites por operación, excepciones y modo de fallo.
+No introducir dependencias para esas decisiones antes de cerrarlas.
 
-Canonical design:
-[rate-limiting spec](../docs/superpowers/specs/2026-08-11-rate-limiting-design.md)
-(+ ADR Z.6 sub-decision 5). Two layers: Vercel WAF as the coarse per-IP
-shield (rules staged log → enforce, mirrored in the repo) and
-`@upstash/ratelimit` on Upstash Redis as the fine layer in code. Every new
-Route Handler or Server Action that mutates state or calls a paid external
-API declares its policy in the rate-limit registry
-(`src/lib/rate-limit.ts`) — or its explicit exemption; an endpoint with
-neither does not pass review. Key by `auth.uid()` when authenticated, else
-IP. Route Handlers return `429` + `Retry-After`; Server Actions return a
-typed rejection (es-PE copy). Fail-open with a Sentry alert if Redis is
-unreachable. Webhooks and Inngest jobs are exempt — their protection is
-signature + anti-replay (hard rule 2), never a counter.
-
-## Stack (closed — ADR Z.6)
-
-Next.js (App Router) + TypeScript · Tailwind CSS + shadcn/ui · PostgreSQL on
-Supabase (Supavisor transaction mode) · Drizzle · Inngest · Supabase Auth
-(MFA) · Upstash Redis (rate limiting) · Mercado Pago behind a multi-PSP
-adapter · Vercel · Sentry +
-structured logs + PostHog with cross-cutting `trace_id`.
-
-No dependencies outside this stack without an ADR in `docs/decisions/`.
-Module boundaries follow the Z.6 bounded contexts.
+L3 V8 incorporará las decisiones y contratos. Los ADR Z son históricos; no abrir
+nuevos ADR en `docs/decisions/`. Seguir el control de cambios del corpus.
 
 ## Frontend design
 

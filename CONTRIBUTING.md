@@ -31,7 +31,7 @@ Un cambio **incompatible** se marca con `!` o footer `BREAKING CHANGE:` → sube
 Ejemplos:
 
 ```
-docs(decisions): cierra Z.6 stack tecnológico (Next.js)
+docs(plan): registra el backend TypeScript ratificado
 feat(draw): motor de sorteo configurable de 1 ganador
 fix(purchase): idempotencia en webhook duplicado de MP
 feat(payments)!: migra de split directo a escrow real
@@ -59,7 +59,7 @@ Que se haya usado asistencia de IA para redactar un cambio no altera esta regla:
 - `main` es la rama protegida y siempre desplegable. **No se commitea directo a `main`.**
 - El trabajo va en ramas `feat/...`, `fix/...`, `docs/...` y entra vía **Pull Request**.
 - El merge a `main` es **siempre rebase-and-merge** (único método habilitado en el repo). Cada commit de la rama aterriza individualmente en `main`, por lo que **cada commit debe ser un Conventional Commit válido** (lo valida el check `commitlint`) — son los commits, no el título del PR, los que alimentan a release-please. Limpia la rama (sin *wip*) antes de mergear.
-- Un PR debe pasar los checks de CI (`commitlint`, `docs`) antes de mergear.
+- Un PR debe pasar los ocho checks obligatorios enumerados abajo antes de mergear.
 
 ### Correo de autoría: dominio de la organización
 
@@ -71,55 +71,70 @@ Todos los commits llevan como autor un correo **`@liboxapp.com`** — la autorí
 
 Detalle paso a paso en [`docs/equipo/onboarding.md`](docs/equipo/onboarding.md).
 
-## Protección de la rama `main` (configurar en GitHub)
+## Protección de `main` y CI
 
-Esto se activa una sola vez desde la web de GitHub (no se puede versionar en el repo):
+El ruleset exige PR, rama actualizada, historia lineal y rebase-and-merge.
+Los ocho checks obligatorios están activos desde A1:
 
-1. **Settings → Branches → Add branch ruleset** (o "Add rule" clásico) para `main`.
-2. Activar **Require a pull request before merging**.
-   - Cuando entren más colaboradores: activar **Require approvals** (1+).
-3. Activar **Require status checks to pass before merging** y seleccionar:
-   - `commitlint`
-   - `markdownlint` y `links` (del workflow `docs`)
-4. Activar **Require branches to be up to date before merging**.
-5. **Require linear history** (coherente con rebase-and-merge, el único método de merge habilitado).
+| Checks | Qué verifican |
+|---|---|
+| `commitlint` | Convención, correo corporativo y ausencia de atribución automática |
+| `markdownlint`, `links` | Documentación y enlaces locales |
+| `verify` | Coherencia del corpus |
+| `test (3.9)`, `test (3.12)` | Hooks y políticas de CI |
+| `protected-paths`, `commit-policy` | Canon/freeze y autoría desde código de la base |
 
-## CI actual
+Diego trabaja solo: `required_approving_review_count` sigue en cero y la revisión
+obligatoria de CODEOWNERS está desactivada. Activarlas cuando se incorporen los
+revisores; no sustituir la segunda revisión de las zonas críticas por autorrevisión.
+`release-please` mantiene versiones en pushes a `main`.
+El CI de producto (build, lint, tipos, tests, migraciones y contrato API) entra en D1.
 
-| Workflow | Qué valida | Cuándo |
-|---|---|---|
-| `commitlint` | mensajes de commit en formato Conventional | en cada PR |
-| `docs` | markdownlint + verificación de links locales del wiki | en cambios a `*.md` |
-| `release-please` | calcula versión y actualiza `CHANGELOG.md` | en push a `main` |
+## Stack y reglas de ingeniería
 
-Cuando entre el código (Next.js), se añadirán jobs de `typecheck`, `test` y `build`.
+El [programa de R0](docs/superpowers/specs/2026-09-25-habilitar-r0-design.md)
+registra la ratificación de **TypeScript**, monolito modular con Next.js App Router,
+PostgreSQL gestionado y workflows administrados. Los endpoints invocan módulos
+separados de dominio. Scalar documentará la API.
 
-## Reglas de ingeniería (vigentes desde el scaffold)
+L3 V7 sigue siendo el canon registrado; su runtime .NET es la discrepancia que C2
+resolverá emitiendo L3 V8. La ratificación no autoriza editar V7 ni levantar el
+freeze. D1 requiere L3 V8, CI de código y una transición revisada de la política
+que actualmente protege la regla de freeze desde la rama base.
 
-Salen del architecture review (agosto 2026) y de las design notes de los
-módulos críticos. Son regla dura al escribir código:
+### Reglas de backend independientes del proveedor
 
-1. **Writes de dinero solo por Drizzle server-side.** Todo write que toque
-   dinero, tickets, draw, settlement o auditoría va en una **sola transacción
-   Drizzle** (`persist → audit_event → outbox`, mismo commit), server-side.
-   `supabase-js` queda para reads bajo RLS y realtime — **nunca** para estos
-   writes (PostgREST no tiene transacciones multi-statement; el invariante de
-   auditoría se rompería en silencio).
-2. **Webhooks: ACK rápido, procesa async.** El endpoint valida firma,
-   persiste en `webhook_inbox` con idempotency key, responde 200 en < 2s y
-   delega a Inngest. Cero lógica de negocio inline. El estado del pago es la
-   fuente de verdad, nunca el conteo de webhooks.
-3. **Concurrencia se resuelve en la DB.** Unicidad de ticket por constraint
-   (`UNIQUE (raffle_id, ticket_number)`), reservas atómicas con TTL, y locks
-   explícitos (`SELECT … FOR UPDATE` / advisory lock) en la ejecución del
-   draw. La idempotency key es la segunda barrera, no la única.
+Fuente: [L3 V7 §12](docs/linea-base/LIBOX_ESPECIFICACION_TECNICA_L3_V7.md)
+y su punto único de transición (§4.2). Aplicarlas respetando las
+[zonas sin generación asistida](.claude/rules/zonas-sin-ia.md).
 
-### Checklist de scaffold
+1. **Atomicidad server-side:** las transiciones persisten estado, auditoría y
+   `event_outbox` en la misma transacción. Publicar hacia servicios externos
+   corresponde al despachador; no a una llamada remota dentro del commit.
+2. **Bloqueo autoritativo en la base:** dinero e inventario se protegen con las
+   restricciones y operaciones atómicas del canon. Un lock en memoria no es garantía.
+3. **Idempotencia:** clave por intento generada por el cliente; misma clave y
+   distinto `request_hash` es conflicto. Una operación en curso no se ejecuta de nuevo.
+4. **Webhooks:** validar firma y ventana anti-repetición; persistir en `psp_events`,
+   deduplicar y responder 200 al duplicado. Procesar con monotonía de estado;
+   registrar fallo, reintento y alarma. No renombrar tablas por convenciones de un SDK.
 
-- [ ] Supavisor **modo transacción** + `prepared: false` en el cliente Drizzle.
-- [ ] Constraints de unicidad de ticket y balance de ledger en la migración 001.
-- [ ] PITR habilitado en Supabase desde el día 1.
-- [ ] Job semanal de export del audit store a objeto WORM (object lock) con hash de verificación.
-- [ ] Inngest conectado; `webhook_inbox` y outbox publisher como primeras functions.
-- [ ] Realtime de contadores por canal broadcast throttled, no `postgres_changes` por insert.
-- [ ] Sentry + `trace_id` transversal desde el primer endpoint.
+Los límites y defectos conocidos del canon se resuelven en C1/C2; estas reglas no
+certifican el ledger ni añaden un umbral de latencia distinto al de L3 §13.2.
+
+### Proveedores pendientes y preparación
+
+**Drizzle, Supabase e Inngest: a confirmar en C1.** También siguen abiertos auth
+con MFA por rol, almacenamiento privado y rate limiting. Las menciones históricas
+a Supavisor, Upstash o Vercel WAF no constituyen una selección vigente.
+
+- [ ] Cerrar comparativa de proveedores y acceso transaccional desde el backend.
+- [ ] Emitir esquema L3 V8 con restricciones, roles, particiones y triggers verificados.
+- [ ] Definir y ensayar backups/restauración contra RPO/RTO acordados.
+- [ ] Configurar ejecución de trabajos y despacho durable de `event_outbox`.
+- [ ] Definir permisos, secretos, almacenamiento de evidencias y política de rate limiting.
+- [ ] Correlacionar trazas y alertas; documentar diagnóstico y recuperación.
+
+Las cinco zonas de Backlog MVP V3 §1.3 requieren implementación humana y otra
+persona revisora, ambas con propiedad fija. Diego es el responsable actual;
+la asignación definitiva por zona y la segunda persona están pendientes.

@@ -1,20 +1,24 @@
-# Dueños de código: revisión obligatoria de Diego en las rutas sensibles
-# del proyecto. Se hace efectivo cuando el ruleset de `main` active
-# "require code owner review" (junto con approvals >= 1, al entrar los
-# nuevos devs — ver docs/equipo/onboarding.md).
+# Responsable actual: Diego. Arom B. y Martin G. todavía no se incorporan.
+# Las aprobaciones obligatorias y require_code_owner_review siguen desactivados.
+# No equivale a la segunda revisión exigida por Backlog V3 §1.3.
+# Zonas por comportamiento: .claude/rules/zonas-sin-ia.md.
+# Al incorporar revisores: asignar dueño/revisor fijo por zona y rutas de D1.
 
-# Decisiones de arquitectura y reglas del proyecto
-/docs/decisions/    @DianCotrina
-/docs/plans/        @DianCotrina
-/CONTRIBUTING.md    @DianCotrina
-/CLAUDE.md          @DianCotrina
+# Cobertura por defecto: también archivos nuevos y código fuera de src/.
+*                   @DianCotrina
 
-# Entorno compartido de Claude Code (plugins, hooks, skills del equipo)
-/.claude/           @DianCotrina
+# Canon, decisiones vigentes, planes y evidencia
+/docs/linea-base/    @DianCotrina
+/verify_corpus.py    @DianCotrina
+/docs/superpowers/   @DianCotrina
+/docs/audits/        @DianCotrina
+/docs/equipo/        @DianCotrina
+/CONTRIBUTING.md     @DianCotrina
+/CLAUDE.md           @DianCotrina
+/AGENTS.md           @DianCotrina
 
-# CI y automatización
-/.github/           @DianCotrina
-/scripts/           @DianCotrina
-
-# Manual del equipo y del sistema operativo de IA
-/docs/equipo/       @DianCotrina
+# Entorno compartido, CI y automatización
+/.claude/            @DianCotrina
+/.agents/            @DianCotrina
+/.github/            @DianCotrina
+/scripts/            @DianCotrina

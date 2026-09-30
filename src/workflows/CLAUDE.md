@@ -2,7 +2,8 @@
 
 Markdown SOPs for recurring operational tasks — the instructions layer of
 the Workflows → Agents → Tools architecture. The app itself is **not** WAT;
-it is structured by the Z.6 bounded contexts.
+it follows the modular TypeScript monolith ratified in the
+[R0 program](../../docs/superpowers/specs/2026-09-25-habilitar-r0-design.md).
 
 ## Rules
 
