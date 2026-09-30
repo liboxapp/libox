@@ -57,8 +57,22 @@
   "extraKnownMarketplaces": {
     "context-mode": {
       "source": {
-        "source": "github",
-        "repo": "mksglu/context-mode"
+        "source": "settings",
+        "name": "context-mode",
+        "owner": {
+          "name": "Mert Koseoğlu"
+        },
+        "plugins": [
+          {
+            "name": "context-mode",
+            "source": {
+              "source": "github",
+              "repo": "mksglu/context-mode",
+              "sha": "589d8214d56740a28b5f7bf63167743d586b0b40"
+            },
+            "version": "1.0.169"
+          }
+        ]
       }
     }
   }
