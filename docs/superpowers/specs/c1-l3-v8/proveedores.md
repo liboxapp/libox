@@ -9,6 +9,8 @@ description: Fuentes oficiales al 2026-09-30 y escenarios de infraestructura den
 # Proveedores y presupuesto
 
 **Elección de Diego, 2026-09-30:** Supabase Pro + Trigger.dev + Vercel Pro.
+**PSP elegido:** Mercado Pago; sandbox todavía sin confirmar. Truora priorizado para evaluar KYC/KYB;
+ver [opciones de identidad](identidad-proveedores.md) y [contrato PSP](mercado-pago.md).
 Comparativas conservadas como fundamento; precios son estimaciones, no contratación.
 
 Consulta: 2026-09-30. USD/mes, tarifas publicadas sin impuestos. Una persona con

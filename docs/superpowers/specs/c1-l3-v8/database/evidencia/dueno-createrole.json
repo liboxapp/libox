@@ -1,0 +1,1759 @@
+{
+  "tipo": "evidencia-c1-sql-overlay",
+  "esquema_evidencia": 2,
+  "generado_utc": "2026-09-30T20:04:50+00:00",
+  "escenario": "dueno-createrole",
+  "descripcion_escenario": "Instalador dueño de la base, sin SUPERUSER, con CREATEROLE.",
+  "alcance": "C1: despliegue no crítico (particiones, ACL base, semilla PE). No R1.",
+  "advertencias": [
+    "Overlay borrador sobre V7 intacto; no es el SQL V8 ni una migración completa.",
+    "No acredita comportamiento de Supabase gestionado, pooler ni Data API reales.",
+    "H-05 queda parcial (11/12 padres): journal_lines no recibe particiones del overlay; las aporta su dueño humano.",
+    "H-06 queda parcial: solo hay privilegios para clases no patrimoniales; la matriz completa está pendiente.",
+    "Precondición antes de aplicar en Supabase: validar Data API/exposición del esquema, RLS gestionado y privilegios por defecto de otros roles (supabase_admin).",
+    "Las zonas críticas (ledger, RBAC, sorteo, concurrencia, incompatibilidades, comisión) no se implementan aquí."
+  ],
+  "fuentes": [
+    {
+      "ruta": "docs/linea-base/ARTEFACTOS/libox_schema_L3_V7.sql",
+      "sha256": "9ff3d07f3efef5ee2cf4997d34e361a6b78c64463b346c855a840f4baf937a43"
+    },
+    {
+      "ruta": "docs/linea-base/LIBOX_ESPECIFICACION_TECNICA_L3_V7.md",
+      "sha256": "13217f018af355f6f827f3926f8562d371bcf475f35f182f089738610d0f1f8d"
+    },
+    {
+      "ruta": "docs/superpowers/specs/c1-l3-v8/database/acl-manifest.json",
+      "sha256": "e1426355e86b7a2ddf4fd5c6edb7b04561cf8b28199cba862bfd65ee2e827987"
+    },
+    {
+      "ruta": "docs/superpowers/specs/c1-l3-v8/database/overlay/010_libox_ops_particiones.sql",
+      "sha256": "c58f7dcc4fd87139431a57ff4e06d336da15ff935220043906c78909273bb7d8"
+    },
+    {
+      "ruta": "docs/superpowers/specs/c1-l3-v8/database/overlay/020_acl_base.sql",
+      "sha256": "392e95f07f1921126197971d1d806e6a542e2ef21b6c4358a7043a86dbb5a8c1"
+    },
+    {
+      "ruta": "docs/superpowers/specs/c1-l3-v8/database/overlay/030_semilla_mercado_pe.sql",
+      "sha256": "8c36f108fd32ee96d684158fbde602c83a2b952e23217f4403e84e9705b67653"
+    },
+    {
+      "ruta": "docs/superpowers/specs/c1-l3-v8/database/overlay/040_arranque_particiones.sql",
+      "sha256": "d3410ee3fdf60bec5512de31c6a3be16b934575fc83f6b26f24c71aaad797b6b"
+    },
+    {
+      "ruta": "scripts/database/c1_sql_check.py",
+      "sha256": "a42e21af4711bd90a783b5a0e97c96ec3ac8bc093c00f179d91505a25466c472"
+    },
+    {
+      "ruta": "scripts/database/pgdocker.py",
+      "sha256": "19e44d9b110a5deda19c9a7fa3936588a3371ab2a089838ac9cd799f586644c2"
+    }
+  ],
+  "entorno": {
+    "docker_servidor": "29.5.2",
+    "imagen": "postgres@sha256:d74eeac9a635390a49bc21bd49fccd973de707e2a53a76ac49b552b8712ec46f",
+    "imagen_fijada_por_defecto": true,
+    "imagen_hechos": {
+      "id": "sha256:d74eeac9a635390a49bc21bd49fccd973de707e2a53a76ac49b552b8712ec46f",
+      "repo_digests": [
+        "postgres@sha256:d74eeac9a635390a49bc21bd49fccd973de707e2a53a76ac49b552b8712ec46f"
+      ],
+      "arquitectura": "arm64",
+      "so": "linux"
+    },
+    "aislamiento": {
+      "red": "none",
+      "puertos": {},
+      "enlaces_puerto": {}
+    },
+    "contenedor": "libox-c1-sql-dueno-createrole-450feb6593",
+    "postgres": "PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+    "instalador": {
+      "rolname": "libox_installer",
+      "rolsuper": false,
+      "rolcreaterole": true,
+      "rolcreatedb": false,
+      "rolbypassrls": false
+    }
+  },
+  "catalogo": {
+    "resumen": {
+      "tablas": 135,
+      "padres_particionados": 12,
+      "particiones": 296,
+      "funciones_public": 5,
+      "disparadores": 5,
+      "concesiones_a_no_duenos": 30,
+      "filas": {
+        "raffle_type_rules": 8,
+        "subrole_grant_matrix": 14,
+        "markets": 1,
+        "fsm_transitions": 0,
+        "ledger_accounts": 0,
+        "subrole_incompatibilities": 0
+      }
+    },
+    "hijos_por_padre": {
+      "analytics_events": {
+        "analytics_events_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
+        "analytics_events_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
+        "analytics_events_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "analytics_events_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
+        "analytics_events_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
+        "analytics_events_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
+        "analytics_events_p203303": "FOR VALUES FROM ('2033-03-01 00:00:00+00') TO ('2033-04-01 00:00:00+00')",
+        "analytics_events_pdefault": "DEFAULT"
+      },
+      "analytics_events_pkey": {
+        "analytics_events_p202609_pkey": null,
+        "analytics_events_p202610_pkey": null,
+        "analytics_events_p202611_pkey": null,
+        "analytics_events_p203001_pkey": null,
+        "analytics_events_p203002_pkey": null,
+        "analytics_events_p203107_pkey": null,
+        "analytics_events_p203303_pkey": null,
+        "analytics_events_pdefault_pkey": null
+      },
+      "audit_access_events": {
+        "audit_access_events_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
+        "audit_access_events_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
+        "audit_access_events_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "audit_access_events_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
+        "audit_access_events_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
+        "audit_access_events_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
+        "audit_access_events_p203303": "FOR VALUES FROM ('2033-03-01 00:00:00+00') TO ('2033-04-01 00:00:00+00')",
+        "audit_access_events_pdefault": "DEFAULT"
+      },
+      "audit_access_events_pkey": {
+        "audit_access_events_p202609_pkey": null,
+        "audit_access_events_p202610_pkey": null,
+        "audit_access_events_p202611_pkey": null,
+        "audit_access_events_p203001_pkey": null,
+        "audit_access_events_p203002_pkey": null,
+        "audit_access_events_p203107_pkey": null,
+        "audit_access_events_p203303_pkey": null,
+        "audit_access_events_pdefault_pkey": null
+      },
+      "audit_events": {
+        "audit_events_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
+        "audit_events_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
+        "audit_events_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "audit_events_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
+        "audit_events_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
+        "audit_events_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
+        "audit_events_p203303": "FOR VALUES FROM ('2033-03-01 00:00:00+00') TO ('2033-04-01 00:00:00+00')",
+        "audit_events_pdefault": "DEFAULT"
+      },
+      "audit_events_pkey": {
+        "audit_events_p202609_pkey": null,
+        "audit_events_p202610_pkey": null,
+        "audit_events_p202611_pkey": null,
+        "audit_events_p203001_pkey": null,
+        "audit_events_p203002_pkey": null,
+        "audit_events_p203107_pkey": null,
+        "audit_events_p203303_pkey": null,
+        "audit_events_pdefault_pkey": null
+      },
+      "event_outbox": {
+        "event_outbox_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
+        "event_outbox_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
+        "event_outbox_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "event_outbox_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
+        "event_outbox_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
+        "event_outbox_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
+        "event_outbox_p203303": "FOR VALUES FROM ('2033-03-01 00:00:00+00') TO ('2033-04-01 00:00:00+00')",
+        "event_outbox_pdefault": "DEFAULT"
+      },
+      "event_outbox_pkey": {
+        "event_outbox_p202609_pkey": null,
+        "event_outbox_p202610_pkey": null,
+        "event_outbox_p202611_pkey": null,
+        "event_outbox_p203001_pkey": null,
+        "event_outbox_p203002_pkey": null,
+        "event_outbox_p203107_pkey": null,
+        "event_outbox_p203303_pkey": null,
+        "event_outbox_pdefault_pkey": null
+      },
+      "ix_aae_actor": {
+        "audit_access_events_p202609_actor_id_created_at_idx": null,
+        "audit_access_events_p202610_actor_id_created_at_idx": null,
+        "audit_access_events_p202611_actor_id_created_at_idx": null,
+        "audit_access_events_p203001_actor_id_created_at_idx": null,
+        "audit_access_events_p203002_actor_id_created_at_idx": null,
+        "audit_access_events_p203107_actor_id_created_at_idx": null,
+        "audit_access_events_p203303_actor_id_created_at_idx": null,
+        "audit_access_events_pdefault_actor_id_created_at_idx": null
+      },
+      "ix_aae_resource": {
+        "audit_access_events_p202609_resource_type_resource_id_creat_idx": null,
+        "audit_access_events_p202610_resource_type_resource_id_creat_idx": null,
+        "audit_access_events_p202611_resource_type_resource_id_creat_idx": null,
+        "audit_access_events_p203001_resource_type_resource_id_creat_idx": null,
+        "audit_access_events_p203002_resource_type_resource_id_creat_idx": null,
+        "audit_access_events_p203107_resource_type_resource_id_creat_idx": null,
+        "audit_access_events_p203303_resource_type_resource_id_creat_idx": null,
+        "audit_access_events_pdefault_resource_type_resource_id_crea_idx": null
+      },
+      "ix_ae_name": {
+        "analytics_events_p202609_event_name_server_ts_idx": null,
+        "analytics_events_p202610_event_name_server_ts_idx": null,
+        "analytics_events_p202611_event_name_server_ts_idx": null,
+        "analytics_events_p203001_event_name_server_ts_idx": null,
+        "analytics_events_p203002_event_name_server_ts_idx": null,
+        "analytics_events_p203107_event_name_server_ts_idx": null,
+        "analytics_events_p203303_event_name_server_ts_idx": null,
+        "analytics_events_pdefault_event_name_server_ts_idx": null
+      },
+      "ix_ae_session": {
+        "analytics_events_p202609_session_id_server_ts_idx": null,
+        "analytics_events_p202610_session_id_server_ts_idx": null,
+        "analytics_events_p202611_session_id_server_ts_idx": null,
+        "analytics_events_p203001_session_id_server_ts_idx": null,
+        "analytics_events_p203002_session_id_server_ts_idx": null,
+        "analytics_events_p203107_session_id_server_ts_idx": null,
+        "analytics_events_p203303_session_id_server_ts_idx": null,
+        "analytics_events_pdefault_session_id_server_ts_idx": null
+      },
+      "ix_audit_actor": {
+        "audit_events_p202609_actor_id_created_at_idx": null,
+        "audit_events_p202610_actor_id_created_at_idx": null,
+        "audit_events_p202611_actor_id_created_at_idx": null,
+        "audit_events_p203001_actor_id_created_at_idx": null,
+        "audit_events_p203002_actor_id_created_at_idx": null,
+        "audit_events_p203107_actor_id_created_at_idx": null,
+        "audit_events_p203303_actor_id_created_at_idx": null,
+        "audit_events_pdefault_actor_id_created_at_idx": null
+      },
+      "ix_audit_entity": {
+        "audit_events_p202609_entity_type_entity_id_created_at_idx": null,
+        "audit_events_p202610_entity_type_entity_id_created_at_idx": null,
+        "audit_events_p202611_entity_type_entity_id_created_at_idx": null,
+        "audit_events_p203001_entity_type_entity_id_created_at_idx": null,
+        "audit_events_p203002_entity_type_entity_id_created_at_idx": null,
+        "audit_events_p203107_entity_type_entity_id_created_at_idx": null,
+        "audit_events_p203303_entity_type_entity_id_created_at_idx": null,
+        "audit_events_pdefault_entity_type_entity_id_created_at_idx": null
+      },
+      "ix_audit_trace": {
+        "audit_events_p202609_trace_id_idx": null,
+        "audit_events_p202610_trace_id_idx": null,
+        "audit_events_p202611_trace_id_idx": null,
+        "audit_events_p203001_trace_id_idx": null,
+        "audit_events_p203002_trace_id_idx": null,
+        "audit_events_p203107_trace_id_idx": null,
+        "audit_events_p203303_trace_id_idx": null,
+        "audit_events_pdefault_trace_id_idx": null
+      },
+      "ix_na_user_ref": {
+        "notification_attempts_p202609_user_id_reference_id_server_t_idx": null,
+        "notification_attempts_p202610_user_id_reference_id_server_t_idx": null,
+        "notification_attempts_p202611_user_id_reference_id_server_t_idx": null,
+        "notification_attempts_p203001_user_id_reference_id_server_t_idx": null,
+        "notification_attempts_p203002_user_id_reference_id_server_t_idx": null,
+        "notification_attempts_p203107_user_id_reference_id_server_t_idx": null,
+        "notification_attempts_p203303_user_id_reference_id_server_t_idx": null,
+        "notification_attempts_pdefaul_user_id_reference_id_server_t_idx": null
+      },
+      "ix_outbox_pending": {
+        "event_outbox_p202609_created_at_idx": null,
+        "event_outbox_p202610_created_at_idx": null,
+        "event_outbox_p202611_created_at_idx": null,
+        "event_outbox_p203001_created_at_idx": null,
+        "event_outbox_p203002_created_at_idx": null,
+        "event_outbox_p203107_created_at_idx": null,
+        "event_outbox_p203303_created_at_idx": null,
+        "event_outbox_pdefault_created_at_idx": null
+      },
+      "ix_psp_events_lookup": {
+        "psp_events_p202609_provider_provider_event_id_created_at_idx": null,
+        "psp_events_p202610_provider_provider_event_id_created_at_idx": null,
+        "psp_events_p202611_provider_provider_event_id_created_at_idx": null,
+        "psp_events_p203001_provider_provider_event_id_created_at_idx": null,
+        "psp_events_p203002_provider_provider_event_id_created_at_idx": null,
+        "psp_events_p203107_provider_provider_event_id_created_at_idx": null,
+        "psp_events_p203303_provider_provider_event_id_created_at_idx": null,
+        "psp_events_pdefault_provider_provider_event_id_created_at_idx": null
+      },
+      "ix_risk_subject": {
+        "risk_events_p202609_subject_type_subject_id_created_at_idx": null,
+        "risk_events_p202610_subject_type_subject_id_created_at_idx": null,
+        "risk_events_p202611_subject_type_subject_id_created_at_idx": null,
+        "risk_events_p203001_subject_type_subject_id_created_at_idx": null,
+        "risk_events_p203002_subject_type_subject_id_created_at_idx": null,
+        "risk_events_p203107_subject_type_subject_id_created_at_idx": null,
+        "risk_events_p203303_subject_type_subject_id_created_at_idx": null,
+        "risk_events_pdefault_subject_type_subject_id_created_at_idx": null
+      },
+      "ix_room_msg_seq": {
+        "room_messages_p202609_room_id_sequence_created_at_idx": null,
+        "room_messages_p202610_room_id_sequence_created_at_idx": null,
+        "room_messages_p202611_room_id_sequence_created_at_idx": null,
+        "room_messages_p203001_room_id_sequence_created_at_idx": null,
+        "room_messages_p203002_room_id_sequence_created_at_idx": null,
+        "room_messages_p203107_room_id_sequence_created_at_idx": null,
+        "room_messages_p203303_room_id_sequence_created_at_idx": null,
+        "room_messages_pdefault_room_id_sequence_created_at_idx": null
+      },
+      "ix_rq_asset": {
+        "registry_queries_p202609_asset_id_created_at_idx": null,
+        "registry_queries_p202610_asset_id_created_at_idx": null,
+        "registry_queries_p202611_asset_id_created_at_idx": null,
+        "registry_queries_p203001_asset_id_created_at_idx": null,
+        "registry_queries_p203002_asset_id_created_at_idx": null,
+        "registry_queries_p203107_asset_id_created_at_idx": null,
+        "registry_queries_p203303_asset_id_created_at_idx": null,
+        "registry_queries_pdefault_asset_id_created_at_idx": null
+      },
+      "ix_transitions_entity": {
+        "state_transitions_p202609_entity_type_entity_id_created_at_idx": null,
+        "state_transitions_p202610_entity_type_entity_id_created_at_idx": null,
+        "state_transitions_p202611_entity_type_entity_id_created_at_idx": null,
+        "state_transitions_p203001_entity_type_entity_id_created_at_idx": null,
+        "state_transitions_p203002_entity_type_entity_id_created_at_idx": null,
+        "state_transitions_p203107_entity_type_entity_id_created_at_idx": null,
+        "state_transitions_p203303_entity_type_entity_id_created_at_idx": null,
+        "state_transitions_pdefault_entity_type_entity_id_created_at_idx": null
+      },
+      "ix_transitions_trace": {
+        "state_transitions_p202609_trace_id_idx": null,
+        "state_transitions_p202610_trace_id_idx": null,
+        "state_transitions_p202611_trace_id_idx": null,
+        "state_transitions_p203001_trace_id_idx": null,
+        "state_transitions_p203002_trace_id_idx": null,
+        "state_transitions_p203107_trace_id_idx": null,
+        "state_transitions_p203303_trace_id_idx": null,
+        "state_transitions_pdefault_trace_id_idx": null
+      },
+      "notification_attempts": {
+        "notification_attempts_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
+        "notification_attempts_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
+        "notification_attempts_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "notification_attempts_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
+        "notification_attempts_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
+        "notification_attempts_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
+        "notification_attempts_p203303": "FOR VALUES FROM ('2033-03-01 00:00:00+00') TO ('2033-04-01 00:00:00+00')",
+        "notification_attempts_pdefault": "DEFAULT"
+      },
+      "notification_attempts_pkey": {
+        "notification_attempts_p202609_pkey": null,
+        "notification_attempts_p202610_pkey": null,
+        "notification_attempts_p202611_pkey": null,
+        "notification_attempts_p203001_pkey": null,
+        "notification_attempts_p203002_pkey": null,
+        "notification_attempts_p203107_pkey": null,
+        "notification_attempts_p203303_pkey": null,
+        "notification_attempts_pdefault_pkey": null
+      },
+      "operation_register": {
+        "operation_register_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
+        "operation_register_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
+        "operation_register_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "operation_register_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
+        "operation_register_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
+        "operation_register_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
+        "operation_register_p203303": "FOR VALUES FROM ('2033-03-01 00:00:00+00') TO ('2033-04-01 00:00:00+00')",
+        "operation_register_pdefault": "DEFAULT"
+      },
+      "operation_register_pkey": {
+        "operation_register_p202609_pkey": null,
+        "operation_register_p202610_pkey": null,
+        "operation_register_p202611_pkey": null,
+        "operation_register_p203001_pkey": null,
+        "operation_register_p203002_pkey": null,
+        "operation_register_p203107_pkey": null,
+        "operation_register_p203303_pkey": null,
+        "operation_register_pdefault_pkey": null
+      },
+      "psp_events": {
+        "psp_events_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
+        "psp_events_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
+        "psp_events_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "psp_events_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
+        "psp_events_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
+        "psp_events_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
+        "psp_events_p203303": "FOR VALUES FROM ('2033-03-01 00:00:00+00') TO ('2033-04-01 00:00:00+00')",
+        "psp_events_pdefault": "DEFAULT"
+      },
+      "psp_events_pkey": {
+        "psp_events_p202609_pkey": null,
+        "psp_events_p202610_pkey": null,
+        "psp_events_p202611_pkey": null,
+        "psp_events_p203001_pkey": null,
+        "psp_events_p203002_pkey": null,
+        "psp_events_p203107_pkey": null,
+        "psp_events_p203303_pkey": null,
+        "psp_events_pdefault_pkey": null
+      },
+      "registry_queries": {
+        "registry_queries_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
+        "registry_queries_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
+        "registry_queries_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "registry_queries_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
+        "registry_queries_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
+        "registry_queries_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
+        "registry_queries_p203303": "FOR VALUES FROM ('2033-03-01 00:00:00+00') TO ('2033-04-01 00:00:00+00')",
+        "registry_queries_pdefault": "DEFAULT"
+      },
+      "registry_queries_pkey": {
+        "registry_queries_p202609_pkey": null,
+        "registry_queries_p202610_pkey": null,
+        "registry_queries_p202611_pkey": null,
+        "registry_queries_p203001_pkey": null,
+        "registry_queries_p203002_pkey": null,
+        "registry_queries_p203107_pkey": null,
+        "registry_queries_p203303_pkey": null,
+        "registry_queries_pdefault_pkey": null
+      },
+      "risk_events": {
+        "risk_events_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
+        "risk_events_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
+        "risk_events_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "risk_events_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
+        "risk_events_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
+        "risk_events_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
+        "risk_events_p203303": "FOR VALUES FROM ('2033-03-01 00:00:00+00') TO ('2033-04-01 00:00:00+00')",
+        "risk_events_pdefault": "DEFAULT"
+      },
+      "risk_events_pkey": {
+        "risk_events_p202609_pkey": null,
+        "risk_events_p202610_pkey": null,
+        "risk_events_p202611_pkey": null,
+        "risk_events_p203001_pkey": null,
+        "risk_events_p203002_pkey": null,
+        "risk_events_p203107_pkey": null,
+        "risk_events_p203303_pkey": null,
+        "risk_events_pdefault_pkey": null
+      },
+      "room_messages": {
+        "room_messages_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
+        "room_messages_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
+        "room_messages_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "room_messages_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
+        "room_messages_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
+        "room_messages_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
+        "room_messages_p203303": "FOR VALUES FROM ('2033-03-01 00:00:00+00') TO ('2033-04-01 00:00:00+00')",
+        "room_messages_pdefault": "DEFAULT"
+      },
+      "room_messages_pkey": {
+        "room_messages_p202609_pkey": null,
+        "room_messages_p202610_pkey": null,
+        "room_messages_p202611_pkey": null,
+        "room_messages_p203001_pkey": null,
+        "room_messages_p203002_pkey": null,
+        "room_messages_p203107_pkey": null,
+        "room_messages_p203303_pkey": null,
+        "room_messages_pdefault_pkey": null
+      },
+      "state_transitions": {
+        "state_transitions_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
+        "state_transitions_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
+        "state_transitions_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "state_transitions_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
+        "state_transitions_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
+        "state_transitions_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
+        "state_transitions_p203303": "FOR VALUES FROM ('2033-03-01 00:00:00+00') TO ('2033-04-01 00:00:00+00')",
+        "state_transitions_pdefault": "DEFAULT"
+      },
+      "state_transitions_pkey": {
+        "state_transitions_p202609_pkey": null,
+        "state_transitions_p202610_pkey": null,
+        "state_transitions_p202611_pkey": null,
+        "state_transitions_p203001_pkey": null,
+        "state_transitions_p203002_pkey": null,
+        "state_transitions_p203107_pkey": null,
+        "state_transitions_p203303_pkey": null,
+        "state_transitions_pdefault_pkey": null
+      }
+    },
+    "roles": [
+      {
+        "rolname": "c1_custom_reader",
+        "rolsuper": false,
+        "rolcreaterole": false,
+        "rolcanlogin": false,
+        "rolbypassrls": false
+      },
+      {
+        "rolname": "libox_app",
+        "rolsuper": false,
+        "rolcreaterole": false,
+        "rolcanlogin": false,
+        "rolbypassrls": false
+      },
+      {
+        "rolname": "libox_append",
+        "rolsuper": false,
+        "rolcreaterole": false,
+        "rolcanlogin": false,
+        "rolbypassrls": false
+      },
+      {
+        "rolname": "libox_installer",
+        "rolsuper": false,
+        "rolcreaterole": true,
+        "rolcanlogin": true,
+        "rolbypassrls": false
+      },
+      {
+        "rolname": "libox_migrate",
+        "rolsuper": false,
+        "rolcreaterole": false,
+        "rolcanlogin": false,
+        "rolbypassrls": false
+      },
+      {
+        "rolname": "libox_read",
+        "rolsuper": false,
+        "rolcreaterole": false,
+        "rolcanlogin": false,
+        "rolbypassrls": false
+      },
+      {
+        "rolname": "service_role",
+        "rolsuper": false,
+        "rolcreaterole": false,
+        "rolcanlogin": false,
+        "rolbypassrls": false
+      }
+    ],
+    "privilegios_por_defecto": []
+  },
+  "caracterizacion": {
+    "v7_sin_overlay": {
+      "tablas": 135,
+      "padres_particionados": 12,
+      "particiones": 0,
+      "funciones_public": 5,
+      "disparadores": 5,
+      "concesiones_a_no_duenos": 0,
+      "filas": {
+        "raffle_type_rules": 8,
+        "subrole_grant_matrix": 14,
+        "markets": 0,
+        "fsm_transitions": 0,
+        "ledger_accounts": 0,
+        "subrole_incompatibilities": 0
+      }
+    }
+  },
+  "comprobaciones": [
+    {
+      "id": "V7-INTACTO",
+      "descripcion": "El SQL V7 aplicado coincide con el hash fijado",
+      "referencias": [
+        "docs/linea-base/ARTEFACTOS/libox_schema_L3_V7.sql"
+      ],
+      "esperado": "9ff3d07f3efef5ee2cf4997d34e361a6b78c64463b346c855a840f4baf937a43",
+      "observado": "9ff3d07f3efef5ee2cf4997d34e361a6b78c64463b346c855a840f4baf937a43",
+      "resultado": "pasa"
+    },
+    {
+      "id": "V7-APLICA",
+      "descripcion": "V7 intacto se aplica sin errores con el instalador del escenario",
+      "referencias": [
+        "L3 V7 §0.2.1"
+      ],
+      "esperado": {
+        "rc": 0
+      },
+      "observado": {
+        "rc": 0,
+        "error": null
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "V7-H05-SIN-PARTICION",
+      "descripcion": "Sin overlay, insertar en audit_events falla por falta de partición (H-05 reproducido)",
+      "referencias": [
+        "H-05",
+        "L3 V7 §1.3"
+      ],
+      "esperado": {
+        "sqlstate": "23514",
+        "mensaje_contiene": "no partition of relation"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  23514: no partition of relation \"audit_events\" found for row"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "V7-H06-SIN-GRANTS",
+      "descripcion": "Sin overlay, libox_app no puede leer ni un catálogo (H-06 reproducido)",
+      "referencias": [
+        "H-06",
+        "L3 V7 §1.4"
+      ],
+      "esperado": false,
+      "observado": false,
+      "resultado": "pasa"
+    },
+    {
+      "id": "OV-APLICA-010_libox_ops_particiones",
+      "descripcion": "El archivo del overlay se aplica sin errores",
+      "referencias": [
+        "docs/superpowers/specs/c1-l3-v8/database/overlay/010_libox_ops_particiones.sql"
+      ],
+      "esperado": {
+        "rc": 0
+      },
+      "observado": {
+        "rc": 0,
+        "error": null
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "OV-APLICA-020_acl_base",
+      "descripcion": "El archivo del overlay se aplica sin errores",
+      "referencias": [
+        "docs/superpowers/specs/c1-l3-v8/database/overlay/020_acl_base.sql"
+      ],
+      "esperado": {
+        "rc": 0
+      },
+      "observado": {
+        "rc": 0,
+        "error": null
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "OV-APLICA-030_semilla_mercado_pe",
+      "descripcion": "El archivo del overlay se aplica sin errores",
+      "referencias": [
+        "docs/superpowers/specs/c1-l3-v8/database/overlay/030_semilla_mercado_pe.sql"
+      ],
+      "esperado": {
+        "rc": 0
+      },
+      "observado": {
+        "rc": 0,
+        "error": null
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "OV-APLICA-040_arranque_particiones",
+      "descripcion": "El archivo del overlay se aplica sin errores",
+      "referencias": [
+        "docs/superpowers/specs/c1-l3-v8/database/overlay/040_arranque_particiones.sql"
+      ],
+      "esperado": {
+        "rc": 0
+      },
+      "observado": {
+        "rc": 0,
+        "error": null
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "OV-NO-MODIFICA-V7",
+      "descripcion": "El overlay no cambia columnas, restricciones, índices, disparadores, funciones ni dominios de V7",
+      "referencias": [
+        "Instrucción C1: overlay sobre V7 intacto"
+      ],
+      "esperado": "a0b7085ff1c4e23cfae0c3eef88de904",
+      "observado": "a0b7085ff1c4e23cfae0c3eef88de904",
+      "resultado": "pasa"
+    },
+    {
+      "id": "PT-INVENTARIO",
+      "descripcion": "Inventario del overlay = padres de V7 = catálogo (tabla y clave); solo journal_lines es de aporte humano",
+      "referencias": [
+        "H-05",
+        "L3 V7 §1.3",
+        "ZC ledger"
+      ],
+      "esperado": {
+        "claves": {
+          "state_transitions": "created_at",
+          "registry_queries": "created_at",
+          "psp_events": "created_at",
+          "room_messages": "created_at",
+          "journal_lines": "posted_at",
+          "operation_register": "created_at",
+          "risk_events": "created_at",
+          "analytics_events": "server_ts",
+          "notification_attempts": "server_ts",
+          "audit_events": "created_at",
+          "audit_access_events": "created_at",
+          "event_outbox": "created_at"
+        },
+        "aprovisionamiento": {
+          "state_transitions": "overlay",
+          "registry_queries": "overlay",
+          "psp_events": "overlay",
+          "room_messages": "overlay",
+          "journal_lines": "humano",
+          "operation_register": "overlay",
+          "risk_events": "overlay",
+          "analytics_events": "overlay",
+          "notification_attempts": "overlay",
+          "audit_events": "overlay",
+          "audit_access_events": "overlay",
+          "event_outbox": "overlay"
+        }
+      },
+      "observado": {
+        "inventario": {
+          "analytics_events": "server_ts",
+          "audit_access_events": "created_at",
+          "audit_events": "created_at",
+          "event_outbox": "created_at",
+          "journal_lines": "posted_at",
+          "notification_attempts": "server_ts",
+          "operation_register": "created_at",
+          "psp_events": "created_at",
+          "registry_queries": "created_at",
+          "risk_events": "created_at",
+          "room_messages": "created_at",
+          "state_transitions": "created_at"
+        },
+        "catalogo": {
+          "journal_lines": "posted_at",
+          "analytics_events": "server_ts",
+          "audit_access_events": "created_at",
+          "audit_events": "created_at",
+          "event_outbox": "created_at",
+          "notification_attempts": "server_ts",
+          "operation_register": "created_at",
+          "psp_events": "created_at",
+          "registry_queries": "created_at",
+          "risk_events": "created_at",
+          "room_messages": "created_at",
+          "state_transitions": "created_at"
+        },
+        "aprovisionamiento": {
+          "analytics_events": "overlay",
+          "audit_access_events": "overlay",
+          "audit_events": "overlay",
+          "event_outbox": "overlay",
+          "journal_lines": "humano",
+          "notification_attempts": "overlay",
+          "operation_register": "overlay",
+          "psp_events": "overlay",
+          "registry_queries": "overlay",
+          "risk_events": "overlay",
+          "room_messages": "overlay",
+          "state_transitions": "overlay"
+        }
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "PT-COBERTURA-UTC",
+      "descripcion": "Los 11 padres gestionados tienen mes actual y dos siguientes con límites exactos en UTC, más DEFAULT; journal_lines no tiene hijos",
+      "referencias": [
+        "H-05 (parcial 11/12)",
+        "L3 V7 §1.3",
+        "C-11"
+      ],
+      "esperado": "sin diferencias",
+      "observado": "sin diferencias",
+      "resultado": "pasa"
+    },
+    {
+      "id": "PT-IDEMPOTENCIA",
+      "descripcion": "Reejecutar el arranque no crea relaciones ni cambia límites o ACL",
+      "referencias": [
+        "Instrucción C1: idempotente"
+      ],
+      "esperado": {
+        "acciones": [
+          "exists",
+          "exists_default"
+        ],
+        "catalogo_igual": true
+      },
+      "observado": {
+        "rc": 0,
+        "acciones": [
+          "exists",
+          "exists_default"
+        ],
+        "catalogo_igual": true
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "PT-REFERENCIA-UTC",
+      "descripcion": "Con sesión en America/Lima, la referencia se convierte a UTC: 30-jun 22:00 local crea julio, no junio",
+      "referencias": [
+        "Instrucción C1: UTC explícito"
+      ],
+      "esperado": {
+        "particion": "audit_events_p203107",
+        "limites": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
+        "existe_p203106": false
+      },
+      "observado": {
+        "rc": 0,
+        "limites": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
+        "existe_p203106": false
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "PT-FRONTERA-PREPARA",
+      "descripcion": "Se crean enero y febrero de 2030 con referencia explícita",
+      "referencias": [
+        "Instrucción C1"
+      ],
+      "esperado": {
+        "rc": 0
+      },
+      "observado": {
+        "rc": 0,
+        "error": null
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "PT-FRONTERA-UTC",
+      "descripcion": "Filas en la frontera de mes caen en la partición del mes UTC, con sesión en America/Lima; fuera de los meses creados caen en DEFAULT",
+      "referencias": [
+        "Instrucción C1: frontera UTC",
+        "L3 V7 §1.3"
+      ],
+      "esperado": "sin diferencias",
+      "observado": "sin diferencias",
+      "resultado": "pasa"
+    },
+    {
+      "id": "PT-FUERA-DE-RANGO-ESCRIBE",
+      "descripcion": "Una fila sin partición mensual se conserva en la DEFAULT en vez de fallar (L3 V7 §1.3)",
+      "referencias": [
+        "L3 V7 §1.3",
+        "H-05"
+      ],
+      "esperado": "analytics_events_pdefault",
+      "observado": {
+        "rc": 0,
+        "particion": "analytics_events_pdefault"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "PT-ALARMA-DEFAULT",
+      "descripcion": "partition_status informa la fila en DEFAULT y la falta del mes (insumo de la alarma alta)",
+      "referencias": [
+        "L3 V7 §1.3"
+      ],
+      "esperado": {
+        "analytics_events": {
+          "actual": false,
+          "default_filas": 1
+        },
+        "otros_con_filas": {}
+      },
+      "observado": {
+        "analytics_events": {
+          "actual": false,
+          "default_filas": 1
+        },
+        "otros_con_filas": {}
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "PT-DEFAULT-CON-FILAS-FALLA",
+      "descripcion": "Crear el mes cuando la DEFAULT tiene filas de ese rango falla con mensaje claro",
+      "referencias": [
+        "Instrucción C1: fallo claro, sin mover datos"
+      ],
+      "esperado": {
+        "sqlstate": "P0001",
+        "mensaje_contiene": "LIBOX_PARTITION_DEFAULT_HAS_ROWS"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  P0001: LIBOX_PARTITION_DEFAULT_HAS_ROWS: public.analytics_events_pdefault tiene 1 filas en [2099-06-01 00:00:00+00, 2099-07-01 00:00:00+00); no se crea public.analytics_events_p209906 ni se mueven o borran datos. Requiere procedimiento operativo aprobado."
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "PT-SIN-MOVER-NI-BORRAR",
+      "descripcion": "Tras el fallo la fila sigue en DEFAULT y no quedó ninguna partición 2099-06 (sin efectos parciales)",
+      "referencias": [
+        "Instrucción C1"
+      ],
+      "esperado": {
+        "en_default": 1,
+        "particiones_209906": 0
+      },
+      "observado": {
+        "en_default": 1,
+        "particiones_209906": 0
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "PT-LIMITES-DISTINTOS",
+      "descripcion": "Una relación con el nombre esperado y otros límites provoca fallo explícito",
+      "referencias": [
+        "Instrucción C1: fallo claro"
+      ],
+      "esperado": {
+        "sqlstate": "P0001",
+        "mensaje_contiene": "LIBOX_PARTITION_BOUNDS_MISMATCH"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  P0001: LIBOX_PARTITION_BOUNDS_MISMATCH: public.notification_attempts_p204001 existe pero no es la partición FOR VALUES FROM ('2040-01-01 00:00:00+00') TO ('2040-02-01 00:00:00+00') de public.notification_attempts (actual: padre notification_attempts, FOR VALUES FROM ('2040-01-01 00:00:00+00') TO ('2040-01-15 00:00:00+00'))"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "PT-INVENTARIO-DERIVA",
+      "descripcion": "Un padre particionado no inventariado detiene la creación",
+      "referencias": [
+        "Instrucción C1: fallo claro"
+      ],
+      "esperado": {
+        "sqlstate": "P0001",
+        "mensaje_contiene": "LIBOX_PARTITION_INVENTORY_MISMATCH"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  P0001: LIBOX_PARTITION_INVENTORY_MISMATCH: sin inventario [c1_probe_unlisted]; ausentes del catálogo []; clave o estrategia distinta []"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "PT-ARGUMENTOS",
+      "descripcion": "Horizonte fuera de 0..12 se rechaza",
+      "referencias": [
+        "Instrucción C1"
+      ],
+      "esperado": {
+        "sqlstate": "P0001",
+        "mensaje_contiene": "LIBOX_PARTITION_ARG"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  P0001: LIBOX_PARTITION_ARG: p_months_ahead debe estar entre 0 y 12 (recibido 13)"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "PT-HORIZONTE-30D",
+      "descripcion": "Cobertura de 30 días (L3 V7 §1.3): el 30-ene-2027 con horizonte 1 falla (marzo solo con 28 días); con horizonte 2 y por defecto desde el 1-feb-2027 existe el tercer mes",
+      "referencias": [
+        "Revisor C1 I2",
+        "L3 V7 §1.3"
+      ],
+      "esperado": "sin diferencias",
+      "observado": [
+        {
+          "referencia": "2027-01-30T00:00:00+00:00",
+          "horizonte": 1,
+          "esperado": {
+            "hasta": "2027-03-01T00:00:00+00:00",
+            "ok": false
+          },
+          "gestionados_distintos": {},
+          "humano": {
+            "journal_lines": {
+              "hasta": null,
+              "ok": false
+            }
+          },
+          "gestionados": 11
+        },
+        {
+          "referencia": "2027-01-30T00:00:00+00:00",
+          "horizonte": 2,
+          "esperado": {
+            "hasta": "2027-04-01T00:00:00+00:00",
+            "ok": true
+          },
+          "gestionados_distintos": {},
+          "humano": {
+            "journal_lines": {
+              "hasta": null,
+              "ok": false
+            }
+          },
+          "gestionados": 11
+        },
+        {
+          "referencia": "2027-02-01T00:00:00+00:00",
+          "horizonte": "por defecto",
+          "esperado": {
+            "hasta": "2027-05-01T00:00:00+00:00",
+            "ok": true
+          },
+          "gestionados_distintos": {},
+          "humano": {
+            "journal_lines": {
+              "hasta": null,
+              "ok": false
+            }
+          },
+          "gestionados": 11
+        }
+      ],
+      "resultado": "pasa"
+    },
+    {
+      "id": "PT-LOCK-TIMEOUT",
+      "descripcion": "Con audit_events bloqueado por otra sesión, ensure falla por lock_timeout (5 s) sin crear particiones, en vez de esperar indefinidamente",
+      "referencias": [
+        "Revisor C1 M2"
+      ],
+      "esperado": {
+        "sqlstate": "55P03",
+        "segundos_max": 20,
+        "particiones_203205": 0
+      },
+      "observado": {
+        "bloqueo_tomado": true,
+        "error": "ERROR:  55P03: canceling statement due to lock timeout",
+        "segundos": 5.1,
+        "particiones_203205": 0
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "SD-PE-LITERAL",
+      "descripcion": "markets PE coincide con los literales de L3 V7 §10.1 leídos del documento",
+      "referencias": [
+        "L3 V7 §10.1"
+      ],
+      "esperado": {
+        "code": "PE",
+        "currency": "PEN",
+        "timezone": "America/Lima",
+        "locale": "es-PE"
+      },
+      "observado": {
+        "literales": {
+          "code": "PE",
+          "currency": "PEN",
+          "timezone": "America/Lima",
+          "locale": "es-PE"
+        },
+        "name_no_literal": "Perú",
+        "status_default_v7": "ACTIVE"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "SD-PE-IDEMPOTENTE",
+      "descripcion": "Reaplicar la semilla no duplica ni falla",
+      "referencias": [
+        "docs/superpowers/specs/c1-l3-v8/database/overlay/030_semilla_mercado_pe.sql"
+      ],
+      "esperado": {
+        "rc": 0,
+        "filas": 1
+      },
+      "observado": {
+        "rc": 0,
+        "filas": 1
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "SD-PE-DERIVA",
+      "descripcion": "Si PE existe con otros valores, la semilla falla y no sobrescribe",
+      "referencias": [
+        "docs/superpowers/specs/c1-l3-v8/database/overlay/030_semilla_mercado_pe.sql"
+      ],
+      "esperado": {
+        "sqlstate": "P0001",
+        "mensaje_contiene": "LIBOX_SEED_DRIFT"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  P0001: LIBOX_SEED_DRIFT: markets PE existe con valores distintos de L3 V7 §10.1; no se sobrescribe"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "SD-NO-INVENTADAS",
+      "descripcion": "El overlay no siembra FSM, ledger, incompatibilidades, configuración financiera ni admins; conserva las semillas de V7",
+      "referencias": [
+        "Instrucción C1: no inventar"
+      ],
+      "esperado": {
+        "tablas_vacias": [
+          "fsm_transitions",
+          "ledger_accounts",
+          "subrole_incompatibilities",
+          "market_config_versions",
+          "fee_schedules",
+          "platform_capabilities",
+          "evidence_strength_rules",
+          "survey_instruments",
+          "holidays_calendar",
+          "subrole_assignments"
+        ],
+        "raffle_type_rules": 8,
+        "subrole_grant_matrix": 14
+      },
+      "observado": {
+        "con_filas": {},
+        "raffle_type_rules": 8,
+        "subrole_grant_matrix": 14
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-APP-INSERTA-TELEMETRIA",
+      "descripcion": "libox_app inserta telemetría por la tabla padre",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "rc": 0
+      },
+      "observado": {
+        "rc": 0,
+        "error": null
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-APP-PARTICION-DIRECTA",
+      "descripcion": "libox_app no escribe directamente en una partición",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table analytics_events_p202609"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-APP-NO-UPDATE-TELEMETRIA",
+      "descripcion": "libox_app no puede UPDATE en telemetría",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table analytics_events"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-APP-NO-DELETE-TELEMETRIA",
+      "descripcion": "libox_app no puede DELETE en telemetría",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table analytics_events"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-APP-NO-TRUNCATE-TELEMETRIA",
+      "descripcion": "libox_app no puede TRUNCATE en telemetría",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table analytics_events"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-APPEND-INSERTA-AUDITORIA",
+      "descripcion": "libox_append inserta en audit_events",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json",
+        "C-08"
+      ],
+      "esperado": {
+        "rc": 0
+      },
+      "observado": {
+        "rc": 0,
+        "error": null
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-APPEND-NO-UPDATE",
+      "descripcion": "libox_append no puede UPDATE en audit_events",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json",
+        "C-08"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table audit_events"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-APPEND-NO-DELETE",
+      "descripcion": "libox_append no puede DELETE en audit_events",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json",
+        "C-08"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table audit_events"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-APPEND-NO-TRUNCATE",
+      "descripcion": "libox_append no puede TRUNCATE en audit_events",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json",
+        "C-08"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table audit_events"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-APPEND-PARTICION-DIRECTA",
+      "descripcion": "libox_append no escribe directamente en una partición",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table audit_events_p202609"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-APP-RESERVADO-JOURNAL-LINES",
+      "descripcion": "libox_app sin privilegio sobre tabla reservada a humano",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table journal_lines"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-APP-RESERVADO-JOURNAL-ENTRIES",
+      "descripcion": "libox_app sin privilegio sobre tabla reservada a humano",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table journal_entries"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-APP-RESERVADO-RAFFLES-STATUS",
+      "descripcion": "libox_app sin privilegio sobre tabla reservada a humano",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table raffles"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-APP-RESERVADO-ORDERS",
+      "descripcion": "libox_app sin privilegio sobre tabla reservada a humano",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table orders"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-APP-RESERVADO-TICKETS",
+      "descripcion": "libox_app sin privilegio sobre tabla reservada a humano",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table tickets"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-APP-RESERVADO-SUBROLES",
+      "descripcion": "libox_app sin privilegio sobre tabla reservada a humano",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table subrole_assignments"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-APP-RESERVADO-SETTLEMENTS",
+      "descripcion": "libox_app sin privilegio sobre tabla reservada a humano",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table settlements"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-READ-LEE-CATALOGO",
+      "descripcion": "libox_read lee un catálogo",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "rc": 0
+      },
+      "observado": {
+        "rc": 0,
+        "error": null
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-READ-NO-ESCRIBE",
+      "descripcion": "libox_read no escribe",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table markets"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-READ-NO-AUDITORIA",
+      "descripcion": "libox_read no lee auditoría",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table audit_events"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-MIGRATE-SIN-DATOS",
+      "descripcion": "libox_migrate no tiene uso del esquema de dominio",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for schema public"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-OPS-SIN-EXECUTE",
+      "descripcion": "libox_app no ejecuta funciones de libox_ops",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for schema libox_ops"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-PUBLIC-SIN-ESQUEMA",
+      "descripcion": "Un login sin membresías (solo PUBLIC) no accede al esquema de dominio",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for schema public"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-PUBLIC-SIN-OPS",
+      "descripcion": "Un login sin membresías no ejecuta libox_ops",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for schema libox_ops"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-LOGIN-MIEMBRO-INSERTA",
+      "descripcion": "Un login técnico miembro de libox_app hereda su inserción",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "rc": 0
+      },
+      "observado": {
+        "rc": 0,
+        "error": null
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-LOGIN-MIEMBRO-NO-BORRA",
+      "descripcion": "Un login técnico miembro de libox_app no borra",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table analytics_events"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-DISPARADOR-V7-SIN-EXECUTE",
+      "descripcion": "Revocar EXECUTE a PUBLIC no impide que un disparador V7 se ejecute (lo demuestra su propio error)",
+      "referencias": [
+        "H-06 (parcial)",
+        "L3 V7 §1.4",
+        "acl-manifest.json",
+        "V7 assert_grant_ceiling (solo observado)"
+      ],
+      "esperado": {
+        "sqlstate": "P0001",
+        "mensaje_contiene": "ERR_RBAC_SELF_GRANT"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  P0001: ERR_RBAC_SELF_GRANT: nadie se otorga un subrol a si mismo"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "PT-ACL-PARTICIONES",
+      "descripcion": "Con privilegios por defecto para service_role y un rol propio, ninguna partición gestionada (nuevas ni previas) tiene beneficiarios distintos del dueño",
+      "referencias": [
+        "Revisor C1 I3"
+      ],
+      "esperado": {
+        "control_por_defecto_activo": true,
+        "nuevas": 11,
+        "con_beneficiarios": []
+      },
+      "observado": {
+        "control_por_defecto_activo": {
+          "service_role": true,
+          "c1_custom_reader": true
+        },
+        "nuevas": 11,
+        "con_beneficiarios": [],
+        "rc": [
+          0,
+          0,
+          0
+        ],
+        "error": null
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-SONDA-OBJETOS-NUEVOS",
+      "descripcion": "Funciones y tablas creadas después por el instalador (transacción revertida) no reciben EXECUTE ni privilegios para PUBLIC ni otros roles, aunque pg_default_acl esté vacío",
+      "referencias": [
+        "Revisor C1 I4"
+      ],
+      "esperado": [],
+      "observado": [],
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-MATRIZ",
+      "descripcion": "Privilegios efectivos de roles de grupo y API = manifiesto; ninguno directo sobre particiones ni libox_ops",
+      "referencias": [
+        "H-06 (parcial)",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "diferencias": [],
+        "tablas_sin_clasificar": []
+      },
+      "observado": {
+        "pares_revisados": 1120,
+        "diferencias": [],
+        "total_diferencias": 0,
+        "tablas_sin_clasificar": []
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-PUBLIC",
+      "descripcion": "PUBLIC sin privilegios en relaciones, esquemas y funciones de public y libox_ops",
+      "referencias": [
+        "Instrucción C1: denegar PUBLIC"
+      ],
+      "esperado": {
+        "relaciones": [],
+        "esquemas": [],
+        "funciones": []
+      },
+      "observado": {
+        "relaciones": [],
+        "esquemas": [],
+        "funciones": []
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-POR-DEFECTO",
+      "descripcion": "Privilegios por defecto sin concesiones a PUBLIC ni a roles de API",
+      "referencias": [
+        "Instrucción C1"
+      ],
+      "esperado": [],
+      "observado": {
+        "indebidos": [],
+        "todos": []
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-FUNCIONES",
+      "descripcion": "Roles de grupo y API sin EXECUTE sobre funciones de public y libox_ops",
+      "referencias": [
+        "Instrucción C1"
+      ],
+      "esperado": [],
+      "observado": [],
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-BENEFICIARIOS",
+      "descripcion": "Todo beneficiario distinto del dueño es un rol de grupo permitido sobre una tabla padre o el esquema public; ninguno en particiones, funciones ni libox_ops (cualquier rol, no solo el manifiesto)",
+      "referencias": [
+        "Revisor C1 I3/I4"
+      ],
+      "esperado": [],
+      "observado": {
+        "indebidos": [],
+        "total": 0,
+        "beneficiarios_revisados": 33
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "PT-JOURNAL-LINES-HUMANO",
+      "descripcion": "Tras todas las ejecuciones del overlay, journal_lines sigue sin particiones ni DEFAULT: su escritura falla como en V7 hasta el aporte humano",
+      "referencias": [
+        "Revisor C1 (crítico)",
+        "ZC ledger",
+        "H-05 (parcial 11/12)"
+      ],
+      "esperado": {
+        "hijos": null,
+        "sqlstate": "23514",
+        "mensaje_contiene": "no partition of relation"
+      },
+      "observado": {
+        "hijos": null,
+        "rc": 3,
+        "error": "ERROR:  23514: no partition of relation \"journal_lines\" found for row"
+      },
+      "resultado": "pasa"
+    }
+  ],
+  "hallazgos_abiertos_observados": [
+    {
+      "id": "H-07",
+      "canon": "PRD V9 l.450 (INV-38): impide revocar al penúltimo ADMIN_SUPER",
+      "transaccion_revertida": true,
+      "nota": "Sonda de caracterización sobre código V7 existente; no es implementación ni prueba superada.",
+      "observado": 1,
+      "estado": "abierto: se admitió revocar al penúltimo; quedan 1 activos"
+    },
+    {
+      "id": "H-09",
+      "canon": "L3 V7 §3.16: techo y segunda firma al otorgar ADMIN_FINANCE",
+      "transaccion_revertida": true,
+      "nota": "Sonda de caracterización sobre código V7 existente; no es implementación ni prueba superada.",
+      "observado": 1,
+      "estado": "abierto: reactivado por UPDATE sin segunda firma"
+    }
+  ],
+  "resumen": {
+    "comprobaciones": 63,
+    "pasan": 63,
+    "fallan": [],
+    "interrumpido": null,
+    "resultado": "pasa"
+  }
+}

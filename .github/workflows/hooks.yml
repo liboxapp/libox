@@ -42,6 +42,15 @@ jobs:
         run: |
           npm ci --prefix scripts/contracts/typescript --ignore-scripts --no-audit --no-fund
           python3 scripts/contracts/check_typescript.py
+      - name: Tests estáticos del overlay SQL y limpieza de contenedores
+        run: python3 -m unittest discover -s scripts/database/tests -v
+      - name: PostgreSQL 17 efímero y negativos de permisos/particiones
+        if: matrix.python == '3.12'
+        env:
+          LIBOX_DB_DOCKER: "1"
+        run: |
+          docker pull postgres@sha256:d74eeac9a635390a49bc21bd49fccd973de707e2a53a76ac49b552b8712ec46f
+          python3 -m unittest discover -s scripts/database/tests -v
       - name: settings.json es JSON válido y sus hooks apuntan a scripts existentes
         run: |
           python3 - <<'PY'

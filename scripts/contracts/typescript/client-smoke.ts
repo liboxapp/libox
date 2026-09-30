@@ -40,4 +40,39 @@ const execution = await api.POST("/settlements/{id}/execute", {
 });
 assert.equal(execution.response.status, 200);
 assert.equal(execution.data?.version, 2);
-console.log("Tipos generados y cliente TypeScript: 5 intercambios HTTP de fixtures correctos.");
+// Auxiliares: leer la versión desde la respuesta, nunca fabricarla en el cliente.
+const valuation = await api.GET("/valuations/{id}", { params: { path: { id: uuid } } });
+assert.ok(valuation.data);
+const decision = await api.POST("/valuations/{id}/decisions", {
+  params: { path: { id: uuid } },
+  body: {
+    expected_version: valuation.data.version,
+    outcome: "APPROVED",
+    approved_value: { amount: "2500", currency: "PEN" },
+    reason: "Referencias vigentes y banda satisfecha.",
+  },
+});
+assert.equal(decision.response.status, 201);
+assert.equal(decision.data?.subject_version, 2);
+const upload = await api.POST("/uploads", {
+  params: { header: { "Idempotency-Key": "synthetic-upload-attempt" } },
+  body: {
+    purpose: "ROOM_EVIDENCE", target_id: uuid, content_type: "application/pdf",
+    size_bytes: 20480, sha256: "0".repeat(64),
+  },
+});
+assert.ok(upload.data);
+// No se visita upload_url: el fixture solo describe la interfaz.
+const completed = await api.POST("/uploads/{id}/complete", {
+  params: { path: { id: upload.data.upload_id } },
+  body: { expected_version: upload.data.version },
+});
+assert.equal(completed.data?.status, "QUARANTINED");
+const signature = await api.GET("/signature-requests/{id}", { params: { path: { id: uuid } } });
+assert.ok(signature.data);
+const signed = await api.POST("/signature-requests/{id}/sign", {
+  params: { path: { id: uuid } },
+  body: { expected_version: signature.data.version, decision: "SIGN", reason: "Revisión independiente conforme." },
+});
+assert.equal(signed.data?.status, "SIGNED");
+console.log("Tipos generados y cliente TypeScript: 11 intercambios HTTP de fixtures correctos.");

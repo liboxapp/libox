@@ -1,0 +1,207 @@
+{
+  "estado": "borrador C1; no es matriz V8 ni cierra H-06",
+  "fuente_esquema": "docs/linea-base/ARTEFACTOS/libox_schema_L3_V7.sql",
+  "fuente_esquema_sha256": "9ff3d07f3efef5ee2cf4997d34e361a6b78c64463b346c855a840f4baf937a43",
+  "roles_grupo": [
+    "libox_app",
+    "libox_append",
+    "libox_read",
+    "libox_migrate"
+  ],
+  "roles_api_denegados": [
+    "anon",
+    "authenticated",
+    "service_role"
+  ],
+  "privilegios_controlados": [
+    "SELECT",
+    "INSERT",
+    "UPDATE",
+    "DELETE",
+    "TRUNCATE",
+    "REFERENCES",
+    "TRIGGER",
+    "MAINTAIN"
+  ],
+  "clases": {
+    "catalogo_lectura": {
+      "descripcion": "Catálogos de referencia sin importes propios ni datos personales; solo lectura.",
+      "privilegios": {
+        "libox_app": [
+          "SELECT"
+        ],
+        "libox_read": [
+          "SELECT"
+        ]
+      }
+    },
+    "telemetria_insercion": {
+      "descripcion": "Registros operativos no patrimoniales; la app inserta y la reportería lee.",
+      "privilegios": {
+        "libox_app": [
+          "INSERT"
+        ],
+        "libox_read": [
+          "SELECT"
+        ]
+      }
+    },
+    "agregacion_no_patrimonial": {
+      "descripcion": "Tablas de solo agregación de L3 V7 §1.4 excepto journal_lines; solo INSERT del rol de agregación.",
+      "privilegios": {
+        "libox_append": [
+          "INSERT"
+        ]
+      }
+    },
+    "reservado_humano": {
+      "descripcion": "Dinero, ledger, inventario, sorteo, RBAC, incompatibilidades, exactamente-una-vez o régimen económico. Sin privilegios hasta que el dueño humano defina la matriz.",
+      "privilegios": {}
+    },
+    "pendiente_matriz": {
+      "descripcion": "No crítica pero sin matriz decidida (incluye datos personales). Sin privilegios hasta decidir en L3 V8.",
+      "privilegios": {}
+    }
+  },
+  "particiones": "Ningún beneficiario distinto del dueño en particiones gestionadas por el overlay; el acceso va por la tabla padre. journal_lines no tiene particiones del overlay.",
+  "tablas": {
+    "age_verifications": "pendiente_matriz",
+    "alarm_resolutions": "pendiente_matriz",
+    "alarms": "pendiente_matriz",
+    "aml_case_documents": "pendiente_matriz",
+    "aml_cases": "pendiente_matriz",
+    "aml_thresholds": "pendiente_matriz",
+    "analytics_events": "telemetria_insercion",
+    "attribution_touches": "pendiente_matriz",
+    "audit_access_events": "agregacion_no_patrimonial",
+    "audit_emergency_queue": "pendiente_matriz",
+    "audit_events": "agregacion_no_patrimonial",
+    "benefit_redemptions": "pendiente_matriz",
+    "benefits": "pendiente_matriz",
+    "blocked_documents": "pendiente_matriz",
+    "client_capabilities": "pendiente_matriz",
+    "client_fee_levels": "reservado_humano",
+    "client_kyb": "pendiente_matriz",
+    "client_kyb_documents": "pendiente_matriz",
+    "client_members": "pendiente_matriz",
+    "client_reputation": "pendiente_matriz",
+    "client_reputation_history": "pendiente_matriz",
+    "client_transfer_acceptances": "pendiente_matriz",
+    "clients": "pendiente_matriz",
+    "credentials": "pendiente_matriz",
+    "daily_codes": "pendiente_matriz",
+    "delivery_attestations": "reservado_humano",
+    "devices": "pendiente_matriz",
+    "dispute_adjudications": "reservado_humano",
+    "dispute_evidence": "pendiente_matriz",
+    "disputes": "pendiente_matriz",
+    "draw_commitments": "reservado_humano",
+    "draw_executions": "reservado_humano",
+    "draw_proofs": "reservado_humano",
+    "draw_winners": "reservado_humano",
+    "event_outbox": "reservado_humano",
+    "evidence_strength_rules": "catalogo_lectura",
+    "feature_toggle_log": "pendiente_matriz",
+    "featured_placements": "pendiente_matriz",
+    "fee_exceptions": "reservado_humano",
+    "fee_schedules": "reservado_humano",
+    "free_entry_campaigns": "reservado_humano",
+    "free_entry_grants": "reservado_humano",
+    "fsm_transitions": "reservado_humano",
+    "holidays_calendar": "catalogo_lectura",
+    "idempotency_keys": "reservado_humano",
+    "identity_documents": "pendiente_matriz",
+    "identity_verifications": "pendiente_matriz",
+    "internal_account_suspensions": "reservado_humano",
+    "journal_entries": "reservado_humano",
+    "journal_lines": "reservado_humano",
+    "kpi_snapshots": "pendiente_matriz",
+    "leads": "pendiente_matriz",
+    "ledger_accounts": "reservado_humano",
+    "market_config_versions": "reservado_humano",
+    "market_legal_requirements": "catalogo_lectura",
+    "market_prize_categories": "catalogo_lectura",
+    "markets": "catalogo_lectura",
+    "notarial_instruments": "pendiente_matriz",
+    "notification_attempts": "telemetria_insercion",
+    "notification_preferences": "pendiente_matriz",
+    "notification_templates": "catalogo_lectura",
+    "operating_windows": "catalogo_lectura",
+    "operation_register": "pendiente_matriz",
+    "orders": "reservado_humano",
+    "organizer_referral_codes": "pendiente_matriz",
+    "partners": "pendiente_matriz",
+    "payments": "reservado_humano",
+    "payout_instructions": "reservado_humano",
+    "pc_stage_documents": "pendiente_matriz",
+    "pc_workflow_stages": "pendiente_matriz",
+    "platform_capabilities": "catalogo_lectura",
+    "prize_market_references": "pendiente_matriz",
+    "prize_valuation_documents": "pendiente_matriz",
+    "prize_valuations": "reservado_humano",
+    "prizes": "reservado_humano",
+    "processed_psp_events": "reservado_humano",
+    "promotion_grants": "reservado_humano",
+    "promotional_plan_usage": "reservado_humano",
+    "promotional_plans": "reservado_humano",
+    "promotions": "reservado_humano",
+    "psp_events": "reservado_humano",
+    "raffle_media": "pendiente_matriz",
+    "raffle_milestones": "pendiente_matriz",
+    "raffle_recurrences": "pendiente_matriz",
+    "raffle_terms": "pendiente_matriz",
+    "raffle_type_rules": "catalogo_lectura",
+    "raffles": "reservado_humano",
+    "reconciliation_batches": "reservado_humano",
+    "reconciliation_exceptions": "reservado_humano",
+    "redraws": "reservado_humano",
+    "referrals": "reservado_humano",
+    "refresh_tokens": "pendiente_matriz",
+    "refund_credit_entries": "reservado_humano",
+    "refund_credit_withdrawals": "reservado_humano",
+    "refund_credits": "reservado_humano",
+    "registrable_assets": "pendiente_matriz",
+    "registry_blocks": "pendiente_matriz",
+    "registry_queries": "pendiente_matriz",
+    "resolution_rooms": "pendiente_matriz",
+    "responsible_play_events": "pendiente_matriz",
+    "risk_events": "pendiente_matriz",
+    "risk_rules": "pendiente_matriz",
+    "room_assignments": "pendiente_matriz",
+    "room_evidence": "pendiente_matriz",
+    "room_message_sequences": "reservado_humano",
+    "room_messages": "agregacion_no_patrimonial",
+    "room_participants": "pendiente_matriz",
+    "self_exclusions": "pendiente_matriz",
+    "settlement_holds": "reservado_humano",
+    "settlements": "reservado_humano",
+    "shipping_quotes": "reservado_humano",
+    "sla_definitions": "catalogo_lectura",
+    "sla_extensions": "pendiente_matriz",
+    "spend_accumulators": "reservado_humano",
+    "spending_limit_changes": "pendiente_matriz",
+    "spending_limits": "pendiente_matriz",
+    "state_transitions": "agregacion_no_patrimonial",
+    "subrole_assignments": "reservado_humano",
+    "subrole_grant_matrix": "reservado_humano",
+    "subrole_incompatibilities": "reservado_humano",
+    "subscription_plans": "reservado_humano",
+    "subscriptions": "reservado_humano",
+    "substitute_guarantees": "reservado_humano",
+    "survey_instruments": "catalogo_lectura",
+    "survey_responses": "pendiente_matriz",
+    "tickets": "reservado_humano",
+    "transfer_acts": "pendiente_matriz",
+    "transfer_costs": "pendiente_matriz",
+    "user_attributions": "pendiente_matriz",
+    "user_devices": "pendiente_matriz",
+    "user_reputation": "pendiente_matriz",
+    "users": "pendiente_matriz",
+    "valuation_exceptions": "reservado_humano",
+    "waitlists": "pendiente_matriz",
+    "winner_legal_readiness": "pendiente_matriz"
+  },
+  "particiones_reservadas_humano": [
+    "journal_lines"
+  ]
+}
