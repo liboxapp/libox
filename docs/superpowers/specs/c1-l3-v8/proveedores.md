@@ -8,6 +8,9 @@ description: Fuentes oficiales al 2026-09-30 y escenarios de infraestructura den
 
 # Proveedores y presupuesto
 
+**Elección de Diego, 2026-09-30:** Supabase Pro + Trigger.dev + Vercel Pro.
+Comparativas conservadas como fundamento; precios son estimaciones, no contratación.
+
 Consulta: 2026-09-30. USD/mes, tarifas publicadas sin impuestos. Una persona con
 asiento de desarrollo; un proyecto de producción; local/CI para desarrollo.
 No son cotizaciones ni pruebas de capacidad. Pagos, KYC, SMS y asesoría legal se
