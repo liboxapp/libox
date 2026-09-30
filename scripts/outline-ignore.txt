@@ -1,7 +1,21 @@
 # Docs de docs/ excluidos del espejo Outline a propósito.
 # Regla (CI outline-sync, job check-map): todo .md bajo docs/ debe estar en
 # scripts/outline-map.json o listado aquí; si no, el workflow falla.
-# Para mapear un doc nuevo: crear el documento placeholder en Outline
-# (colección "Libox — Desarrollo"), copiar su ID a outline-map.json.
+# Una línea que termina en "/" excluye todo lo que cuelga de esa carpeta.
+# Para mapear un doc nuevo: skill libox-outline-sync (crea el doc en la
+# colección "Libox — Negocio", árbol Desarrollo, y registra su ID en el mapa).
+
+# Canon: su espejo "LIBOX — Línea Base documental" se republica aparte, no
+# desde este workflow.
+docs/linea-base/
+# Histórico. Doce claves de outline-map.json aún apuntan a las rutas previas a
+# la mudanza (docs/decisions/, docs/plans/, compliance, benchmark): se remapean
+# en el re-sync del espejo. Cambiar el mapa dispara un resync completo.
+docs/archive/
+# Trabajo interno del equipo, sin espejo.
+docs/audits/
+docs/equipo/
+docs/superpowers/
+
 docs/flujos/flujo-end-to-end.md
 docs/plans/mvp1-fases-desarrollo.md
