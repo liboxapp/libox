@@ -14,7 +14,6 @@ description: Alineación del harness a TypeScript y límites de responsabilidad 
 > describen el estado previo y no bloquean durante la suspensión. Incorporar
 > colaboradores no la reactiva. Ver la [regla operativa](../../../.claude/rules/revision-humana.md).
 
-
 Implementa A2 del [programa de R0](../specs/2026-09-25-habilitar-r0-design.md).
 Alcance: documentación e instrucciones, sin cambios al corpus, código de producto,
 hooks ni ruleset. A3 se ejecutará como entrega posterior.
