@@ -8,6 +8,13 @@ description: Alineación del harness a TypeScript y límites de responsabilidad 
 
 # A2 — instrucciones y responsabilidad
 
+> **Actualización posterior — 2026-09-29:** Diego suspendió toda revisión humana
+> obligatoria hasta reactivación explícita suya, incluidas las zonas críticas y
+> el criterio de R0. Las referencias anteriores a segunda persona en este registro
+> describen el estado previo y no bloquean durante la suspensión. Incorporar
+> colaboradores no la reactiva. Ver la [regla operativa](../../../.claude/rules/revision-humana.md).
+
+
 Implementa A2 del [programa de R0](../specs/2026-09-25-habilitar-r0-design.md).
 Alcance: documentación e instrucciones, sin cambios al corpus, código de producto,
 hooks ni ruleset. A3 se ejecutará como entrega posterior.

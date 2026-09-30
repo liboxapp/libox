@@ -1,8 +1,9 @@
 # Responsable actual: Diego. Arom B. y Martin G. todavía no se incorporan.
 # Las aprobaciones obligatorias y require_code_owner_review siguen desactivados.
-# No equivale a la segunda revisión exigida por Backlog V3 §1.3.
+# Revisión humana suspendida por Diego, incluidas zonas de Backlog V3 §1.3.
 # Zonas por comportamiento: .claude/rules/zonas-sin-ia.md.
-# Al incorporar revisores: asignar dueño/revisor fijo por zona y rutas de D1.
+# Solo reactivar por instrucción explícita de Diego, no al incorporar colaboradores.
+# Regla: .claude/rules/revision-humana.md. CI y revisión automatizada siguen activos.
 
 # Cobertura por defecto: también archivos nuevos y código fuera de src/.
 *                   @DianCotrina
