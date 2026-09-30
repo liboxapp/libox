@@ -8,7 +8,9 @@ revisor Codex y `docs/equipo/ai-audit-harness.md`. No simules revisiones de Clau
 ## Stack y controles para Codex
 
 Backend TypeScript ratificado: monolito modular con Next.js y PostgreSQL.
-Proveedores a confirmar en C1; canon L3 V8 y levantamiento del freeze pendientes.
+Supabase Pro + Trigger.dev + Vercel Pro confirmados en C1; PostgreSQL 17 sujeto
+a validar migraciones. Canon L3 V8 y levantamiento del freeze pendientes.
+Detalle: [decisión C1](docs/superpowers/specs/2026-09-30-r0-c1-design.md).
 Lee el [programa de R0](docs/superpowers/specs/2026-09-25-habilitar-r0-design.md).
 La mención de ASS-002 abierto en la regla antigua no revoca la ratificación.
 

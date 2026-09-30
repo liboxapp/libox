@@ -50,8 +50,10 @@ algo por hecho. Detalle en `docs/equipo/sistema-operativo-ia.md#orquestación-fa
 
 **ASS-001** (custodia del dinero) sigue abierta. **ASS-002** ya tiene ratificación
 a TypeScript, registrada en el programa de R0 a partir del doc 20 de Outline
-(revisión 23). Falta trasladarla al canon L3 V8 y completar D1. Proveedores
-como Drizzle, Supabase e Inngest están a confirmar en C1.
+(revisión 23). Falta trasladarla al canon L3 V8 y completar D1. Supabase Pro, Trigger.dev y Vercel Pro fueron confirmados el 2026-09-30;
+PostgreSQL 17 queda sujeto a validar migraciones. Ver la
+[decisión C1](docs/superpowers/specs/2026-09-30-r0-c1-design.md).
+Drizzle y las demás herramientas no quedan ratificadas por esta elección.
 La línea de ADRs Z.1–Z.8 es histórica (`docs/archive/decisions/`).
 
 ## Configuración compartida
