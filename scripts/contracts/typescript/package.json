@@ -1,0 +1,17 @@
+{
+  "name": "libox-contract-validation",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "engines": { "node": ">=22.16" },
+  "scripts": {
+    "generate": "openapi-typescript ../../../docs/superpowers/specs/c1-l3-v8/libox_openapi_L3_V8_DRAFT.yaml -o generated/api.ts",
+    "check": "npm run generate && tsc -p tsconfig.json && node dist/client-smoke.js"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.30",
+    "openapi-fetch": "0.17.0",
+    "openapi-typescript": "7.13.0",
+    "typescript": "5.9.3"
+  }
+}

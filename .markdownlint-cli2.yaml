@@ -21,7 +21,7 @@ config:
 globs:
   - "**/*.md"
 ignores:
-  - "node_modules"
+  - "**/node_modules"
   - "CHANGELOG.md"
   - ".github"
   - ".claude"   # skills compartidas: código de terceros, no prosa del wiki
