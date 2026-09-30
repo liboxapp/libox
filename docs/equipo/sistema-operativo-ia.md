@@ -66,6 +66,8 @@ veredicto aprobar/cambios).
 
 | E4 | modificar hooks, políticas CI, scripts de auditoría, settings, rules, agentes o skills | `LIBOX_EDITAR_OS=1`, con autorización y aviso en stderr. |
 
+| E5 | sobrescribir un informe existente bajo `docs/audits/<run-id>/` | Ninguna; crear otro intento. Excluye manifest, checks y codex-prompt. |
+
 Las variables se ponen en el entorno al lanzar Claude Code o en `"env"` de
 `.claude/settings.local.json` (personal, gitignorado). Un fallo interno de un guard nunca
 bloquea: ante error, permite con **AVISO** visible, sin volcar el payload.

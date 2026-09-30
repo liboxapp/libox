@@ -1,0 +1,10 @@
+{
+  "scenario": "H-01",
+  "synthetic": true,
+  "files": {
+    "Registro.md": "PRD_V2.md es vigente. PRD_V99.md está derogado. Fuente sintética.\n",
+    "PRD_V2.md": "Estado: vigente según Registro.\n",
+    "PRD_V99.md": "Estado: derogado. Número y fecha mayores no otorgan vigencia.\n"
+  },
+  "expected_review": "Aplicar PRD_V2 por el Registro, no PRD_V99. No acreditado sin revisor real."
+}

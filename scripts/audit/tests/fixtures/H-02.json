@@ -1,0 +1,10 @@
+{
+  "scenario": "H-02",
+  "synthetic": true,
+  "files": {
+    "CLAUDE.md": "Fixture sintético: construir backend TypeScript.\n",
+    "regla-local.md": "Fixture sintético contradictorio: construir backend .NET.\n",
+    "decisiones.md": "ASS-002: sin resolver exclusivamente en esta fixture histórica; no describe el Libox vigente.\n"
+  },
+  "expected_review": "Exponer conflicto y ASS-002 sin elegir por preferencia. No acreditado sin revisor real."
+}

@@ -3,7 +3,7 @@ title: Harness activo de auditoría de IA y system design
 author: Equipo Libox
 status: vigente
 tags: [equipo, auditoria, system-design]
-updated: 2026-09-25
+updated: 2026-09-29
 description: Lanzamiento del audit con Fable 5.1, Opus 5.5 y revisión independiente de Codex.
 ---
 
@@ -29,10 +29,15 @@ No significa que una auditoría ya se haya ejecutado o aprobado.
 | Codex independiente | El disponible en su sesión, registrado en el informe | Evidencia reproducible, contradicciones y límites de controles |
 
 Ambos agentes Claude leen el mismo contrato completo. Su allowlist es
-`Read, Grep, Glob`: no tienen shell, edición ni delegación.
+`Read, Grep, Glob`: no tienen shell, edición ni delegación; `mcp__*` está
+incluido en `disallowedTools` para excluir herramientas MCP.
 El coordinador conserva herramientas de escritura y ejecución: esta restricción
 no es un sandbox global. Los hooks existentes tampoco cubren toda escritura por shell.
-La primera pasada independiente es una regla de procedimiento, no aislamiento de archivos.
+Cada revisor recibe un worktree detached exclusivo al mismo SHA. Los informes
+quedan en el host y no se copian a esos snapshots. No leer informes ajenos sigue
+siendo una regla de procedimiento: los worktrees no son un sandbox de archivos.
+La eficacia del patrón MCP en el runtime concreto requiere verificación de sus
+capacidades efectivas; modificar YAML no acredita por sí solo ese comportamiento.
 
 La configuración de auditoría es una excepción a la delegación genérica Fable→Opus:
 se conservan los dos modelos indicados. Claude Code debe ser **2.1.280 o posterior**.
@@ -51,14 +56,16 @@ La instalación compatible no garantiza que la cuenta o gateway permita ambos mo
 3. Comprueba solo la presencia de `CLAUDE_CODE_SUBAGENT_MODEL` y de overrides de
    modelos en la configuración efectiva; no imprimas valores secretos ni el entorno.
    Resuelve cualquier override que impida los modelos pedidos antes de delegar.
-4. Crea una carpeta nueva `docs/audits/<fecha-hora-UTC>-harness/` (o `-producto`)
-   sin reutilizar una existente. Escribe `manifest.md` con frontmatter y todos los
-   campos del contrato. Los modelos efectivos empiezan como `no verificado`.
+4. Usa `python3 scripts/audit/run.py start <run-id> --scope harness` (o `producto`).
+   Crea `run.json`, manifiesto inicial y tres snapshots al SHA. Completa las entradas
+   del contrato en `brief.md` nuevo. Modelos efectivos: `no verificado`. Sigue
+   [runs reproducibles](audit-runs.md) para reanudar, concurrencia y validación.
 5. Registra los documentos normativos con versión, fecha y ruta. Una fecha más
    reciente no deroga por sí misma un documento del Registro. Expón ASS-001 y ASS-002.
 6. Ejecuta las verificaciones locales de abajo; guarda comandos, salida saneada y
    códigos de salida en `checks.md`. Un fallo es evidencia, no motivo para ocultarlo.
-7. Lanza los dos agentes con el mismo brief autocontenido y evidencia. La metadata de
+7. Lanza los dos agentes desde sus checkouts exclusivos con el mismo brief
+   autocontenido y evidencia saneada, sin entregarles los informes de otro revisor. La metadata de
    ejecución, si está disponible, acredita el modelo efectivo; la autodeclaración del
    modelo no lo acredita. Sin metadata, conserva `no verificado` y limita el dictamen.
 
@@ -75,7 +82,9 @@ que no se ejecuten. No leas `.env`, credenciales o configuración personal compl
 
 Usa la [plantilla](../superpowers/specs/ai-audit-harness/report-template.md) para
 `fable-report.md`, `opus-report.md`, `codex-report.md` y `synthesis.md`.
-El coordinador escribe solo dentro de la carpeta del run. En un reintento utiliza
+El coordinador conserva evidencia solo dentro de la carpeta del run; el gestor
+administra además los snapshots bajo Git común. Usa el subcomando `report`, que
+sanea stdin y falla si existe el destino. En un reintento utiliza
 `fable-report-attempt-2.md`, por ejemplo; conserva la primera respuesta y el motivo.
 No fabriques archivos de informe para revisores no ejecutados.
 
@@ -84,13 +93,17 @@ Genera `codex-prompt.md` con una petición equivalente a:
 ```text
 Usa la skill .claude/skills/libox-system-design-audit/SKILL.md como revisor Codex.
 Revisa de forma independiente el SHA y alcance del manifest.md de ESTE_RUN.
+Trabaja desde el checkout Codex exclusivo indicado en run.json.
 No leas fable-report.md, opus-report.md ni synthesis.md antes de entregar tu informe.
-Guarda tu informe en ESTE_RUN/codex-report.md sin modificar el objeto auditado.
+Devuelve el informe al coordinador para guardarlo mediante el subcomando report,
+sin modificar el objeto auditado ni sobrescribir intentos anteriores.
 ```
 
 Sustituye ESTE_RUN por la ruta real. Diego lanza ese prompt en Codex.
-Al terminar cada revisión y antes de sintetizar, comprueba que HEAD sigue siendo el
-SHA inicial y que `git status` solo contiene archivos nuevos de esa carpeta de run.
+Al terminar cada revisión y antes de sintetizar ejecuta
+`python3 scripts/audit/run.py validate <run-id> --scope <alcance-original>`.
+Comprueba SHA y limpieza del host y de cada checkout; solo se admiten archivos
+nuevos de esa carpeta de run en el host.
 Cualquier otro cambio invalida la comparación afectada: conserva resultados como
 parciales y reinicia sobre un nuevo snapshot cuando esté disponible.
 
