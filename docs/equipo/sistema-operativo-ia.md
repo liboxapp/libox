@@ -2,7 +2,7 @@
 title: Sistema operativo de IA — cómo trabaja Claude Code en Libox
 status: vigente
 tags: [equipo, claude-code, hooks, skills, agentes, memoria]
-updated: 2026-08-30
+updated: 2026-09-29
 description: Manual humano de la capa operativa de IA del repo — qué carga Claude, qué hace cumplir el harness, qué skills y agentes existen, cómo se orquesta y cómo se extiende.
 ---
 
@@ -17,8 +17,8 @@ guards, skills y agentes. Diseño completo en el
 
 | Capa | Dónde vive | Qué hace |
 |---|---|---|
-| Contexto | [`CLAUDE.md`](../../CLAUDE.md) (raíz, ~40 líneas) · `.claude/rules/*.md` | Lo que toda sesión sabe. Las rules con `paths:` se inyectan solo al tocar su zona: `linea-base.md` (canon), `docs.md`, `src-congelado.md` (ASS-002), `git.md`. |
-| Enforcement | `.claude/settings.json` → `scripts/hooks/*.py` | Hooks nativos que bloquean lo bloqueante. Tests en `scripts/hooks/tests/`, CI en `hooks.yml`. Hookify se conserva como segunda línea. |
+| Contexto | [`CLAUDE.md`](../../CLAUDE.md) (raíz) · `.claude/rules/*.md` | Lo que toda sesión sabe. Las rules con `paths:` se inyectan solo al tocar su zona: `linea-base.md` (canon), `docs.md`, `src-congelado.md` (hasta D1), `git.md`. |
+| Enforcement | `.claude/settings.json` → `scripts/hooks/*.py` | Guards locales heurísticos; CI obligatorio es la barrera común. Tests en `scripts/hooks/tests/`, CI en `hooks.yml`. Hookify se conserva como segunda línea. |
 | Capacidades | `.claude/skills/libox-*` · `.claude/agents/*.md` | Procedimientos invocables y subagentes especializados. |
 | Manual | `docs/equipo/` | Este documento, el [estilo](estilo-documentacion.md) y el [onboarding](onboarding.md). |
 | Memoria | `docs/` · rules · auto-memory personal | Ver "Memoria: qué va dónde". |
@@ -61,12 +61,21 @@ veredicto aprobar/cambios).
 | B3 | commit que toca `docs/linea-base/` o `verify_corpus.py` con fallos (CD-10) | Corregir hasta cero fallos. |
 | B4 | commit con correo fuera de `@liboxapp.com` | `git config user.email <tu>@liboxapp.com`. |
 | E1 | editar in-place un archivo `_V<n>` existente del canon | `LIBOX_PERMITIR_INPLACE=1` (solo con acuerdo explícito). |
-| E2 | escribir en `src/**` o en la config del scaffold (ASS-002); `src/**/CLAUDE.md` exento | `LIBOX_DESCONGELAR_SRC=1` para fixes al PR #15 o exigencias del CI. |
+| E2 | escribir fuera del allowlist de documentación/infraestructura durante el freeze C2/D1; incluye `src/**`, scaffold y `vitest.config.ts`; `src/**/CLAUDE.md` exento | `LIBOX_DESCONGELAR_SRC=1` solo con autorización; no exime CI. |
 | E3 | escribir Sortibox/ALAZAR en contenido nuevo fuera de los archivos que enuncian la regla (`CLAUDE.md`, `CONTRIBUTING.md`, `.claude/rules\|agents\|skills`, `docs/equipo`, `docs/superpowers`) y de `docs/archive/` | `LIBOX_PERMITIR_LEGACY=1` (solo con acuerdo explícito). |
+
+| E4 | modificar hooks, políticas CI, scripts de auditoría, settings, rules, agentes o skills | `LIBOX_EDITAR_OS=1`, con autorización y aviso en stderr. |
 
 Las variables se ponen en el entorno al lanzar Claude Code o en `"env"` de
 `.claude/settings.local.json` (personal, gitignorado). Un fallo interno de un guard nunca
-bloquea: ante error, permite.
+bloquea: ante error, permite con **AVISO** visible, sin volcar el payload.
+
+Se comprueban rutas léxicas y reales, worktrees y mayúsculas. La inspección de Bash
+no ejecuta el comando: reconoce formas Git y escrituras obvias; no es un parser
+completo ni un sandbox. Un script opaco puede eludir la heurística. Codex no ejecuta
+estos hooks automáticamente; aplica las mismas reglas y los checks de CI.
+Los timeouts de hooks son 15 s (edición/digest), 35 s (estado) y 45 s (Bash);
+Bash reserva 35 s para sus comprobaciones y limita la verificación del corpus a 20 s.
 
 ## Memoria: qué va dónde
 
@@ -87,14 +96,15 @@ Si algo valioso aparece en la memoria personal, se promueve a `docs/` por PR.
 - **Skill nuevo:** `.claude/skills/libox-<verbo>/SKILL.md`, menos de 80 líneas, apunta al canon.
 - **Agente nuevo:** `.claude/agents/<rol>.md` con `model: opus`, herramientas mínimas y
   `disallowedTools` si solo lee.
-- Todo entra por PR revisado por `revisor-pr` o por Diego (`CODEOWNERS`).
+- Todo entra por PR con CI y revisión automatizada. La revisión humana sigue
+  suspendida hasta que Diego la reactive explícitamente.
 
-## Capa `dev` pendiente (ASS-002)
+## Capa `dev` pendiente (C2/D1)
 
-Cuando los socios ratifiquen el stack, el PR que cierre ASS-002 borra
+TypeScript ya está ratificado. Tras emitir L3 V8, el PR de D1 retira
 `.claude/rules/src-congelado.md` y las constantes `FROZEN_*` de `guard_edit.py`, actualiza
 `src/CLAUDE.md` y añade agentes `ejecutor-feature`, `tester` y `depurador` más una rule de
-desarrollo para `src/`. Nada de esta capa cambia.
+desarrollo para `src/`. Este trabajo del harness no levanta el freeze.
 
 ## Auditoría compartida
 
