@@ -6,14 +6,11 @@ name: verify-corpus
 
 on:
   pull_request:
-    paths:
-      - "docs/linea-base/**"
-      - "verify_corpus.py"
   push:
     branches: [main]
-    paths:
-      - "docs/linea-base/**"
-      - "verify_corpus.py"
+
+permissions:
+  contents: read
 
 jobs:
   verify:

@@ -6,14 +6,8 @@ name: hooks
 
 on:
   pull_request:
-    paths:
-      - "scripts/hooks/**"
-      - ".claude/settings.json"
   push:
     branches: [main]
-    paths:
-      - "scripts/hooks/**"
-      - ".claude/settings.json"
 
 permissions:
   contents: read
@@ -31,6 +25,8 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Tests de los guards
         run: python3 -m unittest discover -s scripts/hooks/tests -v
+      - name: Tests de las políticas de CI
+        run: python3 -m unittest discover -s scripts/ci/tests -v
       - name: settings.json es JSON válido y sus hooks apuntan a scripts existentes
         run: |
           python3 - <<'PY'

@@ -1,0 +1,48 @@
+name: protected-paths
+
+# Solo código de la base. Nunca ejecutar ni hacer checkout del head de un PR
+# con pull_request_target. No secrets, cachés ni artefactos provenientes del PR.
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  policy:
+    name: ${{ matrix.check }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - check: protected-paths
+            script: check_protected_paths.py
+          - check: commit-policy
+            script: check_commit_messages.py
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Descargar objetos del PR sin ejecutarlos
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          # Encabezado efímero: el token no se guarda en .git/config.
+          auth=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')
+          git -c "http.extraheader=AUTHORIZATION: basic $auth" fetch --no-tags origin "refs/pull/$PR_NUMBER/head"
+          test "$(git rev-parse FETCH_HEAD)" = "$HEAD_SHA"
+      - name: Evaluar política de la base
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          POLICY_SCRIPT: ${{ matrix.script }}
+        run: python3 "scripts/ci/$POLICY_SCRIPT" --base "$BASE_SHA" --head "$HEAD_SHA"
