@@ -43,7 +43,7 @@ description: Candidato L3 no emitido sobre V7, con alcance de reconciliación Co
 en PostgreSQL 17.11 (100/100/104 comprobaciones), sin alterar el código protegido de V7.
 No es el SQL V8 completo ni una prueba de Supabase gestionado. El contrato pasa a
 `2.0.0-draft.3` con la integración de las decisiones A y C; conserva las 61
-operaciones inventariadas más las auxiliares. El contrato tiene 93 operaciones (61 inventariadas y 32 auxiliares), 47 pruebas
+operaciones inventariadas más las auxiliares. El contrato tiene 93 operaciones (61 inventariadas y 32 auxiliares), 50 pruebas
 contractuales y 13 intercambios del cliente TypeScript verificados localmente. Véase [estado C1](estado-c1.md) para pendientes y alcance.
 
 ### 0.0 Changelog
@@ -3225,7 +3225,7 @@ Implementación de §4.2 del PRD. Se carga como datos, no como condicionales en 
 | `READY_TO_DRAW`                                                    | `POOL_FROZEN`       | `FREEZE_POOL`           | SYSTEM                                       | Compromiso y baliza publicados                            |
 | `POOL_FROZEN`                                                      | `DRAW_EXECUTED`     | `EXECUTE_DRAW`          | SYSTEM                                       | `now() ≥ earliest_execution_at` y baliza disponible       |
 | `DRAW_EXECUTED`                                                    | `IN_RESOLUTION`     | `OPEN_ROOM`             | SYSTEM                                       | —                                                         |
-| `IN_RESOLUTION`                                                    | `DELIVERY_ATTESTED` | `ATTEST`                | SUPPORT\_L2 o ADMIN\_LEGAL\_COMPLIANCE       | En P-C, `SignatureRequest` `ATTEST_PC` firmada (A9)       |
+| `IN_RESOLUTION`                                                    | `DELIVERY_ATTESTED` | `ATTEST`                | SUPPORT\_L2 o ADMIN\_LEGAL\_COMPLIANCE       | En P-C solicita ADMIN_LEGAL_COMPLIANCE (A1); `ATTEST_PC` firmada (A9)       |
 | `IN_RESOLUTION`                                                    | `CANCELLED`         | `RESOLVE_CANCEL`        | ADMIN                                        | Ruta declarada = CANCEL, o incumplimiento del organizador |
 | `DELIVERY_ATTESTED`                                                | `SETTLED`           | `PAY_SETTLEMENT`        | ADMIN\_FINANCE                               | Seis gates verdaderos                                     |
 | `SETTLED`                                                          | `CLOSED`            | `CLOSE`                 | SYSTEM                                       | Ventana de retención vencida sin incidencias              |
@@ -4333,6 +4333,11 @@ Devuelve el documento de prueba de §5.5. Indexable, cacheable, sin datos person
 
     { "evidence_ids": ["uuid"], "winner_confirmed": true,
       "statement": "…", "signature_request_id": "uuid" }
+
+**Ámbito P-C (A1/A9).** Solo `ADMIN_LEGAL_COMPLIANCE` solicita la atestación de
+P-C1/P-C2: coincide con el solicitante de `ATTEST_PC`. Los otros roles de la
+operación general se rechazan para P-C; no se crea una solicitud sin firmante
+admisible ni se interpreta la lista general como excepción a la política.
 
 Respuesta `201` con la atestación y **el estado de los seis gates de liquidación tras la evaluación**, para que el operador vea de inmediato si algo más bloquea el pago. La atestación excluye a finanzas (INC-07, en ejecución). **V8 (A9):** el cuerpo ya no lleva `second_signer_id`. En P-C, la segunda firma se pide con una `SignatureRequest` de `ATTEST_PC` y la atestación referencia esa solicitud ya firmada por un `ADMIN_SUPER` distinto del solicitante (§7.2); el servidor rechaza un firmante enviado por el cliente. Es un cambio incompatible del cuerpo frente a V7 y se registra como migración del contrato. Las evidencias y la exportación forense exigen autorización por recurso y quedan en `audit_access_events`.
 

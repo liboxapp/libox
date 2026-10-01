@@ -56,7 +56,7 @@ Es un borrador: no cambia el canon.
 - **CC-06 Sin esquemas genéricos ni campos calculados.** Todo objeto nuevo es cerrado.
   Las peticiones no aceptan banda, desviación, comisión ni firmante.
 - **CC-07 Acción sensible.** Exige `aal2` y reautenticación en los últimos 5 minutos (A10); si
-  falta, responde 401 `ERR_AUTH_REAUTH_REQUIRED`. Las ocho operaciones con esa respuesta declaran
+  falta, responde 401 `ERR_AUTH_REAUTH_REQUIRED`. Las nueve operaciones con esa respuesta declaran
   `x-reauthentication-max-age-seconds: 300`. Qué operaciones del inventario L3 son sensibles sigue
   sin decidir.
 - **CC-08 Segunda firma.** Es un recurso aparte (`SignatureRequest`) con elegibilidad por
@@ -98,7 +98,7 @@ Pruebas escritas antes de editar el YAML:
 
 **Ejecución local del 2026-10-01 (draft.3):** el RED previo dio 11 fallos y 13 errores en 46
 pruebas. La comprobación adicional de estados de `submitKyb` detectó el enum heredado
-incorrecto (RED); corregido, pasan 47 pruebas, con 93 intercambios HTTP y 13 del cliente
+incorrecto (RED); corregido, pasan 50 pruebas, con 93 intercambios HTTP y 13 del cliente
 TypeScript generado. Catorce mutaciones en memoria del YAML hacen fallar al menos una prueba.
 El mock no prueba permisos, firma PSP, decisiones ni seguridad del backend.
 

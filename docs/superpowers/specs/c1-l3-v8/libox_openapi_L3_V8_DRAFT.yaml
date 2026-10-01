@@ -809,6 +809,7 @@ paths:
           $ref: '#/components/responses/Error500_11657b9f'
     put:
       operationId: updatePayout
+      x-reauthentication-max-age-seconds: 300
       summary: Actualizar destino de cobro
       tags:
       - clients
@@ -819,7 +820,7 @@ paths:
       x-access-class: authenticated
       x-allowed-roles:
       - CLIENT_OWNER
-      x-authorization: Solo dueño y reautenticación reciente; verificar titularidad; cambio activa retención
+      x-authorization: Solo dueño y reautenticación en los últimos 5 minutos (A10); verificar titularidad; cambio activa retención
         conforme al canon.
       x-authorization-status: derived-from-L3-7.1
       x-origin: l3-inventory
@@ -874,7 +875,7 @@ paths:
         '400':
           $ref: '#/components/responses/Error400_285c49ea'
         '401':
-          $ref: '#/components/responses/Error401_d24337c4'
+          $ref: '#/components/responses/Error401_reauth_required'
         '403':
           $ref: '#/components/responses/Error403_4f4b65b2'
         '404':
@@ -1448,6 +1449,14 @@ paths:
   /raffles/{raffle_ref}/submit:
     post:
       operationId: submitRaffle
+      x-t1-publication-gate:
+        includes_t8_base_t1: true
+        requires_approved_minimum: true
+        requires_approved_prize_terms: true
+        if_pending: REJECT
+      x-server-rule: En T1 y T8 con base T1, rechazar envío a revisión o aprobación de publicación
+        mientras el mínimo y las condiciones del premio sigan pendientes. Crear un borrador
+        no satisface este requisito; no inferir un umbral de los fixtures.
       summary: Enviar sorteo a revisión
       tags:
       - raffles
@@ -2677,6 +2686,10 @@ paths:
   /rooms/{id}/attest:
     post:
       operationId: attestDelivery
+      x-pc-attestation-policy:
+        categories: [P_C1, P_C2]
+        requester_subroles: [ADMIN_LEGAL_COMPLIANCE]
+        reject_other_requesters: true
       summary: Atestar entrega
       tags:
       - rooms
@@ -2692,7 +2705,9 @@ paths:
       - ADMIN_SUPER
       x-authorization: 'INC-06 (quien valoró no atesta), INC-09 e INC-11 en ejecución; INC-07 solo en
         ejecución (A11.2, §7.2): ADMIN_FINANCE no atesta. En P-C1/P-C2 el servidor crea SignatureRequest
-        ATTEST_PC (A9) y la transición a DELIVERY_ATTESTED espera la firma. No mueve dinero.'
+        ATTEST_PC (A9) y la transición a DELIVERY_ATTESTED espera la firma. En P-C solo
+        ADMIN_LEGAL_COMPLIANCE puede solicitar, según A1; los demás roles se rechazan, aunque
+        figuren en la lista general de atestación. No mueve dinero.'
       x-authorization-status: derived-from-L3-7.1
       x-origin: l3-inventory
       parameters:
@@ -7073,6 +7088,14 @@ paths:
   /raffles/{raffle_ref}/moderation/decisions:
     post:
       operationId: decideModeration
+      x-t1-publication-gate:
+        includes_t8_base_t1: true
+        requires_approved_minimum: true
+        requires_approved_prize_terms: true
+        if_pending: REJECT
+      x-server-rule: En T1 y T8 con base T1, rechazar envío a revisión o aprobación de publicación
+        mientras el mínimo y las condiciones del premio sigan pendientes. Crear un borrador
+        no satisface este requisito; no inferir un umbral de los fixtures.
       x-origin: c1-auxiliary
       summary: Aprobar publicación
       tags:

@@ -322,14 +322,39 @@ class C1Decisions(unittest.TestCase):
             self.assertFalse(self.valid(schema, dict(base, status='RECORDED')), name)
             self.assertTrue(self.valid(schema, dict(base, status='RECORDED', signature_request_id=None)), name)
 
+    def test_pc_attestation_requester_matches_signature_policy(self):
+        op = self.op('/rooms/{id}/attest')
+        policy = op['x-pc-attestation-policy']
+        approved = self.schemas['SignatureRequest']['x-second-signature-policy']['ATTEST_PC']
+        self.assertEqual(policy['categories'], ['P_C1', 'P_C2'])
+        self.assertEqual(policy['requester_subroles'], approved['requester_subroles'])
+        self.assertTrue(policy['reject_other_requesters'])
+        self.assertTrue(set(policy['requester_subroles']) <= set(op['x-allowed-roles']))
+        self.assertNotIn('ADMIN_SUPER', policy['requester_subroles'])
+
+    def test_payout_change_requires_approved_reauth_window(self):
+        op = self.op('/clients/{id}/payout', 'put')
+        self.assertEqual(op.get('x-reauthentication-max-age-seconds'), 300)
+        self.assertEqual(op['responses']['401'],
+                         {'$ref': '#/components/responses/Error401_reauth_required'})
+
+    def test_t1_pending_requirements_block_submit_and_publication(self):
+        for path in ('/raffles/{raffle_ref}/submit', '/raffles/{raffle_ref}/moderation/decisions'):
+            rule = self.op(path)['x-t1-publication-gate']
+            self.assertTrue(rule['includes_t8_base_t1'])
+            self.assertTrue(rule['requires_approved_minimum'])
+            self.assertTrue(rule['requires_approved_prize_terms'])
+            self.assertEqual(rule['if_pending'], 'REJECT')
+            self.assertNotIn('minimum_value', rule)
+
     # A10 Reautenticación ----------------------------------------------------
 
     def test_reauthentication_window_is_five_minutes(self):
         reauth_ref = {'$ref': '#/components/responses/Error401_reauth_required'}
         sensitive = [op for _, _, op in self.contract.operations(self.doc)
                      if op['responses'].get('401') == reauth_ref]
-        # Siete auxiliares sensibles previas más decideKyb (A7).
-        self.assertEqual(len(sensitive), 8)
+        # Siete auxiliares previas, decideKyb y cambio de cuenta bancaria ya sensible.
+        self.assertEqual(len(sensitive), 9)
         for op in sensitive:
             self.assertEqual(op.get('x-reauthentication-max-age-seconds'), 300, op['operationId'])
         op = self.op('/auth/reauthenticate')

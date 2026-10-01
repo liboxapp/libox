@@ -59,7 +59,7 @@ sorteo), `PrizeValuation` y la lectura de gestión. El tipo efectivo es `raffle_
 |---|---|---|
 | C1 T1 | `expiry_policy` obligatorio en T1 y prohibido en el resto: `max_duration_days` y `on_expiry: DRAW_IF_MINIMUM_REACHED_ELSE_REFUND` | Mínimo vendido, su unidad y quién lo fija; premio con mínimo; aviso al comprador. `x-requirement-status: incomplete-pending-threshold`: un T1 no es publicable hasta fijarlos |
 | C2 T7 | `recurrence` obligatorio en T7: `frequency` del CHECK canónico, `interval_count`, `edition_duration_minutes`, `max_editions`; `x-server-rule` sin solape | Medición del intervalo `MONTHLY` con calendario |
-| C3 Precio | `ticket_price` obligatorio y fijado por el organizador; se rechazan `target_net_amount` y los importes derivados | El simulador público conserva `target_net_amount`: decidir si acepta `ticket_price` |
+| C3 Precio | `ticket_price` obligatorio y fijado por el organizador; se rechazan `target_net_amount` y los importes derivados | El simulador mantiene `target_net_amount` obligatorio y `ticket_price` opcional; decidir la entrada principal |
 | C4 Régimen | `economic_regime` solo `PAID` (por defecto) | `FREE_ENTRY` y `PROMOTIONAL` siguen fuera hasta diseñar la garantía sustitutiva |
 | C4 Costos | `declared_costs[]` en `PrizeValuation`: `cost_kind` (`SHIPPING`, `NOTARY`, `REGISTRY`), `estimated_amount` (`Money`) y `borne_by` del canon | `charge_kind` y `macrozone` (DP-25); `recurring_charges` y `shipping_estimates` no se contratan |
 
