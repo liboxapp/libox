@@ -2,8 +2,8 @@
 title: C1 — MFA, recuperación, subidas y adaptadores
 status: borrador
 tags: [r0, c1, openapi, l3-v8, seguridad]
-updated: 2026-09-30
-description: Contratos de MFA, reautenticación, recuperación y subidas integrados en el borrador; KYC/KYB pendiente de proveedor y parámetros de R1.
+updated: 2026-10-01
+description: Contratos de MFA, reautenticación de 5 minutos, recuperación y subidas integrados en el borrador; decisión KYB integrada y adaptador KYC/KYB pendiente de proveedor y parámetros de R1.
 ---
 
 # Identidad, MFA y evidencias
@@ -22,7 +22,7 @@ la API de Libox (S-2); el adaptador de R1 llama al proveedor.
 | `verifyMfaFactor` | `POST /auth/mfa/factors/{id}/verify` | `code` de 6 dígitos; sesión con `aal` igual a `aal2` | Límite de intentos |
 | `challengeMfa` | `POST /auth/mfa/challenge` | `factor_id` y `code`; sesión `aal2` | Sesión `aal1` propia |
 | `revokeMfaFactor` | `POST /auth/mfa/factors/{id}/revoke` | `reason` (10..500); 409 `ERR_AUTH_MFA_REQUIRED` si una cuenta interna quedaría sin factor | Reautenticación |
-| `reauthenticate` | `POST /auth/reauthenticate` | `oneOf` por `method`: `PASSWORD` o `TOTP`; devuelve `valid_until` | Sesión propia |
+| `reauthenticate` | `POST /auth/reauthenticate` | `oneOf` por `method`: `PASSWORD` o `TOTP`; devuelve `valid_until`, 300 s después (A10) | Sesión propia |
 | `revokeSessions` | `POST /auth/sessions/revoke` | `scope` `CURRENT` o `ALL` | Sesión propia |
 | `requestRecovery` | `POST /auth/recovery` | 202 con solo `message` y `trace_id`, exista o no la cuenta (AC-04) | Pública, intercambio de credenciales |
 | `completeRecovery` | `POST /auth/recovery/complete` | Revoca sesiones y no entrega tokens | Pública, intercambio de credenciales |
@@ -31,6 +31,8 @@ la API de Libox (S-2); el adaptador de R1 llama al proveedor.
 
 Diferencias frente al diseño anterior:
 
+- La ventana de reautenticación es de 5 minutos, ratificada en A10. Las operaciones que pueden
+  responder 401 `ERR_AUTH_REAUTH_REQUIRED` declaran `x-reauthentication-max-age-seconds: 300`.
 - `logout` y `revoke-all` se unificaron en `/auth/sessions/revoke` con `scope`. Así la petición
   nunca va vacía.
 - El reinicio interno no revoca el subrol (INV-38). La cuenta queda restringida hasta que vuelva
@@ -66,10 +68,16 @@ tiene únicamente el tope estructural int32. Tampoco se integró la exigencia de
 `EvidenceAttach`, `KybSubmit` y `PcStageSubmit` referencien solo subidas `ACCEPTED`: son
 operaciones del inventario y el cambio acompaña a I-08.
 
-## KYC y KYB: pendiente
+## KYC y KYB
 
-No se integró ninguna operación nueva. Diego priorizó Truora para evaluación; cobertura
-KYB y adaptador siguen pendientes. Se conserva el contrato neutral propuesto:
+**Decisión KYB, integrada (A7).** `decideKyb` (`POST /clients/{id}/kyb/decisions`) la ejecuta
+`ADMIN_COMPLIANCE`; `ADMIN_RISK` solo lee con `getClient`. Detalle en
+[decisiones privilegiadas](cierre-contratos-decisiones.md).
+
+**Adaptador, pendiente.** Diego priorizó Truora para evaluación; cobertura KYB y adaptador
+siguen pendientes. `SubmitKybResponse.status` ya usa los estados de `client_kyb`
+(`PENDING`, `APPROVED`, `REJECTED`, `EXPIRED`), sin `VERIFIED`. Esto no valida
+el mapeo del proveedor. Se conserva el contrato neutral propuesto:
 
 - `POST /identity/sessions`, con `client_action` que será `REDIRECT` o `SDK` según el flujo del
   proveedor.
@@ -80,7 +88,7 @@ KYB y adaptador siguen pendientes. Se conserva el contrato neutral propuesto:
 
 Qué forma de `client_action` aplica depende del proveedor, así que no se fija antes. El cambio de
 `submitKyb` a documentos tipados necesita el enum `document_kind` por tipo de persona. La
-decisión KYB no tiene rol en §7.1 (I-07).
+fila "Decisión KYB" de §7.1 se añade en V8 (I-07).
 
 ## PSP
 

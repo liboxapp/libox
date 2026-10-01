@@ -44,6 +44,8 @@ LIMA_OFFSET_HOURS = -5  # America/Lima: UTC-5 sin horario de verano desde 1994.
 HUMAN_PARTITIONED = ["journal_lines"]  # particiones aportadas por el dueño del ledger
 HORIZON_MONTHS = 2  # mes actual + 2: el mes M existe 30 días antes de empezar (L3 V7 §1.3)
 ALLOWED_GRANTEES = ["libox_app", "libox_append", "libox_read"]
+B1_RESERVED = ["operation_register", "raffle_milestones", "self_exclusions", "spending_limit_changes",
+               "spending_limits", "transfer_costs"]  # B1: pasan a reservado_humano
 
 SCENARIOS = {
     "superusuario": {
@@ -63,7 +65,9 @@ ADVERTENCIAS = [
     "Overlay borrador sobre V7 intacto; no es el SQL V8 ni una migración completa.",
     "No acredita comportamiento de Supabase gestionado, pooler ni Data API reales.",
     "H-05 queda parcial (11/12 padres): journal_lines no recibe particiones del overlay; las aporta su dueño humano.",
-    "H-06 queda parcial: solo hay privilegios para clases no patrimoniales; la matriz completa está pendiente.",
+    "H-06 queda parcial: aplica la matriz B1 aprobada a las clases no patrimoniales; las 57 tablas reservadas a humano, los logins reales, la propiedad por libox_migrate y el SQL V8 siguen pendientes.",
+    "Los logins de B2 solo se simulan en una transacción revertida, sin contraseñas; no se crean ni se alteran roles de Supabase.",
+    "El cifrado de datos personales con AWS KMS (B1-bis) y sus columnas *_enc pertenecen al SQL V8; aquí no se simulan.",
     "Precondición antes de aplicar en Supabase: validar Data API/exposición del esquema, RLS gestionado y privilegios por defecto de otros roles (supabase_admin).",
     "Las zonas críticas (ledger, RBAC, sorteo, concurrencia, incompatibilidades, comisión) no se implementan aquí.",
 ]
@@ -674,6 +678,7 @@ class ScenarioRun:
         for label, body in reserved:
             self.expect("ACL-APP-RESERVADO-" + label, "libox_app sin privilegio sobre tabla reservada a humano",
                         refs + ["zonas-sin-ia"], self.as_role("libox_app", body), denied)
+        self.check_b1_behaviour(denied)
         self.expect("ACL-READ-LEE-CATALOGO", "libox_read lee un catálogo", refs,
                     self.as_role("libox_read", "SELECT count(*) FROM public.markets;"))
         self.expect("ACL-READ-NO-ESCRIBE", "libox_read no escribe", refs,
@@ -718,6 +723,129 @@ class ScenarioRun:
             self.expect("ACL-API-SERVICE-ROLE-SIN-ACCESO", "service_role no modifica journal_lines tras el overlay",
                         refs + ["cierre-sql-pendientes.md"],
                         self.as_role("service_role", "UPDATE public.journal_lines SET debit = debit;"), denied)
+
+    def check_b1_behaviour(self, denied: Tuple[str, str]) -> None:
+        """Una sonda positiva y negativa por clase B1, sin filas: WHERE false comprueba el privilegio."""
+        refs = ["B1 (decisiones-c1-datos.md)", "acl-manifest.json"]
+
+        def writes(table: str, update: bool) -> str:
+            body = "INSERT INTO public." + table + " (id) SELECT NULL::uuid WHERE false;\n"
+            if update:
+                body += "UPDATE public." + table + " SET id = id WHERE false;\n"
+            return body + "SELECT count(*) FROM public." + table + ";"
+
+        positive = [
+            ("OPERATIVA-APP", "libox_app", "clients", writes("clients", True)),
+            ("OPERATIVA-READ", "libox_read", "clients", "SELECT count(*) FROM public.clients;"),
+            ("INMUTABLE-APP", "libox_app", "alarm_resolutions", writes("alarm_resolutions", False)),
+            ("INMUTABLE-READ", "libox_read", "alarm_resolutions", "SELECT count(*) FROM public.alarm_resolutions;"),
+            ("SENSIBLE-APP", "libox_app", "users", writes("users", True)),
+            ("SENSIBLE-INMUTABLE-APP", "libox_app", "identity_verifications", writes("identity_verifications", False)),
+            ("CATALOGO-AML-READ", "libox_read", "aml_thresholds", "SELECT count(*) FROM public.aml_thresholds;"),
+        ]
+        for label, role, table, body in positive:
+            self.expect("ACL-B1-" + label, role + " ejerce sus privilegios B1 sobre " + table, refs,
+                        self.as_role(role, body))
+        negative = [
+            ("OPERATIVA-APP-NO-BORRA", "libox_app", "DELETE FROM public.clients;"),
+            ("OPERATIVA-READ-NO-ESCRIBE", "libox_read", "UPDATE public.clients SET id = id WHERE false;"),
+            ("INMUTABLE-APP-NO-ACTUALIZA", "libox_app", "UPDATE public.alarm_resolutions SET id = id WHERE false;"),
+            ("INMUTABLE-APP-NO-BORRA", "libox_app", "DELETE FROM public.risk_events;"),
+            ("SENSIBLE-READ-NO-LEE", "libox_read", "SELECT count(*) FROM public.users;"),
+            ("SENSIBLE-APPEND-NO-LEE", "libox_append", "SELECT count(*) FROM public.credentials;"),
+            ("SENSIBLE-APP-NO-BORRA", "libox_app", "DELETE FROM public.users;"),
+            ("SENSIBLE-INMUTABLE-APP-NO-ACTUALIZA", "libox_app",
+             "UPDATE public.identity_verifications SET id = id WHERE false;"),
+            ("SENSIBLE-INMUTABLE-READ-NO-LEE", "libox_read", "SELECT count(*) FROM public.age_verifications;"),
+            ("CATALOGO-AML-APP-NO-ESCRIBE", "libox_app", "UPDATE public.aml_thresholds SET tier = tier WHERE false;"),
+        ]
+        for table in B1_RESERVED:
+            for role in ("libox_app", "libox_read", "libox_append"):
+                negative.append(("RESERVADO-" + table.upper().replace("_", "-") + "-" + role.upper().replace("_", "-"),
+                                 role, "SELECT count(*) FROM public." + table + ";"))
+        for label, role, body in negative:
+            self.expect("ACL-B1-" + label, role + " denegado según B1", refs + ["zonas-sin-ia"],
+                        self.as_role(role, body), denied)
+
+    def check_component_logins(self) -> None:
+        """B2: logins por componente simulados con el instalador, en transacción revertida y sin contraseña."""
+        spec = self.manifest["logins_componente_b2"]["miembros"]
+        groups = list(self.manifest["roles_grupo"])
+        privileges = ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"]
+        if self.version_num >= 170000:
+            privileges.append("MAINTAIN")
+        classes, tables = self.manifest["clases"], self.manifest["tablas"]
+        expected = {}
+        for login, member_of in spec.items():
+            grants = {}
+            for table, cls in tables.items():
+                privs = sorted({p for g in member_of for p in classes[cls]["privilegios"].get(g, [])})
+                if privs:
+                    grants[table] = privs
+            expected[login] = {"miembro_de": sorted(member_of), "atributos": [False, False, False, False, True],
+                               "privilegios": grants}
+        prelude = "BEGIN;\n" + "".join(
+            "CREATE ROLE " + login + " LOGIN NOSUPERUSER NOCREATEROLE NOCREATEDB NOBYPASSRLS IN ROLE "
+            + ", ".join(member_of) + ";\n" for login, member_of in spec.items())
+        login_list = ", ".join(sql_text(x) for x in spec)
+        query = (
+            "SELECT json_object_agg(r.rolname, json_build_object("
+            "'miembro_de', (SELECT coalesce(json_agg(g ORDER BY g), '[]') FROM unnest(ARRAY["
+            + ", ".join(sql_text(g) for g in groups) + "]) g WHERE pg_has_role(r.oid, g, 'MEMBER')),"
+            "'atributos', json_build_array(r.rolsuper, r.rolcreaterole, r.rolcreatedb, r.rolbypassrls, r.rolcanlogin),"
+            "'privilegios', (SELECT coalesce(json_object_agg(c.relname, ps), '{}') FROM ("
+            " SELECT c.relname, (SELECT json_agg(p ORDER BY p) FROM unnest(ARRAY["
+            + ", ".join(sql_text(p) for p in privileges) + "]) p WHERE has_table_privilege(r.oid, c.oid, p)) AS ps"
+            " FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace"
+            " WHERE n.nspname = 'public' AND c.relkind IN ('r', 'p') AND NOT c.relispartition) c"
+            " WHERE ps IS NOT NULL)))"
+            " FROM pg_roles r WHERE r.rolname IN (" + login_list + ")")
+        error = None
+        try:
+            observed = self.q(query, prelude=prelude, user=self.installer)
+        except RuntimeError as exc:
+            observed, error = {}, str(exc)
+        diffs = {}
+        for login, want in expected.items():
+            got = (observed or {}).get(login)
+            if got is None:
+                diffs[login] = "no creado"
+                continue
+            got_privs = {k: sorted(v) for k, v in got["privilegios"].items()}
+            delta = {t: {"esperado": want["privilegios"].get(t), "observado": got_privs.get(t)}
+                     for t in set(want["privilegios"]) | set(got_privs)
+                     if want["privilegios"].get(t) != got_privs.get(t)}
+            if got["miembro_de"] != want["miembro_de"] or got["atributos"] != want["atributos"] or delta:
+                diffs[login] = {"miembro_de": got["miembro_de"], "atributos": got["atributos"],
+                                "privilegios_distintos": dict(list(delta.items())[:20])}
+        left = self.q("SELECT to_json(count(*)) FROM pg_roles WHERE rolname IN (" + login_list + ")")
+        summary = {k: {"miembro_de": v["miembro_de"], "tablas_con_privilegios": len(v["privilegios"])}
+                   for k, v in expected.items()}
+        self.check("B2-LOGINS-SIMULADOS",
+                   "El instalador del escenario crea los cuatro logins de B2 sin contraseña ni atributos elevados;"
+                   " cada uno hereda exactamente la unión de privilegios de sus roles de grupo; se revierte",
+                   ["B2 (decisiones-c1-datos.md)", "cierre-sql-pendientes.md precondición 5"],
+                   {"logins": summary, "diferencias": {}, "roles_tras_revertir": 0},
+                   {"error": error, "diferencias": diffs, "roles_tras_revertir": left},
+                   error is None and not diffs and left == 0)
+
+    def check_ownership_pending(self) -> None:
+        owners = self.q(
+            "SELECT json_build_object('relaciones', (SELECT coalesce(json_agg(DISTINCT pg_get_userbyid(c.relowner)), '[]')"
+            " FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'public'"
+            " AND c.relkind IN ('r', 'p', 'S', 'v', 'm')),"
+            " 'funciones', (SELECT coalesce(json_agg(DISTINCT pg_get_userbyid(p.proowner)), '[]') FROM pg_proc p"
+            " JOIN pg_namespace n ON n.oid = p.pronamespace WHERE n.nspname = 'public'),"
+            " 'esquema', (SELECT pg_get_userbyid(nspowner) FROM pg_namespace WHERE nspname = 'public'),"
+            " 'objetos_de_libox_migrate', (SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace"
+            " WHERE n.nspname = 'public' AND c.relowner = 'libox_migrate'::regrole::oid))")
+        want = {"relaciones": [self.installer], "funciones": [self.installer], "objetos_de_libox_migrate": 0}
+        got = {k: owners.get(k) for k in want}
+        self.check("B2-PROPIEDAD-V7-SIN-CAMBIO",
+                   "La propiedad de V7 sigue en el instalador y libox_migrate no posee objetos: la cesión de B2 es"
+                   " requisito del SQL V8 y no se simula (cambiaría la huella del esquema protegido)",
+                   ["B2 (decisiones-c1-datos.md)", "OV-NO-MODIFICA-V7"], want,
+                   {"observado": got, "esquema_public": owners.get("esquema")}, got == want)
 
     def check_horizon_30d(self) -> None:
         cases = [("2027-01-30T00:00:00+00:00", 1, False, "2027-03-01T00:00:00+00:00"),
@@ -996,6 +1124,8 @@ def run_scenario(name: str, image: str, allow_pull: bool, manifest: dict, v7_tex
             run.check_new_object_probe()
             run.check_acl_matrix()
             run.check_acl_grantees()
+            run.check_component_logins()
+            run.check_ownership_pending()
             run.check_human_parent_untouched()
             run.probe_open_findings()
             evidence["catalogo"] = run.catalog()

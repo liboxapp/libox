@@ -2,8 +2,8 @@
 title: C1 — cierre SQL no crítico (overlay sobre V7)
 status: borrador
 tags: [r0, c1, l3-v8, sql]
-updated: 2026-09-30
-description: Particiones de 11/12 padres, ACL base y semilla PE sobre V7 intacto, verificados en PostgreSQL 17 efímero; qué cierra y qué no.
+updated: 2026-10-01
+description: Particiones de 11/12 padres, ACL con la matriz B1, semilla PE y logins B2 simulados sobre V7 intacto, verificados en PostgreSQL 17 efímero; qué cierra y qué no.
 ---
 
 # Cierre SQL no crítico de C1
@@ -14,14 +14,14 @@ completa y no acredita que funcione en Supabase gestionado. El canon V7 no se
 modifica.
 
 Anexos: [alcance C1/R1](cierre-sql-alcance.md) · [pendientes y precondiciones](cierre-sql-pendientes.md) ·
-[artefactos](database/README.md).
+[riesgos de ACL B1](cierre-sql-riesgos-acl.md) · [artefactos](database/README.md).
 
 ## Qué se entrega
 
 | Hallazgo | Entrega | Estado |
 |---|---|---|
-| H-05 particiones | Arranque idempotente para **11 de los 12 padres**: mes actual y dos siguientes en UTC, más una DEFAULT por padre, y una función de estado con cobertura de 30 días | **Parcial (11/12).** `journal_lines` está en el inventario pero sin particiones: las aporta su dueño humano (ledger). Planificador, retención y procedimiento para filas en DEFAULT, pendientes |
-| H-06 permisos | Denegación a PUBLIC, `anon`, `authenticated` y `service_role`. Privilegios solo para 17 tablas no patrimoniales. Ningún beneficiario, salvo el dueño, en las particiones gestionadas | **Parcial.** Las 51 tablas reservadas y las 67 sin matriz quedan sin privilegios. No hay logins, propiedad ni matriz V8 |
+| H-05 particiones | Arranque idempotente para **11 de los 12 padres**: mes actual y dos siguientes en UTC, más una DEFAULT por padre, y una función de estado con cobertura de 30 días. B3–B6 [especificados](database/planificador-default.md) y retención B6 en el inventario como metadato | **Parcial (11/12).** `journal_lines` está en el inventario pero sin particiones: las aporta su dueño humano (ledger, B5). Planificador y procedimiento B4 especificados, no implementados |
+| H-06 permisos | Denegación a PUBLIC, `anon`, `authenticated` y `service_role`. Matriz B1 aprobada: privilegios exactos en 78 tablas no patrimoniales, sin `DELETE`. Las seis candidatas de B1 pasan a `reservado_humano`. Logins B2 simulados en transacción revertida. Ningún beneficiario, salvo el dueño, en las particiones gestionadas | **Parcial.** Las 57 tablas reservadas quedan sin privilegios. Faltan logins reales, secretos, propiedad por `libox_migrate` (requisito del SQL V8), vistas seudonimizadas y cifrado KMS (B1-bis) |
 | H-08 semillas | `markets` PE con los literales de L3 V7 §10.1 | Solo PE. No siembra FSM, ledger, incompatibilidades, configuración financiera ni administradores |
 | H-07 / H-09 | Sondas de observación dentro de transacciones revertidas | **Siguen abiertos** (ver resultado) |
 
@@ -69,7 +69,7 @@ python3 scripts/database/c1_sql_check.py --escenario todos      # reescribe evid
 - **CI:** `.github/workflows/hooks.yml` ya ejecuta la suite (configurado por el
   coordinador). El verde remoto está pendiente.
 
-## Resultado de la ejecución local del 2026-09-30
+## Resultado de la ejecución local del 2026-10-01
 
 Evidencia (esquema 2): [superusuario](database/evidencia/superusuario.json),
 [dueño con CREATEROLE](database/evidencia/dueno-createrole.json) y
@@ -77,10 +77,19 @@ Evidencia (esquema 2): [superusuario](database/evidencia/superusuario.json),
 Cada JSON registra la fecha, el sha256 de cada fuente, la imagen, el
 aislamiento, el rol instalador y el valor observado de cada comprobación.
 
-- **Comprobaciones:** 63, 63 y 67 pasan. El tercer escenario simula privilegios
+- **Comprobaciones:** 100, 100 y 104 pasan. El tercer escenario simula privilegios
   por defecto para `anon`, `authenticated` y `service_role` (**no es Supabase
   gestionado**). Sin el overlay, `anon` lee y `service_role` modifica
   `journal_lines`.
+- **Matriz B1:** `ACL-MATRIZ` compara 1120 pares tabla-rol (1568 con los roles de
+  API) con el manifiesto. 35 sondas `ACL-B1-*` ejercen una concesión y una denegación
+  por clase, incluidas las seis tablas reclasificadas para `libox_app`, `libox_read`
+  y `libox_append`.
+- **Logins B2:** el instalador del escenario, también sin `SUPERUSER`, crea los cuatro
+  logins sin contraseña. Cada uno hereda exactamente la unión de sus roles de grupo y
+  `libox_deployer` no recibe privilegios de datos. Todo se revierte.
+  `B2-PROPIEDAD-V7-SIN-CAMBIO` confirma que la propiedad sigue en el instalador: la
+  cesión a `libox_migrate` cambiaría la huella de V7 y queda como requisito del SQL V8.
 - **Particiones:** los 11 padres tienen mes actual, dos siguientes y DEFAULT, y
   `journal_lines` no tiene hijos. `lock_timeout` saltó a los 5,1 s con
   `audit_events` bloqueada, sin crear particiones.
@@ -88,16 +97,26 @@ aislamiento, el rol instalador y el valor observado de cada comprobación.
   un rol propio, las 11 particiones nuevas quedan sin beneficiarios distintos del
   dueño. Una tabla y una función creadas después tampoco reciben privilegios de
   PUBLIC ni de otros roles.
-- **Beneficiarios:** revisados 33 (30 de tabla y 3 de esquema), todos
-  permitidos.
+- **Beneficiarios:** revisados 144, todos roles de grupo permitidos sobre tablas
+  padre o el esquema `public`.
 - **Integridad de V7:** la huella no cambia. Ahora incluye dueño, RLS, políticas,
   reglas y procedimientos.
 - **H-07 y H-09 siguen abiertos.**
-- **Pruebas:** 21 recolectadas.
-  - Sin Docker: 19 OK y 2 omitidas.
-  - Con Docker: 21 OK en 49 s, con `ResourceWarning` tratado como error.
+- **Pruebas:** 27 recolectadas.
+  - Sin Docker: 25 OK y 2 omitidas.
+  - Con Docker: 27 OK en 63 s, con `ResourceWarning` tratado como error.
+  - Las pruebas estáticas contrastan el manifiesto con la tabla B1 de
+    [decisiones](decisiones-c1-datos.md#b1-matriz-de-privilegios-de-las-67-tablas-pendiente_matriz)
+    (67 tablas) y comprueban el alcance de B2, B4 y B6.
   - La prueba de mutaciones exige fallo ante cada una de estas situaciones:
     - privilegios indebidos (reservado, partición, PUBLIC, `libox_ops`);
+    - privilegios fuera de B1: `UPDATE` en registro inmutable, lectura de `users`
+      por `libox_read`, `DELETE`, acceso a `spending_limits` y escritura en
+      `aml_thresholds`;
+    - manifiesto alterado (`users`, `spending_limits` o `alarm_resolutions` como
+      `operativa`);
+    - un login B2 que hereda acceso a una tabla reservada y una cesión de propiedad
+      simulada;
     - un rol ajeno al manifiesto en una partición;
     - EXECUTE por defecto a PUBLIC (con `pg_default_acl` sin filas visibles);
     - `journal_lines` marcada como `overlay` en el inventario;

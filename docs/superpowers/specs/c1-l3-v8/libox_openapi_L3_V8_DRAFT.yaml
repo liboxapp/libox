@@ -1,13 +1,14 @@
 openapi: 3.1.0
 info:
   title: Libox API — borrador contractual C1
-  version: 2.0.0-draft.2
+  version: 2.0.0-draft.3
   description: 'Borrador no canónico: 61 operaciones del inventario L3 §11 (x-origin l3-inventory) más
     operaciones auxiliares C1 (x-origin c1-auxiliary). Esquemas de interfaz; no código de dominio. Money
     string ratificado el 2026-09-30. No desplegar: quedan decisiones indicadas en x-authorization-status
     y adaptadores externos. Fixtures sintéticos, no vectores financieros ni criptográficos. Cambio incompatible
     respecto V7: destino /api/v2 propuesto antes de emisión C2; no servir como reemplazo silencioso de
-    v1.'
+    v1. draft.3 integra las decisiones de dominio A1–A7, A9–A11 y C1–C4 aprobadas por Diego el 2026-09-30;
+    lo que sigue sin dato aprobado se declara en x-c1-pending y no se anuncia completo.'
   x-artifact: libox_openapi_L3_V8_DRAFT.yaml
   x-target-document: L3 V8 (no emitido)
   x-implements: PRD MVP V9
@@ -15,6 +16,35 @@ info:
   x-origin-values:
   - l3-inventory
   - c1-auxiliary
+  x-c1-decisions-integrated:
+  - A1
+  - A2
+  - A3
+  - A4
+  - A5
+  - A6
+  - A7
+  - A9
+  - A10
+  - A11
+  - C1
+  - C2
+  - C3
+  - C4
+  x-c1-pending:
+  - 'A8: lista cerrada de documentos P-C por etapa (Diego y [LEGAL→ABOGADO]); P-C sigue bloqueado y sin
+    operación de decisión de etapa.'
+  - 'C1: mínimo vendido de T1 (umbral, unidad y quién lo fija), premio con mínimo y aviso al comprador;
+    T1 no publicable hasta fijarlos.'
+  - 'C4: enums charge_kind y macrozone (DP-25); recurring_charges y shipping_estimates no se contratan.'
+  - 'C3: el simulador público conserva target_net_amount obligatorio y ticket_price opcional; decidir si
+    adopta ticket_price como entrada principal.'
+  - 'A1: apagado global de capacidad (CAPABILITY_PLATFORM_DISABLE) desbloqueado; sin operación en este
+    borrador.'
+  - 'A10: qué operaciones del inventario L3 cuentan como acción sensible con reautenticación.'
+  - 'Configuración T2–T6, fechas de venta y documento de mercado: solo diseño.'
+  - 'Propuesta Cowork (mínimo económico, cobertura y desenlaces): no ratificada y no contratada.'
+  - 'adjudicateDispute conserva second_signer_id: fuera del alcance de A9.'
 servers:
 - url: /api/v2
   description: Base candidata por cambio incompatible de Money; pendiente de emisión C2.
@@ -551,6 +581,87 @@ paths:
               verification_session_id: 00000000-0000-4000-8000-000000000001
               evidence_ids:
               - 00000000-0000-4000-8000-000000000001
+  /clients/{id}/kyb/decisions:
+    post:
+      operationId: decideKyb
+      x-origin: c1-auxiliary
+      summary: Decidir KYB del organizador
+      tags:
+      - clients
+      description: Aprueba o rechaza el expediente KYB (client_kyb). El proveedor de verificación (Truora)
+        sigue en evaluación; esta decisión no depende de su adaptador. Borrador auxiliar C1.
+      security:
+      - bearerAuth: []
+      x-access-class: authenticated
+      x-allowed-roles:
+      - ADMIN_COMPLIANCE
+      x-authorization: 'Fila nueva "Decisión KYB" (A7): ADMIN_COMPLIANCE decide (A); ADMIN_RISK solo lee
+        (R) con getClient. Separa verificar al cliente de habilitarle capacidades.'
+      x-authorization-status: proposed
+      x-internal-session: JWT válido + aal2 + sesión Libox activa + reautenticación en los últimos 5 minutos
+        (A10).
+      parameters:
+      - name: X-Trace-Id
+        in: header
+        required: false
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+        description: Opcional; servidor genera o valida y devuelve el identificador.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          format: uuid
+      responses:
+        '201':
+          description: Resultado contractual; ejemplo sintético sin ejecución de negocio.
+          headers:
+            X-Trace-Id:
+              schema:
+                type: string
+                minLength: 1
+                format: uuid
+            Cache-Control:
+              schema:
+                type: string
+              description: no-store para información privada y sesiones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DecisionReceiptResponse'
+              example:
+                decision_id: 00000000-0000-4000-8000-000000000001
+                status: RECORDED
+                signature_request_id: null
+                subject_version: 5
+                trace_id: 00000000-0000-4000-8000-000000000001
+        '400':
+          $ref: '#/components/responses/Error400_dba09dea'
+        '401':
+          $ref: '#/components/responses/Error401_reauth_required'
+        '403':
+          $ref: '#/components/responses/Error403_4f4b65b2'
+        '404':
+          $ref: '#/components/responses/Error404_515eaf4f'
+        '409':
+          $ref: '#/components/responses/Error409_98ba824b'
+        '500':
+          $ref: '#/components/responses/Error500_11657b9f'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KybDecisionCreate'
+            example:
+              expected_version: 1
+              outcome: APPROVED
+              reason: Expediente sintético completo y vigente.
+      x-reauthentication-max-age-seconds: 300
   /clients/{id}/members:
     post:
       operationId: inviteMember
@@ -839,6 +950,7 @@ paths:
                 enabled_raffle_types:
                 - T1
                 - T2
+                enabled_categories: []
                 version: 2
                 trace_id: 00000000-0000-4000-8000-000000000001
         '401':
@@ -863,7 +975,7 @@ paths:
       - ADMIN_RISK
       - ADMIN_SUPER
       x-authorization: Ámbito del cliente, permiso privilegiado y motivo auditado; no habilita un tipo
-        prohibido por mercado.
+        prohibido por mercado. Categorías P-C en enabled_categories; LIVE retirado (A5).
       x-authorization-status: derived-from-L3-7.1
       x-origin: l3-inventory
       parameters:
@@ -902,6 +1014,7 @@ paths:
               example:
                 enabled_raffle_types:
                 - T1
+                enabled_categories: []
                 version: 1
                 trace_id: 00000000-0000-4000-8000-000000000001
         '400':
@@ -929,6 +1042,7 @@ paths:
             example:
               enabled_raffle_types:
               - T1
+              enabled_categories: []
               expected_version: 1
               reason: Motivo sintético documentado para la operación.
   /raffles:
@@ -1041,8 +1155,8 @@ paths:
       x-allowed-roles:
       - CLIENT_OWNER
       - CLIENT_MANAGER
-      x-authorization: Cliente propio y capacidades/mercado vigentes; precio y régimen sujetos a validación
-        de dominio.
+      x-authorization: Cliente propio y capacidades/mercado vigentes; ticket_price lo fija el organizador
+        (C3) y el régimen es solo PAID (C4). Precio sujeto a validación de dominio.
       x-authorization-status: derived-from-L3-7.1
       x-origin: l3-inventory
       parameters:
@@ -1103,6 +1217,9 @@ paths:
                 amount: '2500'
                 currency: PEN
               terms_document_id: 00000000-0000-4000-8000-000000000001
+              expiry_policy:
+                max_duration_days: 30
+                on_expiry: DRAW_IF_MINIMUM_REACHED_ELSE_REFUND
   /raffles/{raffle_ref}:
     get:
       operationId: getRaffle
@@ -1487,6 +1604,12 @@ paths:
               reference_evidence_ids:
               - 00000000-0000-4000-8000-000000000001
               daily_code: TEST-20260930
+              declared_costs:
+              - cost_kind: NOTARY
+                estimated_amount:
+                  amount: '15000'
+                  currency: PEN
+                borne_by: CLIENT
   /raffles/{raffle_ref}/pc-stages/{stage}:
     post:
       operationId: submitPcStage
@@ -1579,6 +1702,59 @@ paths:
               evidence_ids:
               - 00000000-0000-4000-8000-000000000001
               expected_version: 1
+      x-pc-stage-approvers:
+        E1:
+          verifier_subroles: []
+          approver_subroles:
+          - ADMIN_RISK
+          automatic: false
+          signature_action_code: null
+          legal_review_pending: false
+        E2:
+          verifier_subroles: []
+          approver_subroles:
+          - ADMIN_LEGAL_COMPLIANCE
+          automatic: false
+          signature_action_code: null
+          legal_review_pending: true
+        E3:
+          verifier_subroles: []
+          approver_subroles:
+          - ADMIN_LEGAL_COMPLIANCE
+          automatic: false
+          signature_action_code: PC_STAGE_E3
+          legal_review_pending: false
+        E4:
+          verifier_subroles: []
+          approver_subroles:
+          - ADMIN_LEGAL_COMPLIANCE
+          automatic: false
+          signature_action_code: null
+          legal_review_pending: true
+        E5:
+          verifier_subroles: []
+          approver_subroles: []
+          automatic: true
+          signature_action_code: null
+          legal_review_pending: false
+        E6:
+          verifier_subroles:
+          - SUPPORT_L2
+          approver_subroles:
+          - ADMIN_LEGAL_COMPLIANCE
+          automatic: false
+          signature_action_code: null
+          legal_review_pending: false
+        E7:
+          verifier_subroles: []
+          approver_subroles:
+          - ADMIN_LEGAL_COMPLIANCE
+          automatic: false
+          signature_action_code: PC_STAGE_E7
+          legal_review_pending: true
+      x-pending: 'A8: lista cerrada de documentos por etapa (checklist_key, descripción y obligatoriedad)
+        pendiente de Diego y [LEGAL→ABOGADO]. P-C entra en el MVP pero sigue bloqueado y sin operación
+        de decisión de etapa hasta recibirla.'
   /orders:
     post:
       operationId: createOrder
@@ -2514,8 +2690,9 @@ paths:
       - SUPPORT_SUPERVISOR
       - ADMIN_LEGAL_COMPLIANCE
       - ADMIN_SUPER
-      x-authorization: 'INC-06/07/09/11: quien valoró no atesta; finanzas excluidas; firma separada válida
-        para P-C1/P-C2, no basta aportar un ID. No mueve dinero.'
+      x-authorization: 'INC-06 (quien valoró no atesta), INC-09 e INC-11 en ejecución; INC-07 solo en
+        ejecución (A11.2, §7.2): ADMIN_FINANCE no atesta. En P-C1/P-C2 el servidor crea SignatureRequest
+        ATTEST_PC (A9) y la transición a DELIVERY_ATTESTED espera la firma. No mueve dinero.'
       x-authorization-status: derived-from-L3-7.1
       x-origin: l3-inventory
       parameters:
@@ -2561,6 +2738,8 @@ paths:
                   g5_payout: true
                   g6_ledger: true
                 created_at: '2026-09-30T12:00:00-05:00'
+                status: RECORDED
+                signature_request_id: null
                 trace_id: 00000000-0000-4000-8000-000000000001
         '400':
           $ref: '#/components/responses/Error400_dba09dea'
@@ -2589,7 +2768,8 @@ paths:
               - 00000000-0000-4000-8000-000000000001
               winner_confirmed: true
               statement: Atestación sintética de entrega documentada.
-              second_signer_id: 00000000-0000-4000-8000-000000000001
+      x-contract-migration: 'A9: se retira second_signer_id del cuerpo de §11.5; la respuesta informa
+        status y signature_request_id.'
   /rooms/{id}/sla-extension:
     post:
       operationId: extendSla
@@ -5231,6 +5411,11 @@ paths:
                   amount: '500'
                   currency: PEN
                 terms_document_id: 00000000-0000-4000-8000-000000000001
+                economic_regime: PAID
+                expiry_policy:
+                  max_duration_days: 30
+                  on_expiry: DRAW_IF_MINIMUM_REACHED_ELSE_REFUND
+                recurrence: null
                 status: DRAFT
                 config_version: null
                 version: 1
@@ -5327,6 +5512,59 @@ paths:
           $ref: '#/components/responses/Error404_515eaf4f'
         '500':
           $ref: '#/components/responses/Error500_11657b9f'
+      x-pc-stage-approvers:
+        E1:
+          verifier_subroles: []
+          approver_subroles:
+          - ADMIN_RISK
+          automatic: false
+          signature_action_code: null
+          legal_review_pending: false
+        E2:
+          verifier_subroles: []
+          approver_subroles:
+          - ADMIN_LEGAL_COMPLIANCE
+          automatic: false
+          signature_action_code: null
+          legal_review_pending: true
+        E3:
+          verifier_subroles: []
+          approver_subroles:
+          - ADMIN_LEGAL_COMPLIANCE
+          automatic: false
+          signature_action_code: PC_STAGE_E3
+          legal_review_pending: false
+        E4:
+          verifier_subroles: []
+          approver_subroles:
+          - ADMIN_LEGAL_COMPLIANCE
+          automatic: false
+          signature_action_code: null
+          legal_review_pending: true
+        E5:
+          verifier_subroles: []
+          approver_subroles: []
+          automatic: true
+          signature_action_code: null
+          legal_review_pending: false
+        E6:
+          verifier_subroles:
+          - SUPPORT_L2
+          approver_subroles:
+          - ADMIN_LEGAL_COMPLIANCE
+          automatic: false
+          signature_action_code: null
+          legal_review_pending: false
+        E7:
+          verifier_subroles: []
+          approver_subroles:
+          - ADMIN_LEGAL_COMPLIANCE
+          automatic: false
+          signature_action_code: PC_STAGE_E7
+          legal_review_pending: true
+      x-pending: 'A8: lista cerrada de documentos por etapa (checklist_key, descripción y obligatoriedad)
+        pendiente de Diego y [LEGAL→ABOGADO]. P-C entra en el MVP pero sigue bloqueado y sin operación
+        de decisión de etapa hasta recibirla.'
   /valuations/{id}:
     get:
       operationId: getValuation
@@ -5735,6 +5973,7 @@ paths:
               $ref: '#/components/schemas/MfaEnroll'
             example:
               factor_kind: TOTP
+      x-reauthentication-max-age-seconds: 300
   /auth/mfa/factors/{id}/verify:
     post:
       operationId: verifyMfaFactor
@@ -5878,6 +6117,7 @@ paths:
               $ref: '#/components/schemas/MfaFactorRevoke'
             example:
               reason: Cambio de dispositivo sintético.
+      x-reauthentication-max-age-seconds: 300
   /auth/mfa/challenge:
     post:
       operationId: challengeMfa
@@ -5951,8 +6191,8 @@ paths:
       summary: Reautenticar para acción sensible
       tags:
       - auth
-      description: Registra la reautenticación en la sesión aplicativa; la ventana es configurable (propuesta
-        5 min, sin ratificar). Borrador auxiliar C1.
+      description: Registra la reautenticación en la sesión aplicativa; habilita acciones sensibles durante
+        5 minutos (A10, ratificado el 2026-09-30). Borrador auxiliar C1.
       security:
       - bearerAuth: []
       x-access-class: authenticated
@@ -6007,6 +6247,7 @@ paths:
               method: TOTP
               factor_id: 00000000-0000-4000-8000-000000000001
               code: '123456'
+      x-reauthentication-max-age-seconds: 300
   /auth/sessions/revoke:
     post:
       operationId: revokeSessions
@@ -6263,7 +6504,8 @@ paths:
       x-authorization: ADMIN_SUPER sobre otra persona; la firma la aporta otra persona elegible según
         la política de firmantes pendiente (I-04).
       x-authorization-status: proposed
-      x-internal-session: JWT válido + aal2 + sesión Libox activa + reautenticación reciente.
+      x-internal-session: JWT válido + aal2 + sesión Libox activa + reautenticación en los últimos 5 minutos
+        (A10).
       parameters:
       - name: X-Trace-Id
         in: header
@@ -6320,6 +6562,7 @@ paths:
               $ref: '#/components/schemas/InternalMfaReset'
             example:
               reason: Pérdida de dispositivo reportada por canal verificado.
+      x-reauthentication-max-age-seconds: 300
   /uploads:
     post:
       operationId: createUpload
@@ -6618,20 +6861,22 @@ paths:
       summary: Decidir valoración de premio
       tags:
       - raffles
-      description: 'Transiciones VALUATION_APPROVED y VALUATION_OBSERVED de L3 §4.1. REJECTED manual queda
-        fuera: no tiene transición en el canon (I-06). Banda, desviación, cofirma y efecto sobre el rango
-        de recaudación los decide el servidor; son implementación humana. Borrador auxiliar C1.'
+      description: Transiciones VALUATION_APPROVED y VALUATION_OBSERVED de L3 §4.1 y VALUATION_REJECTED,
+        rechazo manual con motivo aprobado en A6 para V8. Banda, desviación, cofirma y efecto sobre el
+        rango de recaudación los decide el servidor; son implementación humana. Borrador auxiliar C1.
       security:
       - bearerAuth: []
       x-access-class: authenticated
       x-allowed-roles:
       - SUPPORT_VALUATOR
       - ADMIN_LEGAL_COMPLIANCE
-      x-authorization: Aprobador de la banda (V1–V2 SUPPORT_VALUATOR; V3–V4 ADMIN_LEGAL_COMPLIANCE). Si
-        la regla exige cofirma o segunda firma, responde PENDING_SECOND_SIGNATURE y no transiciona. Cofirma
-        V2 en conflicto con §7.1 (I-01).
+      x-authorization: Aprobador de la banda (V1–V2 SUPPORT_VALUATOR; V3–V4 ADMIN_LEGAL_COMPLIANCE). OBSERVED
+        y REJECTED, los mismos aprobadores (A3, A6). Si la regla exige cofirma o segunda firma, responde
+        PENDING_SECOND_SIGNATURE y no transiciona; la cofirma V2 la firma ADMIN_MODERATION sin escritura
+        (A2).
       x-authorization-status: proposed
-      x-internal-session: JWT válido + aal2 + sesión Libox activa + reautenticación reciente.
+      x-internal-session: JWT válido + aal2 + sesión Libox activa + reautenticación en los últimos 5 minutos
+        (A10).
       parameters:
       - name: X-Trace-Id
         in: header
@@ -6698,6 +6943,28 @@ paths:
                 amount: '2500'
                 currency: PEN
               reason: Referencias vigentes y banda satisfecha.
+      x-outcome-transitions:
+        APPROVED:
+          from: PENDING_VALUATION
+          to: PENDING_LEGAL
+          trigger: VALUATION_APPROVED
+          actor_subroles: &id001
+          - SUPPORT_VALUATOR
+          - ADMIN_LEGAL_COMPLIANCE
+          source: L3 V7 §4.1
+        OBSERVED:
+          from: PENDING_VALUATION
+          to: DRAFT
+          trigger: VALUATION_OBSERVED
+          actor_subroles: *id001
+          source: L3 V7 §4.1; actor según A3
+        REJECTED:
+          from: PENDING_VALUATION
+          to: REJECTED
+          trigger: VALUATION_REJECTED
+          actor_subroles: *id001
+          source: A6 (V8)
+      x-reauthentication-max-age-seconds: 300
   /raffles/{raffle_ref}/legal-gate/decisions:
     post:
       operationId: decideLegalGate
@@ -6705,8 +6972,9 @@ paths:
       summary: Decidir gate legal
       tags:
       - raffles
-      description: 'Transición LEGAL_GATE_PASSED de L3 §4.1. Observar o rechazar queda fuera: no tiene
-        transición (I-06). En P-C exige E1–E4 aprobadas. Borrador auxiliar C1.'
+      description: Transición LEGAL_GATE_PASSED de L3 §4.1 y, aprobadas en A6 para V8, LEGAL_GATE_OBSERVED
+        (vuelve a DRAFT, subsanable) y LEGAL_GATE_REJECTED (terminal), ambas con motivo obligatorio. En
+        P-C, PASSED exige E1–E4 aprobadas. Borrador auxiliar C1.
       security:
       - bearerAuth: []
       x-access-class: authenticated
@@ -6715,7 +6983,8 @@ paths:
       x-authorization: Fila "Gate legal" de L3 §7.1. Autoridad y documento exigible PENDING_LEGAL_OPINION
         [LEGAL→ABOGADO].
       x-authorization-status: proposed
-      x-internal-session: JWT válido + aal2 + sesión Libox activa + reautenticación reciente.
+      x-internal-session: JWT válido + aal2 + sesión Libox activa + reautenticación en los últimos 5 minutos
+        (A10).
       parameters:
       - name: X-Trace-Id
         in: header
@@ -6780,6 +7049,27 @@ paths:
               - requirement_key: SYNTHETIC_REQUIREMENT
                 document_upload_id: 00000000-0000-4000-8000-000000000001
               reason: Requisitos del mercado verificados.
+      x-outcome-transitions:
+        PASSED:
+          from: PENDING_LEGAL
+          to: PENDING_APPROVAL
+          trigger: LEGAL_GATE_PASSED
+          actor_subroles: &id002
+          - ADMIN_LEGAL_COMPLIANCE
+          source: L3 V7 §4.1
+        OBSERVED:
+          from: PENDING_LEGAL
+          to: DRAFT
+          trigger: LEGAL_GATE_OBSERVED
+          actor_subroles: *id002
+          source: A6 (V8) [LEGAL→ABOGADO]
+        REJECTED:
+          from: PENDING_LEGAL
+          to: REJECTED
+          trigger: LEGAL_GATE_REJECTED
+          actor_subroles: *id002
+          source: A6 (V8) [LEGAL→ABOGADO]
+      x-reauthentication-max-age-seconds: 300
   /raffles/{raffle_ref}/moderation/decisions:
     post:
       operationId: decideModeration
@@ -6787,8 +7077,8 @@ paths:
       summary: Aprobar publicación
       tags:
       - raffles
-      description: Transiciones APPROVE_SCHEDULED y APPROVE_IMMEDIATE de L3 §4.1. REJECT queda fuera hasta
-        definir el enum de motivo estructurado. Borrador auxiliar C1.
+      description: Transiciones APPROVE_SCHEDULED, APPROVE_IMMEDIATE y REJECT de L3 §4.1. REJECT exige
+        el motivo estructurado aprobado en A11.1. Borrador auxiliar C1.
       security:
       - bearerAuth: []
       x-access-class: authenticated
@@ -6796,7 +7086,8 @@ paths:
       - ADMIN_MODERATION
       x-authorization: Fila "Aprobar sorteo" de L3 §7.1; valida capacidad y categoría efectivas del mercado.
       x-authorization-status: proposed
-      x-internal-session: JWT válido + aal2 + sesión Libox activa + reautenticación reciente.
+      x-internal-session: JWT válido + aal2 + sesión Libox activa + reautenticación en los últimos 5 minutos
+        (A10).
       parameters:
       - name: X-Trace-Id
         in: header
@@ -6858,6 +7149,27 @@ paths:
               expected_version: 4
               outcome: APPROVE_SCHEDULED
               reason: Publicación conforme a capacidad y categoría.
+      x-outcome-transitions:
+        APPROVE_SCHEDULED:
+          from: PENDING_APPROVAL
+          to: SCHEDULED
+          trigger: APPROVE_SCHEDULED
+          actor_subroles: &id003
+          - ADMIN_MODERATION
+          source: L3 V7 §4.1
+        APPROVE_IMMEDIATE:
+          from: PENDING_APPROVAL
+          to: ACTIVE
+          trigger: APPROVE_IMMEDIATE
+          actor_subroles: *id003
+          source: L3 V7 §4.1
+        REJECT:
+          from: PENDING_APPROVAL
+          to: REJECTED
+          trigger: REJECT
+          actor_subroles: *id003
+          source: L3 V7 §4.1; motivos A11.1
+      x-reauthentication-max-age-seconds: 300
   /signature-requests:
     get:
       operationId: listSignatureRequests
@@ -6871,17 +7183,10 @@ paths:
       - bearerAuth: []
       x-access-class: authenticated
       x-allowed-roles:
-      - SUPPORT_L1
-      - SUPPORT_L2
       - SUPPORT_VALUATOR
-      - SUPPORT_SUPERVISOR
-      - SUPPORT_BEHAVIORAL_ANALYST
       - ADMIN_MODERATION
-      - ADMIN_RISK
-      - ADMIN_FINANCE
       - ADMIN_LEGAL_COMPLIANCE
       - ADMIN_COMPLIANCE
-      - ADMIN_BEHAVIORAL
       - ADMIN_SUPER
       x-authorization: Filtra por elegibilidad del firmante y excluye las solicitadas por quien llama.
       x-authorization-status: proposed
@@ -6944,6 +7249,8 @@ paths:
                   subject_id: 00000000-0000-4000-8000-000000000001
                   subject_version: 2
                   requested_by: 00000000-0000-4000-8000-000000000001
+                  eligible_signer_subroles:
+                  - ADMIN_LEGAL_COMPLIANCE
                   status: PENDING
                   expires_at: '2026-10-01T12:00:00-05:00'
                   version: 1
@@ -6970,17 +7277,10 @@ paths:
       - bearerAuth: []
       x-access-class: authenticated
       x-allowed-roles:
-      - SUPPORT_L1
-      - SUPPORT_L2
       - SUPPORT_VALUATOR
-      - SUPPORT_SUPERVISOR
-      - SUPPORT_BEHAVIORAL_ANALYST
       - ADMIN_MODERATION
-      - ADMIN_RISK
-      - ADMIN_FINANCE
       - ADMIN_LEGAL_COMPLIANCE
       - ADMIN_COMPLIANCE
-      - ADMIN_BEHAVIORAL
       - ADMIN_SUPER
       x-authorization: Solicitante o firmante elegible; fuera de ámbito responde 404.
       x-authorization-status: proposed
@@ -7026,6 +7326,8 @@ paths:
                 subject_id: 00000000-0000-4000-8000-000000000001
                 subject_version: 2
                 requested_by: 00000000-0000-4000-8000-000000000001
+                eligible_signer_subroles:
+                - ADMIN_LEGAL_COMPLIANCE
                 status: PENDING
                 expires_at: '2026-10-01T12:00:00-05:00'
                 version: 1
@@ -7051,21 +7353,15 @@ paths:
       - bearerAuth: []
       x-access-class: authenticated
       x-allowed-roles:
-      - SUPPORT_L1
-      - SUPPORT_L2
       - SUPPORT_VALUATOR
-      - SUPPORT_SUPERVISOR
-      - SUPPORT_BEHAVIORAL_ANALYST
       - ADMIN_MODERATION
-      - ADMIN_RISK
-      - ADMIN_FINANCE
       - ADMIN_LEGAL_COMPLIANCE
-      - ADMIN_COMPLIANCE
-      - ADMIN_BEHAVIORAL
       - ADMIN_SUPER
-      x-authorization: Otra persona con otro subrol elegible para el action_code; nunca quien solicitó.
+      x-authorization: Firmante elegible según x-second-signature-policy de SignatureRequest (A1); nunca
+        quien solicitó. La cofirma V2 la firma ADMIN_MODERATION sin escritura sobre la valoración (A2).
       x-authorization-status: proposed
-      x-internal-session: JWT válido + aal2 + sesión Libox activa + reautenticación reciente.
+      x-internal-session: JWT válido + aal2 + sesión Libox activa + reautenticación en los últimos 5 minutos
+        (A10).
       parameters:
       - name: X-Trace-Id
         in: header
@@ -7106,6 +7402,8 @@ paths:
                 subject_id: 00000000-0000-4000-8000-000000000001
                 subject_version: 2
                 requested_by: 00000000-0000-4000-8000-000000000001
+                eligible_signer_subroles:
+                - ADMIN_LEGAL_COMPLIANCE
                 status: SIGNED
                 expires_at: '2026-10-01T12:00:00-05:00'
                 version: 2
@@ -7132,6 +7430,7 @@ paths:
               expected_version: 1
               decision: SIGN
               reason: Revisión independiente conforme.
+      x-reauthentication-max-age-seconds: 300
   /signature-requests/{id}/cancel:
     post:
       operationId: cancelSignatureRequest
@@ -7144,17 +7443,9 @@ paths:
       - bearerAuth: []
       x-access-class: authenticated
       x-allowed-roles:
-      - SUPPORT_L1
-      - SUPPORT_L2
       - SUPPORT_VALUATOR
-      - SUPPORT_SUPERVISOR
-      - SUPPORT_BEHAVIORAL_ANALYST
-      - ADMIN_MODERATION
-      - ADMIN_RISK
-      - ADMIN_FINANCE
       - ADMIN_LEGAL_COMPLIANCE
       - ADMIN_COMPLIANCE
-      - ADMIN_BEHAVIORAL
       - ADMIN_SUPER
       x-authorization: Solicitante de la firma; motivo auditado.
       x-authorization-status: proposed
@@ -7200,6 +7491,8 @@ paths:
                 subject_id: 00000000-0000-4000-8000-000000000001
                 subject_version: 2
                 requested_by: 00000000-0000-4000-8000-000000000001
+                eligible_signer_subroles:
+                - ADMIN_LEGAL_COMPLIANCE
                 status: CANCELLED
                 expires_at: '2026-10-01T12:00:00-05:00'
                 version: 2
@@ -7592,7 +7885,7 @@ components:
           minLength: 1
         status:
           type: string
-          enum: &id001
+          enum: &id004
           - PENDING_KYB
           - ACTIVE
           - SUSPENDED
@@ -7675,7 +7968,7 @@ components:
       properties:
         status:
           type: string
-          enum: &id002
+          enum: &id005
           - PENDING
           - VERIFIED
           - REJECTED
@@ -7715,6 +8008,20 @@ components:
             - T8
           minItems: 0
           maxItems: 8
+          uniqueItems: true
+          description: 'T1–T8. LIVE retirado (A5): T8 es la única capacidad de sorteo en vivo.'
+        enabled_categories:
+          type: array
+          items:
+            type: string
+            enum:
+            - P_C1
+            - P_C2
+          minItems: 0
+          maxItems: 2
+          uniqueItems: true
+          description: Categorías P-C del cliente (A5); no son tipos de sorteo. P-C sigue bloqueado hasta
+            la lista de documentos de A8.
         expected_version:
           type: integer
           minimum: 1
@@ -7726,6 +8033,7 @@ components:
           description: Mínimo de feature_toggle_log (L3 §2.1).
       required:
       - enabled_raffle_types
+      - enabled_categories
       - expected_version
       - reason
       additionalProperties: false
@@ -7747,12 +8055,27 @@ components:
             - T8
           minItems: 0
           maxItems: 8
+          uniqueItems: true
+          description: 'T1–T8. LIVE retirado (A5): T8 es la única capacidad de sorteo en vivo.'
+        enabled_categories:
+          type: array
+          items:
+            type: string
+            enum:
+            - P_C1
+            - P_C2
+          minItems: 0
+          maxItems: 2
+          uniqueItems: true
+          description: Categorías P-C del cliente (A5); no son tipos de sorteo. P-C sigue bloqueado hasta
+            la lista de documentos de A8.
         version:
           type: integer
           minimum: 1
           maximum: 2147483647
       required:
       - enabled_raffle_types
+      - enabled_categories
       - version
       additionalProperties: false
     RaffleDraft:
@@ -7799,10 +8122,23 @@ components:
           - P_E
         ticket_price:
           $ref: '#/components/schemas/Money'
+          description: Fijado por el organizador (C3); el neto estimado se muestra y no se envía. Comisión
+            e impuesto son cálculo humano.
         terms_document_id:
           type: string
           minLength: 1
           format: uuid
+        economic_regime:
+          type: string
+          enum:
+          - PAID
+          default: PAID
+          description: Solo PAID en el MVP (C4). FREE_ENTRY y PROMOTIONAL requieren la garantía sustitutiva
+            sin diseñar (INV-06-b, INV-44).
+        expiry_policy:
+          $ref: '#/components/schemas/T1ExpiryPolicy'
+        recurrence:
+          $ref: '#/components/schemas/EditionRecurrence'
       required:
       - client_id
       - title
@@ -7823,6 +8159,44 @@ components:
           not:
             required:
             - base_type
+      - if:
+          anyOf:
+          - properties:
+              raffle_type:
+                const: T1
+            required:
+            - raffle_type
+          - properties:
+              base_type:
+                const: T1
+            required:
+            - base_type
+        then:
+          required:
+          - expiry_policy
+        else:
+          not:
+            required:
+            - expiry_policy
+      - if:
+          anyOf:
+          - properties:
+              raffle_type:
+                const: T7
+            required:
+            - raffle_type
+          - properties:
+              base_type:
+                const: T7
+            required:
+            - base_type
+        then:
+          required:
+          - recurrence
+        else:
+          not:
+            required:
+            - recurrence
     RaffleUpdate:
       type: object
       properties:
@@ -7905,11 +8279,21 @@ components:
           type: string
           minLength: 1
           maxLength: 64
+        declared_costs:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeclaredCost'
+          minItems: 0
+          maxItems: 50
       required:
       - declared_value
       - reference_evidence_ids
       - daily_code
       additionalProperties: false
+      x-pending:
+      - 'recurring_charges con charge_kind y shipping_estimates por macrozone (RN-19): enums pendientes
+        de Diego (DP-25); no se contratan.'
+      - Ampliación de cost_kind en V8.
     PrizeValuationStatus:
       type: object
       properties:
@@ -7919,7 +8303,7 @@ components:
           format: uuid
         status:
           type: string
-          enum: &id003
+          enum: &id006
           - PENDING
           - APPROVED
           - OBSERVED
@@ -7963,7 +8347,7 @@ components:
           - E7
         status:
           type: string
-          enum: &id004
+          enum: &id007
           - PENDING
           - IN_REVIEW
           - APPROVED
@@ -8430,15 +8814,13 @@ components:
           type: string
           minLength: 20
           maxLength: 4000
-        second_signer_id:
-          type: string
-          minLength: 1
-          format: uuid
       required:
       - evidence_ids
       - winner_confirmed
       - statement
       additionalProperties: false
+      description: 'A9: en P-C1/P-C2 la segunda firma se pide con SignatureRequest ATTEST_PC; el cuerpo
+        ya no acepta second_signer_id (cambio de §11.5 en V8).'
     AttestationResult:
       type: object
       properties:
@@ -8452,11 +8834,36 @@ components:
           type: string
           minLength: 1
           format: date-time
+        status:
+          type: string
+          enum:
+          - RECORDED
+          - PENDING_SECOND_SIGNATURE
+        signature_request_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
       required:
       - attestation_id
       - gates
       - created_at
+      - status
+      - signature_request_id
       additionalProperties: false
+      allOf:
+      - if:
+          properties:
+            status:
+              const: PENDING_SECOND_SIGNATURE
+        then:
+          properties:
+            signature_request_id:
+              type: string
+        else:
+          properties:
+            signature_request_id:
+              type: 'null'
     SlaExtension:
       type: object
       properties:
@@ -9594,7 +10001,7 @@ components:
           pattern: ^[A-Z]{2}(?![\s\S])
         status:
           type: string
-          enum: *id001
+          enum: *id004
         kyb_status:
           type:
           - string
@@ -9628,7 +10035,7 @@ components:
       properties:
         status:
           type: string
-          enum: *id002
+          enum: *id005
         masked_account:
           type: string
           minLength: 1
@@ -9669,6 +10076,20 @@ components:
             - T8
           minItems: 0
           maxItems: 8
+          uniqueItems: true
+          description: 'T1–T8. LIVE retirado (A5): T8 es la única capacidad de sorteo en vivo.'
+        enabled_categories:
+          type: array
+          items:
+            type: string
+            enum:
+            - P_C1
+            - P_C2
+          minItems: 0
+          maxItems: 2
+          uniqueItems: true
+          description: Categorías P-C del cliente (A5); no son tipos de sorteo. P-C sigue bloqueado hasta
+            la lista de documentos de A8.
         version:
           type: integer
           minimum: 1
@@ -9679,6 +10100,7 @@ components:
           format: uuid
       required:
       - enabled_raffle_types
+      - enabled_categories
       - version
       - trace_id
       additionalProperties: false
@@ -9736,6 +10158,18 @@ components:
           type: string
           minLength: 1
           format: uuid
+        economic_regime:
+          type: string
+          enum:
+          - PAID
+        expiry_policy:
+          oneOf:
+          - $ref: '#/components/schemas/T1ExpiryPolicy'
+          - type: 'null'
+        recurrence:
+          oneOf:
+          - $ref: '#/components/schemas/EditionRecurrence'
+          - type: 'null'
         status:
           type: string
           enum:
@@ -9785,6 +10219,9 @@ components:
       - prize_category
       - ticket_price
       - terms_document_id
+      - economic_regime
+      - expiry_policy
+      - recurrence
       - status
       - config_version
       - version
@@ -9802,6 +10239,48 @@ components:
         else:
           properties:
             base_type:
+              type: 'null'
+      - if:
+          anyOf:
+          - properties:
+              raffle_type:
+                const: T1
+            required:
+            - raffle_type
+          - properties:
+              base_type:
+                const: T1
+            required:
+            - base_type
+        then:
+          properties:
+            expiry_policy:
+              not:
+                type: 'null'
+        else:
+          properties:
+            expiry_policy:
+              type: 'null'
+      - if:
+          anyOf:
+          - properties:
+              raffle_type:
+                const: T7
+            required:
+            - raffle_type
+          - properties:
+              base_type:
+                const: T7
+            required:
+            - base_type
+        then:
+          properties:
+            recurrence:
+              not:
+                type: 'null'
+        else:
+          properties:
+            recurrence:
               type: 'null'
     PcStageView:
       type: object
@@ -10298,6 +10777,7 @@ components:
           type: string
           minLength: 1
           format: date-time
+          description: reauthenticated_at + 300 s (A10).
         trace_id:
           type: string
           minLength: 1
@@ -10729,8 +11209,8 @@ components:
     ValuationDecisionCreate:
       type: object
       description: approved_value solo con APPROVED. exception_justification (RN-22) solo con APPROVED;
-        si la desviación la exige, el servidor crea solicitud de segunda firma. Banda y desviación no
-        se aceptan del cliente.
+        si la desviación la exige, el servidor crea solicitud de segunda firma. REJECTED (A6) exige motivo
+        y no admite approved_value ni exception_justification. Banda y desviación no se aceptan del cliente.
       properties:
         expected_version:
           type: integer
@@ -10741,6 +11221,7 @@ components:
           enum:
           - APPROVED
           - OBSERVED
+          - REJECTED
         approved_value:
           $ref: '#/components/schemas/Money'
         reason:
@@ -10798,12 +11279,15 @@ components:
           type: string
           enum:
           - PASSED
+          - OBSERVED
+          - REJECTED
         requirement_results:
           type: array
           items:
             $ref: '#/components/schemas/LegalRequirementResult'
           minItems: 1
           maxItems: 50
+          description: Obligatorio con PASSED; opcional al observar o rechazar.
         reason:
           type: string
           minLength: 10
@@ -10811,9 +11295,18 @@ components:
       required:
       - expected_version
       - outcome
-      - requirement_results
       - reason
       additionalProperties: false
+      allOf:
+      - if:
+          properties:
+            outcome:
+              const: PASSED
+          required:
+          - outcome
+        then:
+          required:
+          - requirement_results
     ModerationDecisionCreate:
       type: object
       properties:
@@ -10826,6 +11319,9 @@ components:
           enum:
           - APPROVE_SCHEDULED
           - APPROVE_IMMEDIATE
+          - REJECT
+        rejection_reason_code:
+          $ref: '#/components/schemas/ModerationRejectionReason'
         reason:
           type: string
           minLength: 10
@@ -10835,6 +11331,20 @@ components:
       - outcome
       - reason
       additionalProperties: false
+      allOf:
+      - if:
+          properties:
+            outcome:
+              const: REJECT
+          required:
+          - outcome
+        then:
+          required:
+          - rejection_reason_code
+        else:
+          not:
+            required:
+            - rejection_reason_code
     DecisionReceipt:
       type: object
       properties:
@@ -10964,6 +11474,28 @@ components:
           type: string
           minLength: 1
           format: uuid
+        eligible_signer_subroles:
+          type: array
+          items:
+            type: string
+            enum:
+            - SUPPORT_L1
+            - SUPPORT_L2
+            - SUPPORT_VALUATOR
+            - SUPPORT_SUPERVISOR
+            - SUPPORT_BEHAVIORAL_ANALYST
+            - ADMIN_MODERATION
+            - ADMIN_RISK
+            - ADMIN_FINANCE
+            - ADMIN_LEGAL_COMPLIANCE
+            - ADMIN_COMPLIANCE
+            - ADMIN_BEHAVIORAL
+            - ADMIN_SUPER
+          minItems: 1
+          maxItems: 12
+          uniqueItems: true
+          description: Subroles que pueden firmar según x-second-signature-policy (A1). En VALUATION_EXCEPTION
+            el servidor excluye el subrol de quien solicitó. No autoriza por sí mismo.
         status:
           type: string
           enum:
@@ -10987,10 +11519,242 @@ components:
       - subject_id
       - subject_version
       - requested_by
+      - eligible_signer_subroles
       - status
       - expires_at
       - version
       additionalProperties: false
+      allOf:
+      - if:
+          properties:
+            action_code:
+              const: VALUATION_V2_COSIGN
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_MODERATION
+      - if:
+          properties:
+            action_code:
+              const: VALUATION_V4
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_LEGAL_COMPLIANCE
+      - if:
+          properties:
+            action_code:
+              const: VALUATION_EXCEPTION
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - SUPPORT_VALUATOR
+                - ADMIN_LEGAL_COMPLIANCE
+                - ADMIN_SUPER
+      - if:
+          properties:
+            action_code:
+              const: PC_STAGE_E3
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_SUPER
+      - if:
+          properties:
+            action_code:
+              const: PC_STAGE_E7
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_SUPER
+      - if:
+          properties:
+            action_code:
+              const: ATTEST_PC
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_SUPER
+      - if:
+          properties:
+            action_code:
+              const: CAPABILITY_PLATFORM_DISABLE
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_SUPER
+      - if:
+          properties:
+            action_code:
+              const: MARKET_RESUME
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_SUPER
+      - if:
+          properties:
+            action_code:
+              const: MULTIPLE_OVERRIDE
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_SUPER
+      - if:
+          properties:
+            action_code:
+              const: SUBROLE_GRANT
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_SUPER
+      - if:
+          properties:
+            action_code:
+              const: MFA_RESET_INTERNAL
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_SUPER
+      description: 'Segunda firma por action_code (A1, aprobada el 2026-09-30): otra persona siempre;
+        otro subrol salvo en acciones propias de ADMIN_SUPER, que firma otro ADMIN_SUPER. Firmar no concede
+        escritura sobre el sujeto (A2). INC-09 e INC-11 se comprueban en ejecución: implementación humana.
+        MULTIPLE_OVERRIDE solo fija el firmante, no la regla del múltiplo.'
+      x-second-signature-policy:
+        VALUATION_V2_COSIGN:
+          requester_subroles:
+          - SUPPORT_VALUATOR
+          signer_subroles:
+          - ADMIN_MODERATION
+          signer_subrole_rule: DIFFERENT_SUBROLE
+          signer_must_be_other_person: true
+          grants_write: false
+        VALUATION_V4:
+          requester_subroles:
+          - SUPPORT_VALUATOR
+          signer_subroles:
+          - ADMIN_LEGAL_COMPLIANCE
+          signer_subrole_rule: DIFFERENT_SUBROLE
+          signer_must_be_other_person: true
+          grants_write: false
+        VALUATION_EXCEPTION:
+          requester_subroles:
+          - SUPPORT_VALUATOR
+          - ADMIN_LEGAL_COMPLIANCE
+          signer_subroles:
+          - SUPPORT_VALUATOR
+          - ADMIN_LEGAL_COMPLIANCE
+          - ADMIN_SUPER
+          signer_subrole_rule: DIFFERENT_SUBROLE
+          signer_must_be_other_person: true
+          grants_write: false
+        PC_STAGE_E3:
+          requester_subroles:
+          - ADMIN_LEGAL_COMPLIANCE
+          signer_subroles:
+          - ADMIN_SUPER
+          signer_subrole_rule: DIFFERENT_SUBROLE
+          signer_must_be_other_person: true
+          grants_write: false
+        PC_STAGE_E7:
+          requester_subroles:
+          - ADMIN_LEGAL_COMPLIANCE
+          signer_subroles:
+          - ADMIN_SUPER
+          signer_subrole_rule: DIFFERENT_SUBROLE
+          signer_must_be_other_person: true
+          grants_write: false
+        ATTEST_PC:
+          requester_subroles:
+          - ADMIN_LEGAL_COMPLIANCE
+          signer_subroles:
+          - ADMIN_SUPER
+          signer_subrole_rule: DIFFERENT_SUBROLE
+          signer_must_be_other_person: true
+          grants_write: false
+        CAPABILITY_PLATFORM_DISABLE:
+          requester_subroles:
+          - ADMIN_SUPER
+          signer_subroles:
+          - ADMIN_SUPER
+          signer_subrole_rule: SAME_SUBROLE_ALLOWED
+          signer_must_be_other_person: true
+          grants_write: false
+        MARKET_RESUME:
+          requester_subroles:
+          - ADMIN_SUPER
+          signer_subroles:
+          - ADMIN_SUPER
+          signer_subrole_rule: SAME_SUBROLE_ALLOWED
+          signer_must_be_other_person: true
+          grants_write: false
+        MULTIPLE_OVERRIDE:
+          requester_subroles:
+          - ADMIN_COMPLIANCE
+          signer_subroles:
+          - ADMIN_SUPER
+          signer_subrole_rule: DIFFERENT_SUBROLE
+          signer_must_be_other_person: true
+          grants_write: false
+        SUBROLE_GRANT:
+          requester_subroles:
+          - ADMIN_SUPER
+          signer_subroles:
+          - ADMIN_SUPER
+          signer_subrole_rule: SAME_SUBROLE_ALLOWED
+          signer_must_be_other_person: true
+          grants_write: false
+        MFA_RESET_INTERNAL:
+          requester_subroles:
+          - ADMIN_SUPER
+          signer_subroles:
+          - ADMIN_SUPER
+          signer_subrole_rule: SAME_SUBROLE_ALLOWED
+          signer_must_be_other_person: true
+          grants_write: false
     ListSignatureRequestsResponse:
       type: object
       properties:
@@ -11057,6 +11821,28 @@ components:
           type: string
           minLength: 1
           format: uuid
+        eligible_signer_subroles:
+          type: array
+          items:
+            type: string
+            enum:
+            - SUPPORT_L1
+            - SUPPORT_L2
+            - SUPPORT_VALUATOR
+            - SUPPORT_SUPERVISOR
+            - SUPPORT_BEHAVIORAL_ANALYST
+            - ADMIN_MODERATION
+            - ADMIN_RISK
+            - ADMIN_FINANCE
+            - ADMIN_LEGAL_COMPLIANCE
+            - ADMIN_COMPLIANCE
+            - ADMIN_BEHAVIORAL
+            - ADMIN_SUPER
+          minItems: 1
+          maxItems: 12
+          uniqueItems: true
+          description: Subroles que pueden firmar según x-second-signature-policy (A1). En VALUATION_EXCEPTION
+            el servidor excluye el subrol de quien solicitó. No autoriza por sí mismo.
         status:
           type: string
           enum:
@@ -11084,11 +11870,147 @@ components:
       - subject_id
       - subject_version
       - requested_by
+      - eligible_signer_subroles
       - status
       - expires_at
       - version
       - trace_id
       additionalProperties: false
+      allOf:
+      - if:
+          properties:
+            action_code:
+              const: VALUATION_V2_COSIGN
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_MODERATION
+      - if:
+          properties:
+            action_code:
+              const: VALUATION_V4
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_LEGAL_COMPLIANCE
+      - if:
+          properties:
+            action_code:
+              const: VALUATION_EXCEPTION
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - SUPPORT_VALUATOR
+                - ADMIN_LEGAL_COMPLIANCE
+                - ADMIN_SUPER
+      - if:
+          properties:
+            action_code:
+              const: PC_STAGE_E3
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_SUPER
+      - if:
+          properties:
+            action_code:
+              const: PC_STAGE_E7
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_SUPER
+      - if:
+          properties:
+            action_code:
+              const: ATTEST_PC
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_SUPER
+      - if:
+          properties:
+            action_code:
+              const: CAPABILITY_PLATFORM_DISABLE
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_SUPER
+      - if:
+          properties:
+            action_code:
+              const: MARKET_RESUME
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_SUPER
+      - if:
+          properties:
+            action_code:
+              const: MULTIPLE_OVERRIDE
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_SUPER
+      - if:
+          properties:
+            action_code:
+              const: SUBROLE_GRANT
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_SUPER
+      - if:
+          properties:
+            action_code:
+              const: MFA_RESET_INTERNAL
+          required:
+          - action_code
+        then:
+          properties:
+            eligible_signer_subroles:
+              items:
+                enum:
+                - ADMIN_SUPER
     SignatureDecision:
       type: object
       properties:
@@ -11379,7 +12301,7 @@ components:
           minLength: 1
         status:
           type: string
-          enum: *id001
+          enum: *id004
         trace_id:
           type: string
           minLength: 1
@@ -11401,8 +12323,9 @@ components:
           type: string
           enum:
           - PENDING
-          - VERIFIED
+          - APPROVED
           - REJECTED
+          - EXPIRED
         trace_id:
           type: string
           minLength: 1
@@ -11437,7 +12360,7 @@ components:
       properties:
         status:
           type: string
-          enum: *id002
+          enum: *id005
         masked_account:
           type: string
           minLength: 1
@@ -11478,6 +12401,20 @@ components:
             - T8
           minItems: 0
           maxItems: 8
+          uniqueItems: true
+          description: 'T1–T8. LIVE retirado (A5): T8 es la única capacidad de sorteo en vivo.'
+        enabled_categories:
+          type: array
+          items:
+            type: string
+            enum:
+            - P_C1
+            - P_C2
+          minItems: 0
+          maxItems: 2
+          uniqueItems: true
+          description: Categorías P-C del cliente (A5); no son tipos de sorteo. P-C sigue bloqueado hasta
+            la lista de documentos de A8.
         version:
           type: integer
           minimum: 1
@@ -11488,6 +12425,7 @@ components:
           format: uuid
       required:
       - enabled_raffle_types
+      - enabled_categories
       - version
       - trace_id
       additionalProperties: false
@@ -11848,7 +12786,7 @@ components:
           format: uuid
         status:
           type: string
-          enum: *id003
+          enum: *id006
         trace_id:
           type: string
           minLength: 1
@@ -11873,7 +12811,7 @@ components:
           - E7
         status:
           type: string
-          enum: *id004
+          enum: *id007
         trace_id:
           type: string
           minLength: 1
@@ -12414,6 +13352,16 @@ components:
           type: string
           minLength: 1
           format: date-time
+        status:
+          type: string
+          enum:
+          - RECORDED
+          - PENDING_SECOND_SIGNATURE
+        signature_request_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
         trace_id:
           type: string
           minLength: 1
@@ -12422,8 +13370,23 @@ components:
       - attestation_id
       - gates
       - created_at
+      - status
+      - signature_request_id
       - trace_id
       additionalProperties: false
+      allOf:
+      - if:
+          properties:
+            status:
+              const: PENDING_SECOND_SIGNATURE
+        then:
+          properties:
+            signature_request_id:
+              type: string
+        else:
+          properties:
+            signature_request_id:
+              type: 'null'
     ExtendSlaResponse:
       type: object
       properties:
@@ -13351,6 +14314,125 @@ components:
       - total_tickets
       - max_days_to_payout
       - trace_id
+      additionalProperties: false
+    ModerationRejectionReason:
+      type: string
+      enum:
+      - CONTENT_POLICY
+      - PRIZE_INELIGIBLE
+      - TERMS_INCOMPLETE
+      - MEDIA_INVALID
+      - LEGAL_REQUIREMENT
+      - OTHER
+      description: Motivo estructurado de REJECT (A11.1). Con OTHER, reason es el texto obligatorio.
+    KybDecisionCreate:
+      type: object
+      description: expected_version es la version de GetClientResponse. Solo APPROVED o REJECTED de client_kyb.status;
+        EXPIRED lo marca el vencimiento, no una decisión.
+      properties:
+        expected_version:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        outcome:
+          type: string
+          enum:
+          - APPROVED
+          - REJECTED
+        reason:
+          type: string
+          minLength: 10
+          maxLength: 2000
+      required:
+      - expected_version
+      - outcome
+      - reason
+      additionalProperties: false
+    T1ExpiryPolicy:
+      type: object
+      description: Política de expiración de T1 (C1). Al vencer el plazo se sortea con lo vendido si se
+        alcanzó el mínimo; si no, se cancela con reembolso. El reembolso y el rango de recaudación son
+        código patrimonial humano.
+      properties:
+        max_duration_days:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+          description: Plazo máximo de venta (C1). Referencia temporal y tope por mercado pendientes.
+        on_expiry:
+          type: string
+          enum:
+          - DRAW_IF_MINIMUM_REACHED_ELSE_REFUND
+      required:
+      - max_duration_days
+      - on_expiry
+      additionalProperties: false
+      x-requirement-status: incomplete-pending-threshold
+      x-pending:
+      - 'Mínimo vendido: umbral, unidad (porcentaje o boletos) y si lo fija la plataforma o el organizador
+        dentro de límites. Diego y [LEGAL→ABOGADO].'
+      - Premio que se entrega cuando se alcanza el mínimo sin agotar boletos.
+      - Aviso al comprador antes de pagar (bases y checkout).
+      - 'Regla aprobada: mínimo, premio y condiciones se fijan antes de publicar y no cambian tras la
+        primera compra; hasta definirlos, un T1 no es publicable.'
+      - 'La propuesta Cowork no ratificada no cambia el desenlace: bajo mínimo se cancela con reembolso.'
+    EditionRecurrence:
+      type: object
+      description: 'Serie T7 (C2): cada edición tiene duración propia, sin solape con la siguiente. Cada
+        edición es un sorteo con pool y prueba propios.'
+      properties:
+        frequency:
+          type: string
+          enum:
+          - DAILY
+          - WEEKLY
+          - BIWEEKLY
+          - MONTHLY
+        interval_count:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        edition_duration_minutes:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        max_editions:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+          maximum: 2147483647
+      required:
+      - frequency
+      - interval_count
+      - edition_duration_minutes
+      additionalProperties: false
+      x-server-rule: 'Sin solape (C2): edition_duration_minutes no supera el intervalo frequency × interval_count.'
+      x-pending:
+      - Cómo se mide el intervalo MONTHLY con calendario para la regla sin solape.
+    DeclaredCost:
+      type: object
+      description: Costo de transferencia declarado (transfer_costs, RN-19). El importe lo declara el
+        organizador; el contrato no lo calcula.
+      properties:
+        cost_kind:
+          type: string
+          enum:
+          - SHIPPING
+          - NOTARY
+          - REGISTRY
+          description: Lista inicial aprobada en C4; se amplía en V8.
+        estimated_amount:
+          $ref: '#/components/schemas/Money'
+        borne_by:
+          type: string
+          enum:
+          - CLIENT
+          - WINNER
+      required:
+      - cost_kind
+      - estimated_amount
+      - borne_by
       additionalProperties: false
   responses:
     Error400_dba09dea:

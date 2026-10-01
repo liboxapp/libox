@@ -2,8 +2,8 @@
 title: LIBOX Especificación Técnica L3 V8 — borrador DRAFT-8 (no emitido)
 status: borrador
 tags: [r0, c1, l3-v8, linea-base, borrador]
-updated: 2026-09-30
-description: Candidato consolidado de L3 V8 sobre el texto íntegro de V7. No emitido; separa lo que falta para cerrar C1, para emitir en C2 y para probar en D1/R1.
+updated: 2026-10-01
+description: Candidato L3 no emitido sobre V7, con alcance de reconciliación Cowork en §0.8 y aportes pendientes para C1, C2 y D1/R1.
 ---
 
 # LIBOX_ESPECIFICACION_TECNICA_L3_V8_DRAFT
@@ -15,22 +15,36 @@ description: Candidato consolidado de L3 V8 sobre el texto íntegro de V7. No em
 > final del contrato. Lo que falta para C1, para C2 y para D1/R1 se detalla por
 > separado en §0.5, §0.6 y el Anexo C. El código heredado sin hallazgo se
 > conserva tal cual y no hay que reescribirlo para emitir.
+>
+> **Actualización Cowork:** §0.8 incorpora los requisitos candidatos de plazo,
+> viabilidad y fianza y delimita qué falta integrar. Las secciones heredadas de
+> esquema, FSM y ledger aún no implementan ese flujo; no usar este borrador como
+> contrato financiero final. La identidad V8/V9 de emisión se resolverá en C2.
+>
+> **Decisiones C1 integradas (2026-10-01).** Las decisiones A1–A11, B1–B6, C1–C4
+> y D1 que Diego aprobó el 2026-09-30 ([paquete](decisiones-c1.md)) se integran
+> en la prosa y las tablas normativas de las secciones afectadas. Donde el código
+> heredado preservado contradice una de ellas, la sección lo marca como **legado
+> preservado, no listo para emisión en C2**: la regla vigente es la de la prosa y
+> el código lo corrige el SQL V8 o el aporte humano. Las propuestas de Cowork no
+> ratificadas (fianza, múltiplo 1,25, ventana de 48 h) no se convierten en norma.
 
 ## 0\. Propósito, alcance y control documental
 
-**Documento:** LIBOX\_ESPECIFICACION\_TECNICA\_L3\_V8\_DRAFT **Versión:** V8, borrador DRAFT-8, no emitido **Nivel:** L3 — Architecture, Security, Engineering & QA **Reemplazaría a:** LIBOX Especificación Técnica L3 V7, que sigue vigente hasta la emisión **Gobernado por:** LBPF V3 (nivel L0) y PRD MVP V9 (nivel L2) **Artefactos asociados:** `libox_openapi_L3_V8_DRAFT.yaml` (`2.0.0-draft.2`) · `libox_schema_L3_V8.sql` (no existe todavía) **Estado:** borrador candidato
+**Documento:** LIBOX\_ESPECIFICACION\_TECNICA\_L3\_V8\_DRAFT **Versión:** identidad de trabajo V8, borrador DRAFT-8, no emitido **Nivel:** L3 — Architecture, Security, Engineering & QA **Reemplazaría a:** LIBOX Especificación Técnica L3 V7 del canon del repo **Gobernantes de origen:** LBPF V3 (nivel L0) y PRD MVP V9 (nivel L2); la recepción LBPF V4/PRD V10 se reconcilia en §0.8 **Artefactos asociados:** `libox_openapi_L3_V8_DRAFT.yaml` (`2.0.0-draft.3`) · migración C1 completa pendiente **Estado:** borrador candidato
 
-**Identidad en C2.** Al emitir, nombre de archivo, título interno, pie y campo de versión pasan a `LIBOX_ESPECIFICACION_TECNICA_L3_V8` / V8, se retira el frontmatter del wiki y desaparecen las marcas de borrador. El registro ZC permanece como mapa de zonas sin IA. En el registro DP solo pueden quedar decisiones que no condicionan C2, cada una con la fase que sí bloquea. Hasta la emisión, los cuatro lugares dicen `L3_V8_DRAFT`.
+**Identidad en C2.** Confirmar primero si la V8 recibida fue formalmente emitida: si lo fue, la consolidación será V9; si no, se resolverá una única V8. Nombre de archivo, título, pie y versión deben coincidir con esa identidad y Registro/BASELINE. Se retira el frontmatter del wiki y desaparecen las marcas de borrador. El registro ZC permanece como mapa de zonas sin IA. En DP solo quedan decisiones que no condicionan C2, con la fase que sí bloquean. Hasta resolver la emisión, los cuatro lugares conservan `L3_V8_DRAFT` como identidad de trabajo.
 
 **Origen del texto.** Las secciones sin cambio reproducen el contenido de la [L3 V7](../../../linea-base/LIBOX_ESPECIFICACION_TECNICA_L3_V7.md) para que este documento se lea sin ella. La cita solo indica la procedencia. Ninguna regla de este borrador remite a V7 para completarse.
 
 **Fidelidad de la transcripción.** El coordinador ejecutó `scripts/contracts/tests/test_preserved_l3.py` y sus dos pruebas pasan. La primera comprueba que 32 bloques protegidos de V7 (transacciones, motor, funciones y disparadores, entre otros) aparecen completos en este candidato. Solo difieren en líneas vacías y espacios finales. La segunda comprueba que no queda ningún marcador de transcripción sin terminar. Esa evidencia no equivale a una comparación byte a byte del documento completo. Los cambios de forma deliberados son tres: encabezados un nivel más bajos, líneas vacías sin espacios dentro de los bloques y un punto final en algunas líneas en negrita, todo por el lint del wiki. Cualquier edición posterior del candidato exige volver a ejecutar esas pruebas.
 
 **Evidencia complementaria:** el [overlay SQL](cierre-sql.md) pasó tres escenarios locales
-en PostgreSQL 17.11 (63/63/67 comprobaciones), sin alterar el código protegido de V7.
-No es el SQL V8 completo ni una prueba de Supabase gestionado. El contrato actual
-tiene 92 operaciones (61 inventariadas +31 auxiliares) y 29 pruebas de contrato.
-Véase [estado C1](estado-c1.md) para pendientes y alcance.
+en PostgreSQL 17.11 (100/100/104 comprobaciones), sin alterar el código protegido de V7.
+No es el SQL V8 completo ni una prueba de Supabase gestionado. El contrato pasa a
+`2.0.0-draft.3` con la integración de las decisiones A y C; conserva las 61
+operaciones inventariadas más las auxiliares. El contrato tiene 93 operaciones (61 inventariadas y 32 auxiliares), 47 pruebas
+contractuales y 13 intercambios del cliente TypeScript verificados localmente. Véase [estado C1](estado-c1.md) para pendientes y alcance.
 
 ### 0.0 Changelog
 
@@ -41,7 +55,7 @@ Conforme a la política de control documental de LIBOX, no existen subversiones:
 | Versión | Sección | Qué cambió | Por qué | Decisión que invalida |
 | ------- | ------- | ---------- | ------- | --------------------- |
 | V8 | §0, pie | Identidad de borrador; PRD MVP V9 en encabezado, §0.1 y pie; se elimina el índice vacío | H-19: el encabezado citaba PRD V8 y el pie PRD V4 | Corrige encabezado y pie de V7 |
-| V8 | §0.2, §0.2.1 | Artefactos V8: OpenAPI `2.0.0-draft.2`; el SQL V8 no existe. V7 se ejecutó en PostgreSQL 17.11 y confirmó H-05, H-06 y las semillas vacías | Regla de emisión de §0.2.1 | Deroga la validación de V7 en PostgreSQL 16 como evidencia de V8 |
+| V8 | §0.2, §0.2.1 | OpenAPI `2.0.0-draft.3`; migración C1 completa pendiente. V7 en PG17.11 confirmó H-05, H-06 y semillas vacías; SQL V8 de Cowork es otra entrada | Regla de emisión de §0.2.1 | Deroga la validación de V7 en PG16 como evidencia de la consolidación |
 | V8 | §0.3, §0.4 | Pila TypeScript y Next.js en monolito modular; Supabase Pro, Trigger.dev, Vercel Pro y Upstash; Scalar; Mercado Pago como PSP; Truora en evaluación para KYC y KYB; techo de US$250/mes | H-18; ASS-002 ratificada el 2026-09-29; proveedores y PSP elegidos el 2026-09-30 | Deroga .NET 8 LTS, Next.js 14 y Redis como pieza de la pila |
 | V8 | §0.5–§0.7, Anexo C | Mapa de zonas sin IA (ZC), decisiones por fase (DP), mapa H-01–H-19 y criterios de cierre de C1, C2 y D1/R1 | Trazabilidad CD-07; implementación humana de Backlog MVP V3 §1.3; decisión D-05 del programa R0 | Amplía |
 | V8 | §1.1 | C-13: HMAC versionado para identificadores de documento | H-14: SHA-256 directo de un DNI se revierte por fuerza bruta | Deroga el SHA-256 directo de V7 §2.2 |
@@ -59,6 +73,10 @@ Conforme a la política de control documental de LIBOX, no existen subversiones:
 | V8 | §14.8–§14.9 | Pruebas F1–F7; roles, particiones, HMAC, restauración y abuso | D-08 del programa R0 | Amplía |
 | V8 | Anexos A–C | Propiedad humana de migraciones, materias legales nuevas y criterios de cierre de C1, C2 y D1/R1 | — | Amplía |
 | V8 | §11.7, §12.5 | Webhook de Mercado Pago: firma sobre el manifiesto, no sobre el cuerpo; el cuerpo no es autoritativo; consulta autenticada | Mercado Pago elegido el 2026-09-30 | Amplía; el procedimiento heredado se conserva |
+| C1 | §0, §0.6, §0.8 | Reconciliación Cowork: 27 grupos, requisitos candidatos de plazo/viabilidad/fianza, contrato comprador y dependencias; identidad de emisión pendiente | Revisión independiente Codex/Opus y autorización de actualizar el trabajo | No revoca acuerdos C1 ni ratifica valores nuevos |
+| C1 | §4.1, §7.1–§7.3, §11.5 | Firmas por `action_code`, cofirma V2, actor de observación, aprobadores por etapa P-C, decisión KYB, rechazos manuales en la tabla FSM, motivos de moderación, INC-07/INC-11 en ejecución, reautenticación de 5 min y atestación con `SignatureRequest` | Decisiones A1–A11 de Diego, 2026-09-30 | Deroga la fila única "Etapas P-C", el actor "Verificador", `second_signer_id` en el cuerpo de la atestación e INC-11 en asignación |
+| C1 | §1.1, §1.3, §1.4, §7.3, §7.4 | Clases de privilegios y seis tablas `reservado_humano`; logins por componente; `pg_cron`; DEFAULT en los doce padres y procedimiento manual; retención B6; cifrado AWS KMS con compatibilidad Supabase obligatoria | Decisiones B1–B6 y B1-bis | Amplía; el código de `journal_lines` y de las seis tablas sigue siendo humano |
+| C1 | §2.1, §2.4, §3.1, §3.3, §5, §10 | Plazo de T1 con mínimo pendiente, duración propia de T7 sin solape, `ticket_price` fijado por el organizador, MVP solo `PAID`, `cost_kind` inicial, retirada de `LIVE`, categorías P-C y drand quicknet | Decisiones C1–C4 y D1 | Deroga `LIVE` como capacidad y `FREE_ENTRY`/`PROMOTIONAL` en el MVP |
 
 #### Cambios de la versión V7
 
@@ -164,7 +182,7 @@ Este documento es el **nivel L3** de la arquitectura documental de LIBOX. Contie
 
 | §   | Artefacto                                                    | Artefacto físico asociado |
 | --- | ------------------------------------------------------------ | ------------------------- |
-| 1–3 | Convenciones y esquema de base de datos                      | `libox_schema_L3_V8.sql`: **no existe**. Se compone en C1 con el esquema V7, la parte no crítica probada en `database/overlay/` y los aportes humanos de §0.5 |
+| 1–3 | Convenciones y esquema de base de datos                      | Migración C1 completa: **pendiente**. Componer V7, overlay no crítico, cambios aprobados y aportes humanos de §0.5/§0.8; el SQL V8 recibido no la sustituye |
 | 4   | Máquina de estados del sorteo                                | —                         |
 | 5   | Motor de sorteo, serialización canónica y vectores de prueba | —                         |
 | 6   | Plan de cuentas y transacciones canónicas                    | —                         |
@@ -172,7 +190,7 @@ Este documento es el **nivel L3** de la arquitectura documental de LIBOX. Contie
 | 8   | Catálogo de errores                                          | Enumeración `Error.code` del OpenAPI |
 | 9   | Catálogo de eventos                                          | —                         |
 | 10  | Estructura de configuración por mercado                      | —                         |
-| 11  | Contratos de interfaz                                        | [`libox_openapi_L3_V8_DRAFT.yaml`](libox_openapi_L3_V8_DRAFT.yaml): `2.0.0-draft.2`. Contiene las 61 operaciones del inventario y operaciones auxiliares documentadas en [cierre de contratos](cierre-contratos.md). Se emite como `libox_openapi_L3_V8.yaml` |
+| 11  | Contratos de interfaz                                        | [`libox_openapi_L3_V8_DRAFT.yaml`](libox_openapi_L3_V8_DRAFT.yaml): `2.0.0-draft.3`. Contiene las 61 operaciones del inventario y operaciones auxiliares documentadas en [cierre de contratos](cierre-contratos.md); el conteo final lo fija el coordinador. Se emite como `libox_openapi_L3_V8.yaml` |
 | 12  | Concurrencia, idempotencia y trabajos programados            | —                         |
 | 13  | Observabilidad, operación y recuperación                     | —                         |
 | 14  | Estrategia de pruebas                                        | —                         |
@@ -181,7 +199,7 @@ El artefacto OpenAPI declara `x-target-document: L3 V8 (no emitido)` y `x-implem
 
 ### 0.2.1 Validación del esquema
 
-**Evidencia disponible (informada por el coordinador).** Se instaló PostgreSQL 17.11 y se ejecutó intacto el esquema V7 (`libox_schema_L3_V7.sql`): 135 tablas y cero errores. La ejecución confirma tres defectos: las 12 tablas particionadas no tienen particiones (H-05), no hay ningún `GRANT` (H-06) y las semillas están vacías (H-08). Esa ejecución no prueba el DDL propio de V8 ni el comportamiento en Supabase, que aún no se ha probado. Tampoco existe todavía el archivo SQL V8. El agente de SQL prepara ahora una capa no crítica sobre V7 en `database/overlay/` (particiones, ACL base y semilla del mercado PE). No es el SQL V8 completo, y este candidato no acredita su resultado.
+**Evidencia disponible (informada por el coordinador).** PostgreSQL 17.11 ejecutó intacto V7 (`libox_schema_L3_V7.sql`): 135 tablas y cero errores. Confirma H-05 (12 padres sin particiones), H-06 (sin `GRANT`) y H-08 (semillas vacías). El overlay no crítico posterior pasó 100/100/104 comprobaciones (§0, [cierre SQL](cierre-sql.md)); sigue sin ser la migración completa de C1. No se probó Supabase gestionado. El SQL V8 de Cowork se ejecutó por Opus en PG16.13 y aceptó contraejemplos de cobertura/mínimo: esa evidencia no valida la consolidación en PG17 (§0.8).
 
 **Regla de emisión.** Ninguna versión se emite sin que su esquema se ejecute con cero errores **y sin que sus restricciones se prueben contra casos que deben fallar**. Un esquema que compila no es un esquema que protege. Para V8, la comprobación del esquema candidato en C1 es esta:
 
@@ -218,7 +236,7 @@ ASS-002 fue ratificada por los socios el 2026-09-29: backend TypeScript en un mo
 | Aplicación | Monolito modular. Next.js 16 con App Router para la interfaz y los adaptadores HTTP; módulos de dominio (órdenes, pagos, boletos, sorteo y liquidaciones) que invocan los endpoints y los workflows | Las reglas no se duplican en endpoints, trabajos ni cliente. La versión exacta se fija en D1 |
 | Base de datos | PostgreSQL gestionado en Supabase Pro; cómputo Small y PITR de 7 días para R1 | Autoridad sobre dinero e inventario. Major 17: el esquema V7 corre en 17.11 local; falta el esquema V8 y probar en Supabase (DP-09) |
 | Conexiones | Migraciones por conexión directa con el rol migrador; tráfico serverless por el pooler en modo transacción | En ese modo no hay estado de sesión ni sentencias preparadas |
-| Workflows | Trigger.dev (Hobby) para 29 trabajos programados y para la ejecución asíncrona | Concurrencia provisional de 25; se confirma el valor contratado |
+| Workflows | Trigger.dev (Hobby) para 28 trabajos programados, la vigilancia de particiones y la ejecución asíncrona. `create-next-partitions` corre en `pg_cron` dentro de la base (B3) | Concurrencia provisional de 25; se confirma el valor contratado |
 | Ticker del outbox | Supabase Cron cada 10 s contra un endpoint privado de despacho | El cron de Vercel no alcanza 10 s: su intervalo mínimo es un minuto |
 | Hosting | Vercel Pro | — |
 | Identidad | Supabase Auth con TOTP. Roles, permisos por recurso, incompatibilidades y sesión aplicativa los gestiona LIBOX | §7.3 |
@@ -266,7 +284,9 @@ Estados:
 | ZC-13 | §5.2–§5.7 motor, serialización, verificación | Motor de sorteo | **Aporte C1** por H-10, H-11 y H-12 | Especificación cerrada (DP-04), verificador sin ambigüedad y salidas de los vectores calculadas por dos implementaciones humanas independientes |
 | ZC-14 | §6 plan de cuentas y transacciones | Asientos, comisión e impuesto | **Pendiente D-05** por H-01, H-02 y H-03 | Confirmación contable y T-03 [LEGAL→ABOGADO], antes de dinero real en R1 |
 | ZC-15 | §12.2–§12.5 reserva, emisión, idempotencia, webhooks | Concurrencia y ejecución única | Preservado. La emisión hereda H-01 (D-05) | F1–F5 y F7 contra PostgreSQL y el sandbox de Mercado Pago en R1 |
-| ZC-16 | §3.7, §3.8 y §7.2 INC-06–INC-11 | Incompatibilidades en ejecución | Preservado; sin código en V7: es lógica de servicio | Implementación humana y casos INC de §14.3 en D1 |
+| ZC-16 | §3.7, §3.8 y §7.2 INC-06–INC-09 e INC-11 | Incompatibilidades en ejecución (INC-07 e INC-11 solo en ejecución, A11) y política de segunda firma por `action_code` (A1) | Preservado; sin código en V7: es lógica de servicio | Implementación humana y casos INC de §14.3 en D1 |
+| ZC-17 | §1.4 clase `reservado_humano`: `spending_limits`, `spending_limit_changes`, `self_exclusions`, `operation_register`, `transfer_costs`, `raffle_milestones` | Bloqueo de saldo, inventario, importes y AML (B1) | **Reclasificadas** por B1; sin `GRANT` en la capa no crítica | DDL, ACL y pruebas humanas antes de que la aplicación escriba en ellas |
+| ZC-18 | §1.3 partición DEFAULT de `journal_lines` | Asientos contables | Regla decidida (B5); código pendiente | Partición DEFAULT, ACL de `libox_append` (solo `INSERT`) y alarma, por implementación humana |
 
 Ningún valor esperado de sorteo, vector criptográfico ni resultado contable se fabrica para hacer pasar una prueba.
 
@@ -279,19 +299,25 @@ La columna "Bloquea" indica la primera fase que no puede cerrarse sin esa decisi
 | DP-01 | ASS-001: quién custodia el dinero y con qué figura [LEGAL→ABOGADO] | R1 y R2 (dinero real) | Socios y abogado |
 | DP-02 | Momento en que se reconocen comisión, neto e impuesto (T-04, T-05, T-06). Propuesta registrada: "liquidación elegible", sin confirmar [LEGAL→ABOGADO] | R1, por D-05 | Dueño contable, sin designar; Diego |
 | DP-03 | Asiento T-03: devolución al medio de pago original y movimiento de `cash_clearing` y `psp_clearing` | R1, por D-05 | Dueño contable; implementación de Diego |
-| DP-04 | Fuente de baliza, suite de firmas, codificación de ronda y valor, y formato del verificador | C1 (lo exigen H-10 y H-11) | Dueño del motor (Diego) |
+| DP-04 | drand quicknet ratificada; faltan suite/codificación de ronda y valor, formato del verificador y valores esperados | C1 (H-10/H-11) | Dueño del motor (Diego) |
 | DP-05 | Baliza tardía: qué pasa tras el incidente de los 30 minutos, reanudar o cancelar | C1 (programa R0: timeout de baliza) | Dueño del motor |
-| DP-06 | Servicio de gestión de claves para la semilla cifrada y el secreto del HMAC, con rotación y restauración | C1 para la semilla (H-12); R1 para la rotación | Diego |
+| DP-06 | AWS KMS con cifrado de sobre está elegido para datos personales (B1-bis, §7.4). Falta decidir el servicio de la semilla cifrada, la rotación de la clave maestra y de la clave HMAC, el recifrado y la restauración | C1 para la semilla (H-12); R1 para la rotación | Diego |
 | DP-08 | Mercado Pago: confirmar la modalidad (Checkout Pro propuesta), el acceso a sandbox y la aceptación comercial del caso de uso | R1 | Diego |
 | DP-09 | Major de PostgreSQL: 17 si el esquema V8 completo pasa en 17 y en Supabase; si no, la versión soportada por el proveedor o Neon | C1 para el esquema local; R1 para Supabase | Diego |
 | DP-10 | Copia independiente de objetos (R2 o S3), versionado, Object Lock y retención por clase de documento [LEGAL→ABOGADO] | R1, antes de documentos reales | Diego y abogado |
 | DP-11 | Proveedor de correo transaccional | R1 | Diego |
-| DP-12 | Retención de `psp_events`, `operation_register`, `risk_events` y `audit_access_events` [LEGAL→ABOGADO] | R1 | Diego y abogado |
+| DP-12 | B6 integrada en §1.3: `risk_events` y `audit_access_events` indefinidas. Falta el plazo de `psp_events` y `operation_register`; nada se borra hasta aprobarlo [LEGAL→ABOGADO] | R1 | Diego y abogado |
 | DP-13 | Re-sorteo: política y causales del comando `redraw` | Habilitar `redraw` en D1/R1 | Dueño del motor |
 | DP-16 | Arranque del primer y segundo `ADMIN_SUPER` conforme al PRD, sin cuentas ficticias en producción | C1 (parte del aporte de ZC-11) | Diego |
 | DP-19 | Correlación con el doc 20: números CHANGE y DEC de este candidato y alta del DEC de ASS-002 | C2 | Diego |
 | DP-20 | KYC y KYB: resultado de la evaluación de Truora. KYB peruano con Checks estándar figura como N/A y debe confirmarse por escrito; si no encaja, Sumsub o Veriff | R1 (el contrato C1 es neutral respecto del proveedor) | Diego |
-| DP-21 | Hallazgos I-01 a I-11 del [cierre de contratos](cierre-contratos.md): matriz de cofirma, etapas P-C, firmantes por acción, enums y rol de decisión KYB | C1 para el contrato que los integre; los que bloquean P-C, antes de habilitar P-C | Diego; P-C y gate legal [LEGAL→ABOGADO] |
+| DP-21 | I-01–I-09 del [cierre de contratos](cierre-contratos.md) decididos por A1–A11 y C1–C4 e integrados en §4.1, §7 y §11 de este candidato; I-10/I-11 resueltos. Quedan los datos de DP-24 a DP-27 | C1 para contrato; documentos antes de habilitar P-C | Diego; P-C/gate legal [LEGAL→ABOGADO] |
+| DP-22 | Resolver deltas Cowork: T1/fianza, mínimo/caja, ventanas, estados, contrato comprador y parámetros, según §0.8 | C1 para especificación/artefactos coherentes; dinero real en R1 | Diego; contabilidad y abogado según materia |
+| DP-23 | Confirmar emisión V8 recibida, identidad siguiente y correlación de CD-11/Registro/artefactos | C2 | Diego |
+| DP-24 | T1 (C1): umbral del mínimo vendido (porcentaje o boletos) y quién lo fija, premio que se entrega al alcanzarlo y aviso al comprador. La regla de estabilidad ya está aprobada (§3.1) | Publicar T1; C1 para el contrato | Diego [LEGAL→ABOGADO] |
+| DP-25 | Valores de `charge_kind` y `macrozone` (C4) | C1 para los enums del SQL V8 y el contrato | Diego |
+| DP-26 | Cifrado (B1-bis): alcance de Supabase Auth, inventario de datos personales (documentos, logs, exportaciones), excepción de email/teléfono en `auth.users` (pendiente, no autorizada), vistas seudonimizadas y caché de claves de datos | C1 para el SQL V8 de columnas cifradas; R1 para la operación | Diego |
+| DP-27 | Lista cerrada de documentos por etapa P-C (A8): clave, descripción y obligatoriedad, validada por el abogado. Fecha objetivo por acordar; se revisa en cada revisión de avance de C1 | Habilitar P-C | Diego y [LEGAL→ABOGADO] |
 
 Los números DP-07, DP-14, DP-15, DP-17 y DP-18 ya no figuran como decisiones abiertas: pasaron a propuestas técnicas del candidato (abajo). DP-08 dejó de ser la elección del PSP porque Mercado Pago ya está elegido.
 
@@ -305,7 +331,7 @@ Los números DP-07, DP-14, DP-15, DP-17 y DP-18 ya no figuran como decisiones ab
 - P-06, límites de frecuencia, CSP y almacenamiento de evidencias (§7.5, §7.6).
 - P-07, operaciones auxiliares del contrato marcadas `x-authorization-status: proposed` (§11).
 - P-08, códigos de error que lanzan los disparadores y aún no figuran en §8.2. Los fija el dueño del contrato y se sincronizan con `Error.code` al consolidar.
-- P-09, partición por defecto: la propone la capa no crítica del SQL (§1.3).
+- P-09, partición por defecto: B4–B5 la aprueban en los doce padres y §1.3 la integra como norma. La DEFAULT de `journal_lines` es código humano (ZC-18).
 
 ### 0.7 Mapa de hallazgos H-01–H-19
 
@@ -318,22 +344,67 @@ Origen: [hallazgos técnicos de L3](../2026-09-25-revision-sistema-hallazgos-l3.
 | H-03 | §6.3 | Registrado, pendiente por D-05 [LEGAL→ABOGADO] | Nada más que dejarlo registrado | Confirmación contable y tributaria |
 | H-04 | §3.10 | Aporte C1. ZC-09 | Código humano que rechace asiento desbalanceado, cuenta inexistente y moneda distinta | Propiedad del ledger en D1 |
 | H-05 | §1.3, Anexo A | Norma incorporada; overlay no crítico probado en 11/12 padres; ledger pendiente | SQL aplicado a base vacía, inserción y paso de mes en las doce tablas | Rotación y retención en R1 |
-| H-06 | §1.4 | Norma incorporada; ACL base probada; no es la matriz completa | `GRANT` por clase y pruebas negativas con cada credencial | Roles reales del proveedor en R1 |
+| H-06 | §1.4 | Norma incorporada con las clases de B1 y logins de B2; ACL no crítica probada; seis tablas reclasificadas y ledger pendientes de aporte humano (ZC-17, ZC-18) | `GRANT` por clase y pruebas negativas con cada credencial | Roles reales del proveedor en R1 |
 | H-07 | §3.16.1, §14.3 | Norma y casos corregidos. Aporte C1 (ZC-11) | Código humano de INV-38 con dos titulares, suspensiones y concurrencia | — |
 | H-08 | §4.2, §3.16.1, Anexo A | Aporte C1 (ZC-11, ZC-12); semillas no críticas en la capa SQL | Procedimiento de transición, disparador de incompatibilidades y semillas con comprobación de cobertura | — |
 | H-09 | §3.16.1 | Norma incorporada. Aporte C1 (ZC-11) | Reactivación con los mismos controles que `INSERT` | — |
 | H-10 | §5.7 | Aporte C1 (ZC-13) | Salidas de cada vector calculadas por dos implementaciones humanas independientes | Ejecución en cada integración |
 | H-11 | §5.6, §5.8 | Aporte C1 (ZC-13), DP-04 | Especificación cerrada y verificador sin ambigüedad | Prueba pública independiente |
 | H-12 | §5.3, §5.8, §12.10 | Requisitos y P-03 incorporados. Aporte C1 (ZC-07), DP-05, DP-06 | DDL humano de semilla cifrada y resolución tras la espera | Restauración de clave y datos; F6 |
-| H-13 | §11 y OpenAPI | 61 operaciones del inventario más auxiliares documentadas; `Money` en cadena; `/api/v2` | Versión `2.0.0-draft.2` con pruebas estructurales. Alcanzar el conteo no lo cierra | Comportamiento contra backend y proveedor reales |
+| H-13 | §11 y OpenAPI | 61 operaciones del inventario más auxiliares documentadas; `Money` en cadena; `/api/v2` | Versión `2.0.0-draft.3` con pruebas estructurales. Alcanzar el conteo no lo cierra | Comportamiento contra backend y proveedor reales |
 | H-14 | §1.1 C-13, §2.2, §7.4 | Norma y DDL propuesto (P-05), sin ejecutar | Ejecución del DDL no crítico | Vectores de normalización y rotación; ausencia de DNI en registros |
 | H-15 | §13.5 | Objetivos propuestos (P-04) | Nada más que la norma | Ensayo integral cronometrado y conciliado |
 | H-16 | §12.9 | Política propuesta (P-02) | Nada más que la norma | F7 en el sandbox; asiento de devolución sujeto a DP-03 |
 | H-17 | §7.6 | Norma incorporada (P-06) | Nada más que la norma | Pruebas de abuso con umbrales medidos |
 | H-18 | §0.3 | Incorporado. DP-09 | Esquema V8 en PostgreSQL 17 | Supabase y CI TypeScript en D1 |
-| H-19 | §0, pie | Incorporado | — | Identidad, BASELINE y Registro en C2 |
+| H-19 | §0, pie, §0.8 | Identidad de borrador conservada; recepción pendiente de reconciliar (C1-V13) | Registrar procedencia y alcance | Confirmar emisión, identidad, BASELINE y Registro en C2 |
 
 La propuesta de cada hallazgo está en las notas de [operación](operacion.md), [seguridad](seguridad.md), [contratos](contratos.md), [notas contractuales](notas-contractuales.md), [cierre de contratos](cierre-contratos.md), [Mercado Pago](mercado-pago.md) y [evaluación de Truora](truora-evaluacion.md). Este documento incorpora lo normativo de esas notas y no depende de ellas para completarse. La evidencia de proveedores sigue en las notas.
+
+### 0.8 Requisitos candidatos tras la recepción Cowork
+
+Recepción LBPF V4, PRD MVP V10 y L3/SQL V8, comparada con el canon y los acuerdos
+C1. El [registro C1-V](reconciliacion-linea-base.md) cubre las 27 diferencias.
+Este apartado incorpora su alcance; no afirma que el esquema, ledger o API
+heredados ya cumplan las reglas. Sigue pendiente la consolidación por sección.
+
+1. **Plazos.** T1–T8 tienen cierre final lógico, con máximo aprobado por mercado
+   y validación por tipo. Se conserva duración propia/no solape T7. Resolver
+   mínimo global 24 h frente a Flash T5 y efectos de pagos/reservas tardíos.
+2. **Respaldo.** El mínimo debe permitir entregar todos los premios y ser coherente
+   con importe, tickets, precio y versión aprobada fijada antes de publicar.
+   Contar pagos válidos, excluir impagados/gratuitos/anulados y demostrar caja
+   disponible. BR-09/KPI deben admitir respaldo por fianza sin llamarlo ingreso.
+3. **Fianza.** `VIABILITY_FAILED` y `VIABILITY_GAP` son ampliación propuesta:
+   el acuerdo T1 vigente del borrador cancela/reembolsa bajo mínimo hasta ratificar
+   esta alternativa. Para adoptarla, declarar plazo, fondos acreditados, actor,
+   custodia, T-19/20/21, devolución, incumplimiento, cancelación y sobrantes.
+   Un UUID no nulo no demuestra garantía suficiente y vigente.
+4. **FSM e inventario.** Comprobación y freeze/compromiso deben ser coherentes
+   ante concurrencia. Declarar rutas tras perder viabilidad, suspensión, pausa,
+   plazo y falso positivo; precedencia de vacío/umbral T2/mínimo. El potencial
+   incluye reservas aún pagables; `tickets_reserved` ya incluye emitidos.
+5. **Tipos.** Mantener umbral T2 y declarar desenlace T4 sin hito al vencer.
+   T6 suma todos los premios y necesita suficientes elegibles para sus ganadores
+   sin reemplazo. MVP sigue `PAID`; no habilitar otros regímenes por la semilla.
+6. **Comprador y canal.** Bases, checkout, avisos y API declaran el mismo mínimo,
+   fecha, cobertura y desenlace antes del pago. Costes/plazos de canal se declaran
+   antes de habilitarlo; refund íntegro según contrato. No habilitar IAP por su
+   mención en la fuente ni inferir tarifas/impuestos a partir del análisis.
+7. **Evidencia.** Semilla única/idempotente, cuentas completas y rechazo con error
+   esperado; fallos fatales y sondas adversariales. 39 checks PG16 o un verificador
+   lexical verde no prueban cobertura, FSM, Excel ni migración completa PG17.
+
+El múltiplo PE 1,25 y la ventana de 48 h son propuestas de la fuente, no valores
+ratificados aquí. Reputación, relojes, JSON de configuración, alcance de garantía
+y ciclo de caja requieren dueño/decisión. [LEGAL→ABOGADO] para custodia y bases;
+ASS-001 permanece abierto. Se conserva D-05 para H-01–H-03.
+
+[Aceptación](reconciliacion-aceptacion.md) fija contraejemplos y resultado exigido;
+[decisiones/planificación](reconciliacion-decisiones-planificacion.md) registra
+US-137–145 y dependencias. Dinero, contabilidad, concurrencia, incompatibilidades
+y motor siguen siendo código humano de Diego. Esta ampliación no levanta el
+freeze, no modifica el canon y no presenta servicios reales como probados.
 
 ## 1\. Convenciones de esquema
 
@@ -356,6 +427,7 @@ Los comentarios `-- V8` dentro del SQL señalan las líneas que cambian respecto
 | C-11 | Las tablas de crecimiento sin techo se particionan por rango mensual sobre su marca temporal de inserción (§1.3)              |
 | C-12 | No existe borrado físico en dominio financiero ni de auditoría. La baja es lógica y explícita                                 |
 | C-13 | **V8.** Todo identificador de documento de baja entropía (documento de usuario, de titular y de pagador) se guarda como HMAC-SHA-256 en hexadecimal, con secreto fuera de la base y versión de clave en columna propia. La entrada canónica incluye mercado, tipo de documento y número normalizado. Nunca SHA-256 directo (§7.4) |
+| C-14 | **V8 (B1-bis).** La base no guarda datos personales en claro. Se cifran en el backend con cifrado de sobre sobre AWS KMS (AES-256-GCM): se guarda el texto cifrado en una columna `*_enc` junto con la clave de datos cifrada. La clave maestra no sale de KMS. Donde haga falta buscar o detectar duplicados se añade una huella HMAC con clave propia (C-13). Las columnas `*_enc` nuevas pertenecen al SQL V8, no al DDL heredado de este documento (§7.4) |
 
 ### 1.2 Tipos de dominio
 
@@ -378,7 +450,7 @@ Los comentarios `-- V8` dentro del SQL señalan las líneas que cambian respecto
 | Tabla                   | Clave de partición | Retención                                    |
 | ----------------------- | ------------------ | -------------------------------------------- |
 | `audit_events`          | `created_at`       | Indefinida; archivado en frío desde 24 meses |
-| `audit_access_events`   | `created_at`       | Pendiente (DP-12)                            |
+| `audit_access_events`   | `created_at`       | Indefinida; archivado en frío desde 24 meses (B6) |
 | `journal_lines`         | `posted_at`        | Indefinida                                   |
 | `event_outbox`          | `created_at`       | 90 días tras despacho confirmado             |
 | `analytics_events`      | `server_ts`        | 24 meses; agregados indefinidos              |
@@ -386,17 +458,17 @@ Los comentarios `-- V8` dentro del SQL señalan las líneas que cambian respecto
 | `notification_attempts` | `server_ts`        | 24 meses                                     |
 | `state_transitions`     | `created_at`       | Indefinida                                   |
 | `registry_queries`      | `created_at`       | Indefinida                                   |
-| `psp_events`            | `created_at`       | Pendiente (DP-12)                            |
-| `operation_register`    | `created_at`       | Pendiente (DP-12) [LEGAL→ABOGADO]            |
-| `risk_events`           | `created_at`       | Pendiente (DP-12)                            |
+| `psp_events`            | `created_at`       | Pendiente (DP-12): la del soporte contable del pago [LEGAL→ABOGADO]; sin borrado hasta aprobarla |
+| `operation_register`    | `created_at`       | Pendiente (DP-12) [LEGAL→ABOGADO]; sin borrado hasta aprobarla |
+| `risk_events`           | `created_at`       | Indefinida; archivado en frío desde 24 meses (B6) |
 
-Todas usan rango mensual. **V8 corrige la lista:** eran doce tablas particionadas y solo figuraban ocho.
+Todas usan rango mensual. **V8 corrige la lista:** eran doce tablas particionadas y solo figuraban ocho. **Retención (B6).** La retención es una regla de operación y metadato de la tabla; este documento no define un borrado automático. Mientras un plazo esté pendiente, nada se borra.
 
 **Particiones iniciales (H-05).** Una tabla particionada sin particiones rechaza todo `INSERT`. La migración 025 crea, para cada una de las doce tablas, la partición del mes en curso y las de los dos meses siguientes, con los índices y restricciones que declara la tabla madre. Sin ellas no hay auditoría, outbox ni ledger que puedan escribirse. El SQL de particiones de `journal_lines` forma parte de la contabilidad (ZC-09) y lo escribe su dueño.
 
-**Regla de operación.** El trabajo `create-next-partitions` mantiene creada, con al menos 30 días de antelación, la partición del mes siguiente de cada tabla. Si falta la partición del mes siguiente, salta una alarma de severidad alta (§13.3). Si falta la del mes en curso en una tabla con DEFAULT, la escritura cae en esa partición y activa una alarma; no se mueve ni borra automáticamente. Sin DEFAULT, el motor rechaza la escritura. El aporte humano de `journal_lines` debe cerrar esa cobertura antes de habilitar el ledger.
+**Regla de operación (B3).** El planificador único es `pg_cron` dentro de Supabase, con el rol dueño del esquema: una ejecución diaria de `ensure_monthly_partitions` con horizonte de dos meses mantiene creada, con al menos 30 días de antelación, la partición del mes siguiente de cada tabla. Una tarea de Trigger.dev solo lee `partition_status` y emite la alarma de severidad alta (§13.3) si la cobertura no está completa o si hay filas en una `DEFAULT`; no recibe la credencial del dueño. Condición: verificar que Supabase Pro permite `pg_cron` con ese rol. Si falta la partición del mes en curso, la escritura cae en la `DEFAULT` y activa la alarma; no se mueve ni borra automáticamente.
 
-**Partición por defecto (P-09).** La capa no crítica del SQL propone una partición `DEFAULT` para los once padres gestionados; `journal_lines` queda para su dueño humano. Ese respaldo evita rechazar escrituras por falta de partición mensual. Tiene una consecuencia: crear un mes cuyo rango ya tiene filas en la `DEFAULT` falla sin mover datos. Por eso la alarma también vigila las filas que caen en la `DEFAULT`, y la creación de particiones corre desde un único planificador. La retención de las cuatro tablas pendientes se decide en DP-12.
+**Partición por defecto (P-09, B4, B5).** Los doce padres tienen una partición `DEFAULT`, `journal_lines` incluida, con la misma alarma. Así la falta de partición es una alarma y no un error de escritura, y no se bloquean cobros por un fallo del planificador. Crear un mes cuyo rango ya tiene filas en la `DEFAULT` falla con `LIBOX_PARTITION_DEFAULT_HAS_ROWS` sin mover datos. Para ese caso existe un procedimiento escrito, **nunca automático**, que ejecuta el dueño tras la alarma en una sola transacción: crea la tabla del mes suelta, mueve las filas desde la `DEFAULT`, la adjunta y registra la operación en `audit_events`. En `journal_lines`, `libox_append` solo tiene `INSERT` y nadie tiene `UPDATE` ni `DELETE`. **Estado:** la capa no crítica cubre once padres; la `DEFAULT` y la ACL de `journal_lines` están decididas pero su código es implementación humana pendiente (ZC-18), y mover filas del ledger nunca lo hace un procedimiento generado.
 
 **Aceptación C1.** SQL aplicado a una base vacía, permisos y cobertura mensual UTC con al menos 30 días de antelación. El overlay prueba once padres; completar los doce requiere el aporte humano del ledger. Retención y restauración integral se ensayan antes de R1.
 
@@ -429,15 +501,28 @@ Todas usan rango mensual. **V8 corrige la lista:** eran doce tablas particionada
 
 **Permisos explícitos (H-06).** Los cuatro roles son de grupo y no inician sesión. Que existan y que haya `REVOKE` no concede ni protege nada por sí solo. V8 exige lo siguiente:
 
-1. **Logins técnicos separados.** Cada credencial de conexión (aplicación, reportería y migración) es un login distinto y miembro solo de los roles de grupo que necesita su función. La credencial de la aplicación nunca es la del propietario del esquema ni la del migrador.
+1. **Logins técnicos separados (B2).** `libox_migrate` (`NOLOGIN`) es el dueño del esquema de dominio. Hay un login por componente, miembro solo de los roles de grupo que necesita: `libox_api` → `libox_app`; `libox_worker` → `libox_app` y `libox_append`; `libox_reporting` → `libox_read`; `libox_deployer` → `libox_migrate`, usado solo en el CI de migraciones. Los secretos viven en el gestor de Vercel y de Trigger.dev y rotan cada 90 días. La credencial de la aplicación nunca es la del propietario del esquema ni la del migrador. Pendiente de comprobar en Supabase: que `postgres` puede crear esos logins y ceder la propiedad.
 2. **Sin privilegios implícitos.** Se revocan de `PUBLIC` los privilegios sobre el esquema de dominio. Se fijan `ALTER DEFAULT PRIVILEGES` para que las tablas y particiones que cree `libox_migrate` nazcan sin permisos amplios.
-3. **`GRANT` por tabla.** Cada tabla recibe el `GRANT` mínimo de su clase. Mutables: `SELECT`, `INSERT`, `UPDATE` a `libox_app`. Solo agregación: `INSERT` y el `SELECT` necesario, nunca `UPDATE` ni `DELETE`. Todas: `SELECT` a `libox_read`. La columna `raffles.status` solo cambia a través del procedimiento de §4.2.
+3. **`GRANT` por tabla (B1).** Cada tabla recibe exactamente el `GRANT` de su clase, según la tabla de clases de abajo. Nadie recibe `DELETE`. Solo agregación: `INSERT` y el `SELECT` necesario, nunca `UPDATE` ni `DELETE`. `libox_read` no lee las clases sensibles. La columna `raffles.status` solo cambia a través del procedimiento de §4.2.
 4. **Roles del proveedor.** Los roles `anon` y `authenticated` de Supabase no tienen privilegios sobre el esquema de dominio, y sus tablas no se exponen por la API de datos del proveedor. El cliente nunca usa la clave `service_role`. RLS no sustituye a los `GRANT` ni a los controles de §7.
 5. **Sin supuesto de superusuario.** Ninguna migración depende de privilegios de superusuario que el proveedor no conceda.
 
-**Aceptación.** Con la credencial real de cada login se intentan `UPDATE` y `DELETE` sobre tablas de solo agregación y de dominio financiero, lectura con `anon` y `authenticated`, y DDL fuera del migrador. Todo debe fallar. Probar solo como propietario no vale como evidencia.
+**Clases de privilegios (B1).** Decididas por Diego el 2026-09-30 para las 67 tablas que estaban pendientes de matriz. La lista de tablas por clase vive en el manifiesto de ACL del SQL (`database/acl-manifest.json`), que es el artefacto que prueba las concesiones exactas.
 
-**Estado.** La capa no crítica del SQL aplica una ACL base: deniega por defecto y concede solo a las clases no patrimoniales. Según su propia cabecera, no es la matriz completa ni cierra H-06. Los permisos de tablas reservadas a humanos, como `journal_lines`, siguen pendientes. El overlay deniega también `service_role`; la configuración gestionada real queda por verificar.
+| Clase | `libox_app` | `libox_read` | Alcance |
+| ----- | ----------- | ------------ | ------- |
+| `operativa` | `SELECT`, `INSERT`, `UPDATE` | `SELECT` | Tablas de operación no patrimonial (31 tablas) |
+| `registro_inmutable` | `SELECT`, `INSERT` | `SELECT` | Registros de solo agregación no patrimoniales (18 tablas) |
+| `sensible` | `SELECT`, `INSERT`, `UPDATE` | — | Datos personales e identidad (8 tablas) |
+| `sensible_inmutable` | `SELECT`, `INSERT` | — | Verificaciones de identidad y edad y documentos AML (3 tablas) |
+| `catalogo_lectura` | `SELECT` | `SELECT` | `aml_thresholds`; cambia solo por migración con su versión |
+| `reservado_humano` | — | — | Tablas de zonas sin IA; sus `GRANT` los escribe el dueño humano |
+
+La reportería sobre datos personales irá por vistas seudonimizadas, que se definen aparte (DP-26). **Reclasificadas a `reservado_humano`** por B1, porque su comportamiento puede caer en una zona crítica: `spending_limits`, `spending_limit_changes` y `self_exclusions` (se comprueban dentro de la compra), `operation_register` (registro AML con importes), `transfer_costs` (importes que pueden afectar la liquidación) y `raffle_milestones` (desbloqueo por boletos vendidos). La capa no crítica no les concede nada; su ACL, DDL y pruebas son implementación humana (ZC-17).
+
+**Aceptación.** Con la credencial real de cada login se intentan `UPDATE` y `DELETE` sobre tablas de solo agregación y de dominio financiero, lectura de las clases sensibles con `libox_read`, lectura con `anon` y `authenticated`, y DDL fuera del migrador. Todo debe fallar. Probar solo como propietario no vale como evidencia.
+
+**Estado.** La capa no crítica del SQL aplica la ACL por clase: deniega por defecto y no concede nada a `reservado_humano`. No cierra H-06 hasta que el dueño humano escriba los permisos de las tablas reservadas, como `journal_lines` y las seis reclasificadas. El overlay deniega también `service_role`; la configuración gestionada real queda por verificar.
 
 ## 2\. Esquema — Identidad, organizador y mercado
 
@@ -562,6 +647,8 @@ Todas usan rango mensual. **V8 corrige la lista:** eran doce tablas particionada
       PRIMARY KEY (market_code, holiday_date)
     );
 
+**V8 — capacidades de plataforma (A1, A5, C4).** El apagado global de una capacidad (`CAPABILITY_PLATFORM_DISABLE`) lo solicita un `ADMIN_SUPER` y lo firma **otro** `ADMIN_SUPER` (§7.2); `ck_pc_signer` solo impide que sea la misma persona, y el subrol del firmante lo comprueba el servicio. `LIVE` no es una capacidad: `T8` es la única capacidad para sorteos en vivo. En el MVP solo existe el régimen `PAID`: las capacidades `FREE_ENTRY` y `PROMOTIONAL` del comentario anterior permanecen deshabilitadas en las tres capas hasta diseñar su garantía sustitutiva (INV-06-b, INV-44).
+
 ### 2.2 Identidad
 
     CREATE TABLE users (
@@ -665,6 +752,8 @@ Todas usan rango mensual. **V8 corrige la lista:** eran doce tablas particionada
 **Unicidad con rotación de clave (C-13).** Mientras coexisten dos versiones de clave, un mismo documento produce dos valores HMAC distintos. El índice único solo protege dentro de una versión. Al registrar o verificar, el servicio calcula el HMAC con cada versión activa y busca todos los valores, tanto en `users` como en `blocked_documents` y en `clients`. La migración de valores a la clave nueva sigue un plan explícito de coexistencia; no se reemplazan valores sin él.
 
 **`app_sessions` y `auth_identities` son una propuesta del candidato (P-01).** `app_sessions.device_id` queda sin clave foránea hasta que se decida si toda sesión debe asociarse a un dispositivo registrado.
+
+**Datos personales cifrados (B1-bis, C-14).** Además de lo que V7 ya cifra (documento, nombre), V8 exige cifrar email, teléfono y fecha de nacimiento de `users`, con huella HMAC para el email del login y para detectar duplicados. Las columnas `email`, `phone` y `birth_date` en claro del bloque anterior, y los índices únicos que las usan, son **legado preservado, no listo para emisión en C2**: el SQL V8 los sustituye por columnas `*_enc` y huellas. La compatibilidad con Supabase es obligatoria. Exigirla no autoriza guardar email o teléfono en claro en `auth.users` (esa excepción sigue pendiente, DP-26) ni ratifica reemplazar Supabase Auth por una autenticación propia.
 
 ### 2.3 Verificación de identidad y edad
 
@@ -866,6 +955,8 @@ Los objetos de `identity_documents`, `client_kyb_documents`, `prize_valuation_do
       reason          TEXT,
       PRIMARY KEY (client_id, capability)
     );
+
+**V8 — KYB y capacidades del cliente (A5, A7).** La decisión de KYB (`client_kyb.status` a `APPROVED` o `REJECTED`, con `approved_by`) corresponde a `ADMIN_COMPLIANCE`; `ADMIN_RISK` la lee y gestiona las capacidades del cliente (§7.1). El proveedor de KYB sigue en evaluación (DP-20). En las capacidades del cliente se retira `LIVE`: `T8` es la única capacidad para sorteos en vivo. `P_C1` y `P_C2` no son tipos de sorteo: se habilitan en un campo propio de categorías (`enabled_categories` en el contrato), separado de los tipos `T1`–`T8`. El comentario `'P_C1', 'P_C2', 'LIVE'` de `client_capabilities` es **legado preservado, no listo para emisión en C2**; el SQL V8 fija la representación de las categorías. Los datos del representante legal y de contactos se cifran (C-14).
 
 ### 2.5 Reputación
 
@@ -1223,6 +1314,15 @@ Descenso de nivel inmediato ante controversia perdida (RN-153); el ascenso solo 
     CREATE INDEX ix_transitions_entity ON state_transitions (entity_type, entity_id, created_at DESC);
     CREATE INDEX ix_transitions_trace ON state_transitions (trace_id);
 
+**Reglas V8 de configuración por tipo (C1–C4).** Decididas por Diego el 2026-09-30. Fijan la regla de producto; el código de inventario, rango de recaudación, régimen y reembolso que las aplique sigue siendo humano (ZC-02).
+
+- **T1, plazo máximo (C1).** Todo T1 declara una política de expiración con duración máxima (`max_duration_days`) y su desenlace. Al vencer, si se alcanzó el mínimo vendido, se sortea con lo vendido; si no, se cancela con reembolso. El mínimo vendido, el premio que se entregará y las condiciones comunicadas al comprador quedan fijados antes de publicar y **no cambian después de la primera compra**. Siguen pendientes (DP-24) el umbral del mínimo (porcentaje o número de boletos), quién lo fija y dentro de qué límites, si el premio se entrega completo al alcanzarlo y cómo se informa antes de pagar. Como el mínimo debe estar fijado al publicar, un T1 no se publica mientras falte ese dato. La ampliación de Cowork que permite continuar bajo mínimo mediante fianza **no está aprobada**: bajo mínimo corresponde cancelar y reembolsar (§0.8). [LEGAL→ABOGADO]
+- **T7, duración de cada edición (C2).** Cada edición declara su duración, independiente del intervalo de la recurrencia, y la duración no supera el intervalo: dos ediciones de la misma serie no se solapan.
+- **Precio (C3).** El organizador fija `ticket_price`; se le muestra el neto estimado. El cálculo de comisión e impuesto que produce ese neto es zona sin IA (§6.2.1).
+- **Régimen (C4).** En el MVP solo existe `PAID`. `FREE_ENTRY` y `PROMOTIONAL` quedan fuera hasta diseñar la garantía sustitutiva (INV-06-b, INV-44) y sus capacidades permanecen apagadas (§2.1).
+
+**Legado preservado, no listo para emisión en C2.** El bloque anterior no tiene campo para la política de expiración de T1 (su obligación figura en `raffle_type_rules`, §4.1.1), ni para la duración propia de cada edición T7 en `raffle_recurrences`, y `ck_raffles_end_at` no cubre el plazo de T1. El `CHECK` de `economic_regime` conserva los tres regímenes; en el MVP se limitan a `PAID` por capacidades, y cualquier restricción adicional en `raffles` la escribe su dueño humano. Estos campos y restricciones se resuelven en el SQL V8 o en el aporte humano, no en este bloque.
+
 ### 3.2 Premio y valoración
 
 > **[ZC-03 · zona sin IA · preservado]** El bloque siguiente conserva de V7 el disparador `assert_registrable_regime` (régimen económico) y la restricción `ck_pv_second_signer` (segunda firma). No tienen hallazgo registrado y se emiten tal cual. Cualquier cambio lo escribe a mano su dueño.
@@ -1360,6 +1460,8 @@ Descenso de nivel inmediato ante controversia perdida (RN-153); el ascenso solo 
       created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
       CONSTRAINT ck_ve_signers CHECK (second_signer_id <> approver_id)
     );
+
+**V8 — actores de la valoración (A1, A2, A3, A6).** La cofirma de la banda V2 (`VALUATION_V2_COSIGN`) la da `ADMIN_MODERATION`, que cofirma sin obtener escritura sobre la valoración (§7.1). La banda V4 la firma `ADMIN_LEGAL_COMPLIANCE`. Una excepción de desviación (`VALUATION_EXCEPTION`) la solicita `SUPPORT_VALUATOR` o `ADMIN_LEGAL_COMPLIANCE` y la firma el otro de los dos o un `ADMIN_SUPER`. Observar una valoración (`VALUATION_OBSERVED`) y rechazarla manualmente (`VALUATION_REJECTED`) corresponde a quienes aprueban la banda: `SUPPORT_VALUATOR` y `ADMIN_LEGAL_COMPLIANCE`; ambos exigen motivo (§4.1). Los `CHECK` de firmantes de este bloque solo impiden que la misma persona firme dos veces; la política por acción la aplica el servicio (§7.2).
 
 ### 3.3 Bienes registrables (P-C)
 
@@ -1534,6 +1636,12 @@ Descenso de nivel inmediato ante controversia perdida (RN-153); el ascenso solo 
       receipt_key     VARCHAR(255),
       created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
     );
+
+**V8 — P-C en el MVP (A4, A8, B1, C4).** P-C entra en el MVP. Cada etapa tiene su aprobador según el PRD MVP V9 (matriz por etapa en §7.1): E1 `ADMIN_RISK`; E2, E3, E4 y E7 `ADMIN_LEGAL_COMPLIANCE`; E5 sin aprobador (automática); E6 en dos pasos, verificación de `SUPPORT_L2` y habilitación de `ADMIN_LEGAL_COMPLIANCE`. E3 y E7 llevan segunda firma (`PC_STAGE_E3`, `PC_STAGE_E7`, firmadas por `ADMIN_SUPER`). [LEGAL→ABOGADO] en E2, E4 y E7.
+
+- **Lista de documentos (A8).** `checklist_key` es de lista cerrada por etapa (RN-29) y no tiene semilla todavía. Diego coordina con el abogado la entrega de la lista: clave, descripción y obligatoriedad por etapa, validada por el abogado. La fecha objetivo sigue pendiente; su estado se revisa en cada revisión de avance de C1 y antes del cierre del alcance P-C del MVP (DP-27). **Hasta recibirla, P-C sigue bloqueado** y no se inventan claves. El seguimiento no crea avisos automáticos ni mensajes externos.
+- **Costos (C4).** `cost_kind` tiene como valores iniciales `SHIPPING`, `NOTARY` y `REGISTRY`, ampliables en V8. Los valores de `charge_kind` y `macrozone` están pendientes de Diego (DP-25). El bloque anterior no restringe `cost_kind`; el `CHECK` correspondiente es del SQL V8.
+- **`transfer_costs` (B1).** Pasa a `reservado_humano`: guarda importes y quién los asume y puede afectar la liquidación. Sus permisos y restricciones los escribe el dueño humano (ZC-17).
 
 ### 3.4 Orden, idempotencia y pago
 
@@ -2097,7 +2205,7 @@ El bloque de V7 se divide en dos partes para que cada una lleve su marca. El ord
       created_at        TIMESTAMPTZ NOT NULL DEFAULT now()
     );
 
-**[ZC-16 · zona sin IA · preservado]** `ck_att_signer` solo impide que la misma persona firme dos veces. Las incompatibilidades en ejecución (INC-06, INC-07 e INC-09 con otro subrol) no se imponen con un `CHECK` estático: son lógica de servicio. Su dueño la implementa a mano en D1 (§7.2).
+**[ZC-16 · zona sin IA · preservado]** `ck_att_signer` solo impide que la misma persona firme dos veces. Las incompatibilidades en ejecución (INC-06, INC-07, INC-09 e INC-11) y la política de segunda firma por `action_code` no se imponen con un `CHECK` estático: son lógica de servicio. Su dueño la implementa a mano en D1 (§7.2). **Atestación P-C (A9).** La segunda firma de la atestación se obtiene con una `SignatureRequest` de `ATTEST_PC` (§11.5); el cliente no envía `second_signer_id`. Si el SQL conserva la columna, la rellena el servidor con el firmante de la solicitud aprobada.
 
 ### 3.8 Controversias
 
@@ -2997,7 +3105,7 @@ Los `REVOKE` de este bloque solo protegen si existen los `GRANT` explícitos de 
 
 1. **INV-38.** Existen al menos dos `ADMIN_SUPER` activos en todo momento. Se rechaza cualquier revocación o suspensión que deje menos de dos, también cuando dos operaciones concurrentes actúan sobre titulares distintos. Si el número baja a uno por cualquier vía, salta una alarma de severidad alta.
 2. **Techo y firma en toda activación (H-09).** Reactivar una asignación revocada, es decir, hacer un `UPDATE` que vuelve `revoked_at` a nulo o cambia el subrol, pasa los mismos controles que un `INSERT`: nadie se otorga a sí mismo, techo de privilegio y segunda firma cuando corresponda.
-3. **Incompatibilidades en asignación (H-08).** INC-01 a INC-05 e INC-11 se rechazan al asignar, tanto por `INSERT` como por reactivación.
+3. **Incompatibilidades en asignación (H-08).** INC-01 a INC-05 se rechazan al asignar, tanto por `INSERT` como por reactivación. INC-11 **no** se comprueba en asignación: depende de la acción concreta y se comprueba en ejecución (A11, §7.2).
 4. **Arranque.** El primer y el segundo titular se crean conforme al PRD (DP-16), sin cuentas ficticias en producción. Las pruebas pueden usar identidades sintéticas.
 
 > **[ZC-11 · zona sin IA · aporte C1]** Los disparadores siguientes conservan el código de V7 y **no cumplen la norma anterior**, así que C1 necesita un aporte humano. `assert_min_super_admins` rechaza solo si no queda ningún otro titular (`n < 1`), así que permite quedarse con uno solo (H-07). Además no cubre las suspensiones ni la concurrencia. `trg_grant_ceiling` se dispara solo en `INSERT`, así que una reactivación por `UPDATE` se salta el techo y la segunda firma (H-09). Falta el disparador de incompatibilidades en asignación (H-08). Los casos corregidos de §14.3 fallarán contra este código, y es lo esperado. Lo reemplaza el código escrito a mano por su dueño.
@@ -3065,7 +3173,9 @@ Los `REVOKE` de este bloque solo protegen si existen los `GRANT` explícitos de 
     -- Unica delegacion: el rol de mayor rotacion y menor privilegio.
     INSERT INTO subrole_grant_matrix VALUES ('SUPPORT_SUPERVISOR','SUPPORT_L1',false);
 
-**INC-01 a INC-05 y INC-11 se imponen en asignación** mediante disparador que consulta `subrole_incompatibilities` antes de insertar en `subrole_assignments` o de reactivar una asignación. **INC-06 a INC-10 se imponen en ejecución**, porque dependen del sorteo concreto: se verifican en el servicio y son casos de prueba obligatorios. Ambos mecanismos son zona crítica (ZC-11, ZC-16) y los escribe a mano su dueño.
+**INC-01 a INC-05 se imponen en asignación** mediante disparador que consulta `subrole_incompatibilities` antes de insertar en `subrole_assignments` o de reactivar una asignación. **INC-06 a INC-09 e INC-11 se imponen en ejecución**, porque dependen del sorteo o de la acción concreta: se verifican en el servicio y son casos de prueba obligatorios. INC-07 se comprueba solo en ejecución. **INC-10 es organizativo y auditado**, sin comprobación en la base. Así lo decidió Diego el 2026-09-30 (A11): prevalece §7.2. El campo `enforcement` de cada fila de `subrole_incompatibilities` se siembra con ese momento. Ambos mecanismos son zona crítica (ZC-11, ZC-16) y los escribe a mano su dueño.
+
+**Segunda firma de un otorgamiento.** Cuando la matriz exige segunda firma (`SUBROLE_GRANT`), firma otro `ADMIN_SUPER` distinto de quien otorga (A1, §7.2). El disparador anterior solo exige que exista `second_signer_id`; comprobar persona y subrol del firmante forma parte del aporte humano de ZC-11.
 
 ## 4\. Máquina de estados del sorteo
 
@@ -3092,11 +3202,14 @@ Implementación de §4.2 del PRD. Se carga como datos, no como condicionales en 
 | `DRAFT`                                                            | `PENDING_VALUATION` | `SUBMIT_FOR_REVIEW`     | CLIENT\_MANAGER                              | Premio completo y bases redactadas                        |
 | `PENDING_VALUATION`                                                | `PENDING_LEGAL`     | `VALUATION_APPROVED`    | SUPPORT\_VALUATOR o ADMIN\_LEGAL\_COMPLIANCE | Banda satisfecha; desviación ≤ 20 % o excepción firmada   |
 | `PENDING_VALUATION`                                                | `REJECTED`          | `AUTO_REJECT_DEVIATION` | SYSTEM                                       | Desviación \> 50 %                                        |
-| `PENDING_VALUATION`                                                | `DRAFT`             | `VALUATION_OBSERVED`    | Verificador                                  | Motivo obligatorio                                        |
+| `PENDING_VALUATION`                                                | `DRAFT`             | `VALUATION_OBSERVED`    | SUPPORT\_VALUATOR o ADMIN\_LEGAL\_COMPLIANCE | Motivo obligatorio (A3)                                   |
+| `PENDING_VALUATION`                                                | `REJECTED`          | `VALUATION_REJECTED`    | SUPPORT\_VALUATOR o ADMIN\_LEGAL\_COMPLIANCE | Motivo obligatorio (A6)                                   |
 | `PENDING_LEGAL`                                                    | `PENDING_APPROVAL`  | `LEGAL_GATE_PASSED`     | ADMIN\_LEGAL\_COMPLIANCE                     | `gate_scope` satisfecho; en P-C, etapas E1–E4 aprobadas   |
+| `PENDING_LEGAL`                                                    | `DRAFT`             | `LEGAL_GATE_OBSERVED`   | ADMIN\_LEGAL\_COMPLIANCE                     | Motivo obligatorio; subsanable (A6) [LEGAL→ABOGADO]       |
+| `PENDING_LEGAL`                                                    | `REJECTED`          | `LEGAL_GATE_REJECTED`   | ADMIN\_LEGAL\_COMPLIANCE                     | Motivo obligatorio; terminal (A6) [LEGAL→ABOGADO]         |
 | `PENDING_APPROVAL`                                                 | `SCHEDULED`         | `APPROVE_SCHEDULED`     | ADMIN\_MODERATION                            | `starts_at` futuro                                        |
 | `PENDING_APPROVAL`                                                 | `ACTIVE`            | `APPROVE_IMMEDIATE`     | ADMIN\_MODERATION                            | Capacidad y categoría habilitadas en el mercado           |
-| `PENDING_APPROVAL`                                                 | `REJECTED`          | `REJECT`                | ADMIN\_MODERATION                            | Motivo estructurado                                       |
+| `PENDING_APPROVAL`                                                 | `REJECTED`          | `REJECT`                | ADMIN\_MODERATION                            | Motivo estructurado de la lista A11.1                     |
 | `SCHEDULED`                                                        | `ACTIVE`            | `START_SALE`            | SYSTEM                                       | Llegada de `starts_at`                                    |
 | `ACTIVE`                                                           | `PAUSED`            | `PAUSE`                 | ADMIN\_RISK, ADMIN\_COMPLIANCE, SYSTEM       | Motivo obligatorio                                        |
 | `PAUSED`                                                           | `ACTIVE`            | `RESUME`                | Quien pausó o superior                       | Causa resuelta                                            |
@@ -3112,14 +3225,18 @@ Implementación de §4.2 del PRD. Se carga como datos, no como condicionales en 
 | `READY_TO_DRAW`                                                    | `POOL_FROZEN`       | `FREEZE_POOL`           | SYSTEM                                       | Compromiso y baliza publicados                            |
 | `POOL_FROZEN`                                                      | `DRAW_EXECUTED`     | `EXECUTE_DRAW`          | SYSTEM                                       | `now() ≥ earliest_execution_at` y baliza disponible       |
 | `DRAW_EXECUTED`                                                    | `IN_RESOLUTION`     | `OPEN_ROOM`             | SYSTEM                                       | —                                                         |
-| `IN_RESOLUTION`                                                    | `DELIVERY_ATTESTED` | `ATTEST`                | SUPPORT\_L2 o ADMIN\_LEGAL\_COMPLIANCE       | Segunda firma en P-C                                      |
+| `IN_RESOLUTION`                                                    | `DELIVERY_ATTESTED` | `ATTEST`                | SUPPORT\_L2 o ADMIN\_LEGAL\_COMPLIANCE       | En P-C, `SignatureRequest` `ATTEST_PC` firmada (A9)       |
 | `IN_RESOLUTION`                                                    | `CANCELLED`         | `RESOLVE_CANCEL`        | ADMIN                                        | Ruta declarada = CANCEL, o incumplimiento del organizador |
 | `DELIVERY_ATTESTED`                                                | `SETTLED`           | `PAY_SETTLEMENT`        | ADMIN\_FINANCE                               | Seis gates verdaderos                                     |
 | `SETTLED`                                                          | `CLOSED`            | `CLOSE`                 | SYSTEM                                       | Ventana de retención vencida sin incidencias              |
 | Cualquiera previo a `DRAW_EXECUTED`                                | `SUSPENDED_MARKET`  | `MARKET_KILL_SWITCH`    | ADMIN\_SUPER                                 | Nivel de suspensión aplicable                             |
-| `SUSPENDED_MARKET`                                                 | Estado anterior     | `MARKET_RESUME`         | ADMIN\_SUPER                                 | Segunda firma                                             |
+| `SUSPENDED_MARKET`                                                 | Estado anterior     | `MARKET_RESUME`         | ADMIN\_SUPER                                 | Segunda firma de otro ADMIN\_SUPER (A1)                   |
 
 **Estados terminales sin salida:** `CLOSED`, `CANCELLED`, `REJECTED`.
+
+**Decisiones V8 en esta tabla (A3, A6, A11).** La observación de una valoración la hacen quienes aprueban la banda, sin subrol nuevo. Los tres rechazos u observaciones manuales (`VALUATION_REJECTED`, `LEGAL_GATE_OBSERVED`, `LEGAL_GATE_REJECTED`) exigen motivo y replican el patrón de `VALUATION_OBSERVED`. Se añaden como filas de esta tabla; no se escribe aquí SQL para ellas: su carga en `fsm_transitions` y el punto único de transición (§4.2, H-08) siguen siendo aporte humano. No se crean estados nuevos: los destinos `DRAFT` y `REJECTED` ya existen.
+
+**Motivo estructurado de `REJECT` (A11.1).** Lista cerrada aprobada por Diego el 2026-09-30: `CONTENT_POLICY`, `PRIZE_INELIGIBLE`, `TERMS_INCOMPLETE`, `MEDIA_INVALID`, `LEGAL_REQUIREMENT` y `OTHER`. `OTHER` exige texto.
 
 **Semilla de `fsm_transitions` (H-08).** La migración 026 carga todas las filas de esta tabla y de §4.3 como datos. Una comprobación de cobertura en la migración verifica que cada fila de ambas tablas existe en `fsm_transitions`. La mera prosa no cuenta como semilla.
 
@@ -3159,7 +3276,9 @@ Sin esta semilla los ocho tipos son diseño y no implementación. Se carga en la
     ('T8','Live',                'SOLD_OUT',  false, false, false, true,
        '{"inherits_from_base_type":true,"visual_only":true}');
 
-**Nota sobre T8.** Su `trigger_kind` en la semilla es un valor de relleno: el disparo real proviene siempre de `base_type`. La restricción `ck_raffles_base_type` garantiza que exista, y el invariante INV-17 que no altere la matemática.
+**Nota sobre T8.** Su `trigger_kind` en la semilla es un valor de relleno: el disparo real proviene siempre de `base_type`. La restricción `ck_raffles_base_type` garantiza que exista, y el invariante INV-17 que no altere la matemática. T8 es la única capacidad de sorteo en vivo; no existe una capacidad `LIVE` separada (A5).
+
+**T1 y T7 en V8 (C1, C2).** `expiry_policy_required` de T1 se satisface con la política de §3.1: duración máxima y desenlace al vencer (sortear si se alcanzó el mínimo vendido; si no, cancelar con reembolso). Las filas de la tabla de §4.1 que llevan ese vencimiento a sorteo o a cancelación no se añaden todavía: dependen del umbral pendiente (DP-24) y no se crean estados nuevos para anticiparlas. En T7, `independent_edition` se complementa con la duración propia de cada edición, que no supera el intervalo de la serie (sin solape).
 
 ### 4.2 Aplicación de la transición
 
@@ -3205,7 +3324,7 @@ Toda transición pasa por un único punto de entrada, que en una sola transacci�
 
 ## 5\. Motor de sorteo
 
-> **[ZC-13 · zona sin IA · aporte C1]** Las secciones §5.2 a §5.7 conservan el motor, la serialización canónica, la verificación y los vectores de V7. C1 necesita aportes humanos para los defectos siguientes; lo demás se conserva. Defectos abiertos: H-10 (vectores sin resultado esperado), H-11 (`verify_draw` compara el valor de la ronda con su identificador; dos implementaciones honestas pueden divergir) y H-12 (semilla cifrada sin almacenamiento definido; baliza sin fuente ni espera acotada). Los requisitos V8 están en §5.8. Ni la especificación cerrada, ni el código, ni los valores esperados se generan en este borrador. Los aportan su dueño y una implementación humana independiente.
+> **[ZC-13 · zona sin IA · aporte C1]** Las secciones §5.2 a §5.7 conservan el motor, la serialización canónica, la verificación y los vectores de V7. C1 necesita aportes humanos para los defectos siguientes; lo demás se conserva. Defectos abiertos: H-10 (vectores sin resultado esperado), H-11 (`verify_draw` compara el valor de la ronda con su identificador; dos implementaciones honestas pueden divergir) y H-12 (semilla cifrada sin almacenamiento definido; baliza con fuente heredada sin fijar ni espera acotada; la fuente queda ratificada en V8 como drand quicknet, D1). Los requisitos V8 están en §5.8. Ni la especificación cerrada, ni el código, ni los valores esperados se generan en este borrador. Los aportan su dueño y una implementación humana independiente.
 
 ### 5.1 Propiedades exigibles
 
@@ -3220,7 +3339,7 @@ Toda transición pasa por un único punto de entrada, que en una sola transacci�
 
 **Lo que se corrige respecto del algoritmo heredado.** La versión previa obtenía entropía pública *en el momento de ejecutar*, sin compromiso previo. Quien opera podía obtenerla, calcular el resultado y repetir la operación si no le convenía. Su verificación recomputaba a partir del valor almacenado por el propio operador: comprobaba **consistencia aritmética, no honestidad**. D-02, D-03 y D-04 no se cumplían.
 
-**Estado V8.** D-05 no se cumple mientras sigan abiertos H-10 y H-11: sin resultados esperados y con un verificador ambiguo, dos implementaciones honestas pueden obtener resultados distintos.
+**Estado V8.** D-05 no se cumple mientras sigan abiertos H-10 y H-11: sin resultados esperados y con un verificador ambiguo, dos implementaciones honestas pueden obtener resultados distintos. Ratificar drand quicknet como fuente (D1, §5.8) no cierra ninguno de los dos.
 
 ### 5.2 Serialización canónica del pool
 
@@ -3435,7 +3554,7 @@ Comprueba la exclusión del ganador original y el compromiso nuevo.
 
 Estos requisitos proceden de la nota de seguridad de C1. Especifican la aceptación sin dar el código.
 
-1. **Tres datos separados.** La especificación distingue el identificador de red o ronda, el instante programado y los bytes de aleatoriedad. El verificador consulta la ronda comprometida y valida la autenticidad de la baliza con la suite de firmas de la fuente. No acepta el `retrieved_at` que da LIBOX. Fuente, suite de firmas, serialización y codificación se cierran en DP-04 antes de producir ningún resultado esperado.
+1. **Tres datos separados.** La especificación distingue el identificador de red o ronda, el instante programado y los bytes de aleatoriedad. El verificador consulta la ronda comprometida y valida la autenticidad de la baliza con la suite de firmas de la fuente. No acepta el `retrieved_at` que da LIBOX. **La fuente está ratificada (D1):** drand quicknet, red principal no encadenada con período de 3 s, cadena `52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971`. Identidad de cadena y clave pública de confianza se fijan en la configuración versionada; no basta el nombre `quicknet` ni HTTPS, y `latest` no es una selección de ronda válida. Un relay alternativo solo puede servir la misma cadena y la misma ronda. Siguen pendientes en DP-04, como aporte humano, la biblioteca compatible con el esquema de firma, la serialización y codificación de cada campo, la interfaz de `verify_draw` y los resultados esperados de los cinco vectores; ninguno se produce en este borrador ([propuesta de baliza](baliza-propuesta.md)).
 2. **Semilla cifrada (H-12).** Antes de publicar el compromiso se persisten el texto cifrado de `server_seed` con cifrado autenticado, el identificador y la versión de la clave y la referencia al sorteo. La clave se gestiona aparte (DP-06). Solo el ejecutor autorizado puede descifrar, y el texto en claro no llega a registros ni a copias sin cifrar. La restauración de clave y datos se ensaya (§13.5).
 3. **Baliza tardía.** Si la ronda no está disponible en `earliest_execution_at`, se aplica §12.10. El vencimiento no autoriza otra ronda, otra semilla ni un sorteo manual.
 4. **Vectores completos.** Cada vector de §5.7 lleva sus salidas, obtenidas y verificadas por dos implementaciones humanas independientes (§14.5).
@@ -3660,7 +3779,12 @@ Toda divergencia genera alarma de familia `LEDGER` y severidad alta. **L-04 es l
 | Sorteo propio              | —         | W        | W        | R        | R         | R       | R       | R        | R        | —        | A        | R         | R        | R        | R        | —        | R        |
 | Aprobar sorteo             | —         | —        | —        | —        | —         | —       | —       | —        | —        | —        | **A**    | —         | —        | —        | —        | —        | —        |
 | Valoración de premio       | —         | W        | W        | —        | R         | R       | R       | **A**    | R        | —        | R        | R         | —        | **A**    | —        | —        | R        |
-| Etapas P-C                 | —         | W        | W        | W        | R         | R       | R       | R        | R        | —        | R        | R         | —        | **A**    | R        | —        | R        |
+| Cofirma de valoración V2   | —         | —        | —        | —        | —         | —       | —       | —        | —        | —        | **A**    | —         | —        | —        | —        | —        | —        |
+| Etapas P-C: expediente     | —         | W        | W        | W        | R         | R       | R       | R        | R        | —        | R        | R         | —        | R        | R        | —        | R        |
+| P-C E1 elegibilidad        | —         | —        | —        | —        | —         | R       | R       | R        | R        | —        | R        | **A**     | —        | R        | R        | —        | R        |
+| P-C E2–E4 y E7             | —         | —        | —        | —        | —         | R       | R       | R        | R        | —        | R        | R         | —        | **A**    | R        | —        | R        |
+| P-C E6 verificación        | —         | —        | —        | —        | —         | R       | **A**   | R        | R        | —        | R        | R         | —        | R        | R        | —        | R        |
+| P-C E6 habilitación        | —         | —        | —        | —        | —         | R       | R       | R        | R        | —        | R        | R         | —        | **A**    | R        | —        | R        |
 | Gate legal                 | —         | —        | —        | —        | —         | —       | —       | —        | —        | —        | R        | —         | —        | **A**    | —        | —        | R        |
 | Datos de cobro             | —         | **A**    | —        | —        | R         | —       | —       | —        | —        | —        | —        | —         | R        | —        | R        | —        | R        |
 | Sala: cola                 | —         | —        | —        | —        | —         | R       | R       | —        | R        | —        | R        | R         | —        | R        | R        | —        | R        |
@@ -3673,15 +3797,20 @@ Toda divergencia genera alarma de familia `LEDGER` y severidad alta. **L-04 es l
 | Congelar cuenta            | —         | —        | —        | —        | —         | —       | —       | —        | —        | —        | —        | **A**     | —        | —        | A        | —        | A        |
 | Capacidades del cliente    | —         | —        | —        | —        | —         | —       | —       | —        | —        | —        | —        | **A**     | —        | —        | —        | —        | A        |
 | Expediente de cumplimiento | —         | —        | —        | —        | —         | —       | —       | —        | —        | —        | —        | R         | —        | R        | **A**    | —        | R        |
+| Decisión KYB               | —         | —        | —        | —        | —         | —       | —       | —        | —        | —        | —        | R         | —        | —        | **A**    | —        | —        |
 | Aprobación sobre umbral    | —         | —        | —        | —        | —         | —       | —       | —        | —        | —        | —        | —         | —        | —        | **A**    | —        | A        |
 | Panel de alarmas           | —         | —        | —        | —        | —         | R       | R       | R        | R        | R        | R        | R         | R        | R        | R        | R        | A        |
 | Indicadores conductuales   | —         | —        | —        | —        | —         | —       | —       | —        | —        | R        | R        | —         | —        | —        | —        | **A**    | R        |
 | Configuración de mercado   | —         | —        | —        | —        | —         | —       | —       | —        | —        | —        | —        | —         | —        | **A**    | R        | —        | A        |
 | Suspensión de mercado      | —         | —        | —        | —        | —         | —       | —       | —        | —        | —        | —        | —         | —        | R        | R        | —        | **A**    |
 | Usuarios internos          | —         | —        | —        | —        | —         | —       | —       | —        | —        | —        | —        | —         | —        | —        | —        | —        | **A**    |
-| Segunda firma              | —         | —        | —        | —        | —         | —       | —       | —        | —        | —        | —        | —         | —        | —        | —        | —        | **A**    |
+| Segunda firma†             | —         | —        | —        | —        | —         | —       | —       | A        | —        | —        | A        | —         | —        | A        | —        | —        | **A**    |
 
 `W*` = escritura restringida a las salas en que la persona es parte o asignada.
+
+`†` = solo en los `action_code` en que la política de §7.2 lo hace firmante; nunca sobre su propia solicitud.
+
+**Decisiones V8 en esta matriz (A1, A2, A4, A7).** La cofirma de la banda V2 da a `ADMIN_MODERATION` la acción de cofirmar, no escritura sobre la valoración. La fila única "Etapas P-C" de V7 se parte por etapa según el PRD MVP V9: E1 la aprueba `ADMIN_RISK`; E2, E3, E4 y E7, `ADMIN_LEGAL_COMPLIANCE`; E5 es automática y no tiene aprobador; E6 tiene dos pasos, verificación de `SUPPORT_L2` y habilitación de `ADMIN_LEGAL_COMPLIANCE`. [LEGAL→ABOGADO] en E2, E4 y E7. KYB lo decide `ADMIN_COMPLIANCE` y lo lee `ADMIN_RISK`, que habilita capacidades: así se separa quien verifica al cliente de quien le habilita capacidades. La fila "Segunda firma" deja de ser exclusiva de `ADMIN_SUPER`: el firmante de cada acción lo fija la política de §7.2.
 
 La lista de roles no basta. Cada operación comprueba también pertenencia al recurso, estado y separación de funciones. En el contrato de §11 se describe con `x-authorization`.
 
@@ -3695,13 +3824,33 @@ La lista de roles no basta. Cada operación comprueba también pertenencia al re
 | INC-04 | `ADMIN_COMPLIANCE` y `ADMIN_MODERATION`                  | Asignación             |
 | INC-05 | `ADMIN_BEHAVIORAL` y `ADMIN_FINANCE`                     | Asignación             |
 | INC-06 | `SUPPORT_VALUATOR` no atesta el sorteo que valoró        | **Ejecución**          |
-| INC-07 | `ADMIN_FINANCE` no atesta entregas                       | Asignación y ejecución |
+| INC-07 | `ADMIN_FINANCE` no atesta entregas                       | **Ejecución**          |
 | INC-08 | Quien adjudica no atestó ese caso                        | **Ejecución**          |
-| INC-09 | Segunda firma de otra persona y otro subrol              | **Ejecución**          |
+| INC-09 | Segunda firma de otra persona y, salvo en acciones propias de `ADMIN_SUPER`, de otro subrol | **Ejecución** |
 | INC-10 | Sin métrica de volumen para roles de aprobación de valor | Organizativo, auditado |
 | INC-11 | `ADMIN_SUPER` no firma en segundo lugar su propia acción | **Ejecución**          |
 
 Las de asignación se imponen por disparador sobre `subrole_assignments`, también al reactivar una asignación. Las de ejecución se verifican en el servicio y son casos de prueba obligatorios (§14.3). Ambas son zona crítica (ZC-11, ZC-16). La suspensión de la revisión humana del repositorio no suprime ninguna incompatibilidad ni segunda firma del producto.
+
+**Momento de INC-07, INC-10 e INC-11 (A11).** Esta tabla prevalece sobre cualquier otro texto del documento. INC-07 se comprueba solo en ejecución: `ADMIN_FINANCE` no tiene `A` para atestar y no hay par de subroles que bloquear al asignar. INC-10 es organizativo y auditado, sin comprobación en la base. INC-11 depende de la acción concreta y se comprueba en ejecución.
+
+**Política de segunda firma por `action_code` (A1).** Decidida por Diego el 2026-09-30. Se carga como dato, no como condicionales en código. Reglas: la segunda firma es siempre de **otra persona** (INC-11: nadie firma su propia acción); es de **otro subrol**, salvo cuando la acción es propia de `ADMIN_SUPER`, en cuyo caso firma **otro** `ADMIN_SUPER` (coherente con INV-38). Sin una fila en esta tabla, una solicitud no es firmable (falla cerrado).
+
+| `action_code` | Solicita normalmente | Firmantes elegibles |
+| ------------- | -------------------- | ------------------- |
+| `VALUATION_V2_COSIGN` | `SUPPORT_VALUATOR` | `ADMIN_MODERATION` (A2) |
+| `VALUATION_V4` | `SUPPORT_VALUATOR` | `ADMIN_LEGAL_COMPLIANCE` |
+| `VALUATION_EXCEPTION` | `SUPPORT_VALUATOR` o `ADMIN_LEGAL_COMPLIANCE` | El otro de los dos; `ADMIN_SUPER` |
+| `PC_STAGE_E3` | `ADMIN_LEGAL_COMPLIANCE` | `ADMIN_SUPER` |
+| `PC_STAGE_E7` | `ADMIN_LEGAL_COMPLIANCE` | `ADMIN_SUPER` |
+| `ATTEST_PC` | `ADMIN_LEGAL_COMPLIANCE` | `ADMIN_SUPER` |
+| `CAPABILITY_PLATFORM_DISABLE` | `ADMIN_SUPER` | Otro `ADMIN_SUPER` |
+| `MARKET_RESUME` | `ADMIN_SUPER` | Otro `ADMIN_SUPER` |
+| `MULTIPLE_OVERRIDE` | `ADMIN_COMPLIANCE` | `ADMIN_SUPER` |
+| `SUBROLE_GRANT` | `ADMIN_SUPER` | Otro `ADMIN_SUPER` |
+| `MFA_RESET_INTERNAL` | `ADMIN_SUPER` | Otro `ADMIN_SUPER` |
+
+`MULTIPLE_OVERRIDE` toca el rango de recaudación: aquí solo se fija el firmante, no la regla del múltiplo, que es zona sin IA. Todas las segundas firmas, incluida la atestación P-C (A9), usan el mismo mecanismo `SignatureRequest`, con INC-09 e INC-11 comprobados en un único punto. La comprobación es lógica de servicio en zona sin IA (ZC-16).
 
 ### 7.3 Autenticación y sesión
 
@@ -3714,20 +3863,23 @@ Las de asignación se imponen por disparador sobre `subrole_assignments`, tambi�
 | Reutilización de testigo | El proveedor admite una ventana de reutilización de 10 s y mantiene activo el testigo padre. Las excepciones se documentan y el evento de riesgo de LIBOX se alimenta por un puente verificable (P-01) | Ya no se garantiza que "toda reutilización revoca la familia" |
 | Multifactor | Obligatorio para todo subrol interno (RN-05). Toda ruta interna exige nivel `aal2`; tener el factor enrolado no basta | — |
 | Inactividad interna | La sesión aplicativa expira a los 30 minutos sin actividad humana. Solo cuentan las solicitudes autenticadas de interacción; no cuentan la renovación de testigos, el sondeo ni un latido que alargue la sesión indefinidamente | El temporizador del proveedor mide renovaciones, no interacción |
-| Acciones sensibles | Reautenticación o MFA reciente (`app_sessions.reauthenticated_at`) | — |
+| Acciones sensibles | Reautenticación o MFA reciente (`app_sessions.reauthenticated_at`), válida **5 minutos** (A10). Pasado ese plazo, la acción exige reautenticar | La ventana la fijó Diego el 2026-09-30; antes era un supuesto |
 | Revocación y cambio de rol | Efectivos en el siguiente acceso interno | — |
 | Contraseña | La gestiona el proveedor con bcrypt. LIBOX no guarda segunda copia | Sustituye al argon2id almacenado por LIBOX |
 | Portabilidad | **Nunca exclusivamente por cookie** (RN-213). La aplicación nativa futura usa Bearer con el mismo mecanismo | — |
 
 Los testigos no aparecen nunca en registros ni en URLs. El cliente no recibe acceso directo a tablas de dominio ni la clave `service_role`. INV-38 se mantiene: mínimo dos `ADMIN_SUPER` activos (§3.16.1).
 
+**Datos personales y Supabase (B1-bis).** La compatibilidad con Supabase es obligatoria (Diego, 2026-09-30). El cifrado de C-14 se aplica en el backend con AWS KMS y no sustituye a los `GRANT` de §1.4: protege ante el robo de la base, y los permisos limitan qué componente lee qué. Antes de implementarlo hay que definir el alcance de Supabase Auth y el inventario de datos personales, incluidos documentos, registros y exportaciones (DP-26). La excepción para guardar email o teléfono en `auth.users` sigue **pendiente y no autorizada**, y esta exigencia no ratifica sustituir Supabase Auth por una autenticación propia. También quedan pendientes la rotación de la clave maestra y de la clave HMAC con su recifrado (DP-06), las vistas seudonimizadas de `libox_read` y la caché de claves de datos en el backend con su tiempo de vida.
+
 ### 7.4 Protección de identificadores de documento
 
 1. **HMAC-SHA-256 (C-13).** Los identificadores de documento se guardan como HMAC con secreto fuera de la base. La entrada canónica incluye versión de clave, mercado, tipo de documento y número normalizado.
 2. **Normalización exacta por tipo.** Se fija para cada tipo de documento. No se añaden ceros, prefijos ni formatos regionales que la fuente oficial no defina.
-3. **Rotación.** Hay un periodo de coexistencia controlado y búsqueda con todas las versiones activas (§2.2). No se reemplazan valores sin un plan de migración. La gestión del secreto está en DP-06.
-4. **Telemetría.** Ningún DNI, carga de KYC, clave ni testigo llega a registros, trazas ni analítica.
-5. **Aceptación.** Vectores de normalización y de rotación escritos por el dueño, y búsqueda en registros que demuestre la ausencia de DNI y claves.
+3. **Rotación.** Hay un periodo de coexistencia controlado y búsqueda con todas las versiones activas (§2.2). No se reemplazan valores sin un plan de migración. La gestión del secreto y su rotación están en DP-06.
+4. **Cifrado de sobre (B1-bis, C-14).** Los datos personales, incluido el número de documento, se cifran con una clave de datos que entrega AWS KMS (AES-256-GCM). Se guardan el texto cifrado y la clave de datos cifrada; la clave maestra no sale de KMS. CloudTrail registra llamadas a KMS; cada acceso mediante claves de datos ya obtenidas requiere auditoría aplicativa, según el [alcance KMS/Auth](compatibilidad-supabase-kms.md). La huella HMAC de búsqueda usa una clave propia, distinta de la de cifrado.
+5. **Telemetría.** Ningún DNI, carga de KYC, clave ni testigo llega a registros, trazas ni analítica.
+6. **Aceptación.** Vectores de normalización y de rotación escritos por el dueño, y búsqueda en registros que demuestre la ausencia de DNI y claves.
 
 ### 7.5 Evidencias y almacenamiento de objetos
 
@@ -3769,6 +3921,7 @@ Los testigos no aparecen nunca en registros ni en URLs. El cliente no recibe acc
 | ---------------------------------------------- | ---- | --------------------------------------------------------------------- |
 | `ERR_AUTH_INVALID_CREDENTIALS`                 | 401  | Los datos de acceso no son correctos.                                 |
 | `ERR_AUTH_MFA_REQUIRED`                        | 401  | Se requiere verificación adicional.                                   |
+| `ERR_AUTH_REAUTH_REQUIRED`                     | 401  | Vuelve a verificar tu identidad para continuar.                       |
 | `ERR_AUTH_TOKEN_EXPIRED`                       | 401  | La sesión expiró. Ingresa nuevamente.                                 |
 | `ERR_AUTH_TOKEN_REUSE`                         | 401  | Se detectó un problema de seguridad. Ingresa nuevamente.              |
 | `ERR_AUTH_RATE_LIMITED`                        | 429  | Demasiados intentos. Espera unos minutos.                             |
@@ -4054,7 +4207,15 @@ Se usa el límite **superior** del intervalo para declarar incumplimiento: se af
                           "LIVE_ANIMALS","ADULT","CRYPTO"] }
     }
 
-`market_config` es un documento interno en JSONB, así que sus importes son enteros en unidad mínima. Cuando un importe de configuración se expone por la API, se convierte al esquema `Money` (§11.1). `draw.beacon_source` y `providers.beacon` siguen sin elegir (DP-04). Los parámetros de baliza tardía de §12.10 se añadirán a `draw` cuando se cierre DP-05. `providers.identity.vendor` sigue en `PENDING_CONTRACT`; Truora está en evaluación y no contratado (DP-20).
+`market_config` es un documento interno en JSONB, así que sus importes son enteros en unidad mínima. Cuando un importe de configuración se expone por la API, se convierte al esquema `Money` (§11.1). La fuente de baliza está ratificada (D1): drand quicknet, con identidad de cadena y clave pública fijadas en `draw` (§5.8). Los valores `"…"` de `draw.beacon_source` y `PENDING_SELECTION` de `providers.beacon` en el ejemplo anterior son legado de V7 y se sustituyen al versionar la configuración; la codificación sigue en DP-04. Los parámetros de baliza tardía de §12.10 se añadirán a `draw` cuando se cierre DP-05. `providers.identity.vendor` sigue en `PENDING_CONTRACT`; Truora está en evaluación y no contratado (DP-20).
+
+**Decisiones V8 sobre la configuración (A5, A8, C1, C2, C4).** El ejemplo anterior es de V7 y no contiene todavía los campos que exigen las decisiones de C1; se completan al versionar la configuración, sin inventar valores:
+
+- `raffle_types` contiene solo tipos `T1`–`T8`; `T8` es la única capacidad en vivo y no hay entrada `LIVE`. Las categorías `P_C1` y `P_C2` se habilitan por `prize_categories`, no por tipos. Que una categoría P-C figure como `true` no habilita P-C mientras falte la lista de documentos por etapa (A8, DP-27).
+- `raffle_type_params.T1` debe declarar la duración máxima y el desenlace al vencer (C1). El umbral del mínimo vendido no tiene valor aprobado (DP-24).
+- `raffle_type_params.T7` debe permitir la duración propia de cada edición, que no supera el intervalo de la serie (C2). El contrato usa `edition_duration_minutes`; la comparación mensual usa instantes de calendario, no un mes fijo de 30 días.
+- El MVP solo admite régimen `PAID` (C4).
+- Los catálogos de `charge_kind` y `macrozone` están pendientes de Diego (DP-25).
 
 ### 10.2 Resolución de configuración
 
@@ -4085,7 +4246,7 @@ Se usa el límite **superior** del intervalo para declarar incumplimiento: se af
 
 ## 11\. Contratos de interfaz
 
-El artefacto normativo de esta sección es [`libox_openapi_L3_V8_DRAFT.yaml`](libox_openapi_L3_V8_DRAFT.yaml) (OpenAPI 3.1; `2.0.0-draft.2`). Contiene las 61 operaciones del inventario de §11.7 y operaciones auxiliares que el inventario omitía, documentadas en [cierre de contratos](cierre-contratos.md) y sus notas. Este candidato no fija un conteo final: el agente de contratos sigue ampliando el artefacto. Los ejemplos de esta sección son ilustrativos. Si un ejemplo contradice al artefacto, prevalece el esquema del artefacto. Ningún conteo cierra H-13 por sí solo.
+El artefacto normativo de esta sección es [`libox_openapi_L3_V8_DRAFT.yaml`](libox_openapi_L3_V8_DRAFT.yaml) (OpenAPI 3.1; `2.0.0-draft.3`). Contiene las 61 operaciones del inventario de §11.7 y operaciones auxiliares que el inventario omitía, documentadas en [cierre de contratos](cierre-contratos.md) y sus notas. Este candidato no fija un conteo final: lo fija el coordinador al cerrar la integración del artefacto. Los ejemplos de esta sección son ilustrativos. Si un ejemplo contradice al artefacto, prevalece el esquema del artefacto. Ningún conteo cierra H-13 por sí solo.
 
 ### 11.1 Convenciones
 
@@ -4103,7 +4264,7 @@ El artefacto normativo de esta sección es [`libox_openapi_L3_V8_DRAFT.yaml`](li
 | Fechas        | ISO 8601 con desplazamiento del mercado                  |
 | Versionado    | Ningún cambio incompatible sin nueva versión mayor       |
 
-**Reglas de contenido.** Cada operación lleva `operationId` único, rol y ámbito, parámetros, cuerpo, respuesta de éxito y catálogo de errores aplicables, sin esquemas genéricos vacíos. El cliente no decide gates, precio calculado de la orden, fecha efectiva de límites ni estado de pago: el servidor rechaza esos campos. El contrato no expone la clave `service_role`, identificadores KYC sensibles ni datos de otros participantes. Las operaciones con autorización inferida llevan `x-authorization-status: proposed`. Se ratifican en bloque con el resto de propuestas en C2 (P-07). Los conflictos con el canon, I-01 a I-11, esperan decisión de Diego (DP-21). Scalar publica la documentación desde el mismo artefacto que genera los tipos y las pruebas de contrato.
+**Reglas de contenido.** Cada operación lleva `operationId` único, rol y ámbito, parámetros, cuerpo, respuesta de éxito y catálogo de errores aplicables, sin esquemas genéricos vacíos. El cliente no decide gates, precio calculado de la orden, fecha efectiva de límites ni estado de pago: el servidor rechaza esos campos. El contrato no expone la clave `service_role`, identificadores KYC sensibles ni datos de otros participantes. Las operaciones con autorización inferida llevan `x-authorization-status: proposed`. Se ratifican en bloque con el resto de propuestas en C2 (P-07). Los conflictos con el canon I-01 a I-11 están decididos (A1–A11, C1–C4) y su regla está en §4.1, §7 y este apartado; los datos que siguen pendientes figuran en DP-24 a DP-27. Scalar publica la documentación desde el mismo artefacto que genera los tipos y las pruebas de contrato.
 
 **Validar no es calcular.** El esquema `Money` valida forma y rango. No calcula comisión, impuesto ni reparto, que son zona crítica.
 
@@ -4171,9 +4332,9 @@ Devuelve el documento de prueba de §5.5. Indexable, cacheable, sin datos person
 `POST /rooms/{id}/attest`:
 
     { "evidence_ids": ["uuid"], "winner_confirmed": true,
-      "statement": "…", "second_signer_id": "uuid" }
+      "statement": "…", "signature_request_id": "uuid" }
 
-Respuesta `201` con la atestación y **el estado de los seis gates de liquidación tras la evaluación**, para que el operador vea de inmediato si algo más bloquea el pago. La atestación excluye a finanzas (INC-07). Las evidencias y la exportación forense exigen autorización por recurso y quedan en `audit_access_events`.
+Respuesta `201` con la atestación y **el estado de los seis gates de liquidación tras la evaluación**, para que el operador vea de inmediato si algo más bloquea el pago. La atestación excluye a finanzas (INC-07, en ejecución). **V8 (A9):** el cuerpo ya no lleva `second_signer_id`. En P-C, la segunda firma se pide con una `SignatureRequest` de `ATTEST_PC` y la atestación referencia esa solicitud ya firmada por un `ADMIN_SUPER` distinto del solicitante (§7.2); el servidor rechaza un firmante enviado por el cliente. Es un cambio incompatible del cuerpo frente a V7 y se registra como migración del contrato. Las evidencias y la exportación forense exigen autorización por recurso y quedan en `audit_access_events`.
 
 ### 11.6 Liquidación
 
@@ -4343,7 +4504,7 @@ Se responde `200` incluso ante duplicado: un error haría reintentar indefinidam
 | `check-document-expiry`              | 24 h       | Aviso de vencimiento a 30 días                                                                                      |
 | `expire-self-exclusions`             | 1 h        | Fin de plazo de autoexclusión                                                                                       |
 | `apply-pending-limit-increases`      | 1 h        | Aumentos tras 24 horas                                                                                              |
-| `create-next-partitions`             | 24 h       | Particiones del mes siguiente                                                                                       |
+| `create-next-partitions`             | 24 h       | Particiones del mes siguiente. **V8 (B3):** lo ejecuta `pg_cron` en la base con el rol dueño; Trigger.dev solo lee `partition_status` y alarma (§1.3) |
 | `accrue-subscription-revenue`        | 24 h       | Devengo diario de suscripciones y planes promocionales (T-16)                                                       |
 | `close-exhausted-campaigns`          | 1 min      | Cerrar campañas gratuitas con cupo agotado                                                                          |
 | `open-close-operating-windows`       | 1 min      | Ejecutar lo diferido al abrirse la ventana y detener al cerrarse                                                    |
@@ -4356,7 +4517,7 @@ Se responde `200` incluso ante duplicado: un error haría reintentar indefinidam
 
 **Todos idempotentes y con bloqueo de ejecución única.** Un trabajo que se ejecuta dos veces no debe producir efecto doble.
 
-**Ejecutores (V8).** Son 30 trabajos: nueve cada minuto, dos cada 15 minutos, cuatro cada hora, catorce diarios y uno cada 10 segundos. En un mes de 30 días suman unas 657.060 activaciones. Los 29 primeros se programan en Trigger.dev, cuyo cron no baja de un minuto. `dispatch-outbox` lo dispara un ticker de Supabase Cron cada 10 s contra un endpoint privado (§12.7). Ningún trabajo se ejecuta como función larga dentro de Supabase Cron, que admite como máximo 8 trabajos concurrentes y 10 minutos por trabajo. Un cron de un minuto no acredita la cadencia de 10 s. La ejecución única de los trabajos que tocan dinero, inventario o sorteo es zona crítica, y su código lo escribe a mano su dueño.
+**Ejecutores (V8).** Son 30 trabajos: nueve cada minuto, dos cada 15 minutos, cuatro cada hora, catorce diarios y uno cada 10 segundos. En un mes de 30 días suman unas 657.060 activaciones. `create-next-partitions` corre en `pg_cron` con el rol dueño (B3, §1.3), para no sacar esa credencial de la base. Los otros 28 de los 29 primeros, y la tarea que vigila `partition_status`, se programan en Trigger.dev, cuyo cron no baja de un minuto; la frecuencia de esa vigilancia no está fijada. `dispatch-outbox` lo dispara un ticker de Supabase Cron cada 10 s contra un endpoint privado (§12.7). Fuera del DDL de particiones, ningún trabajo se ejecuta como función larga dentro de Supabase Cron, que admite como máximo 8 trabajos concurrentes y 10 minutos por trabajo. Un cron de un minuto no acredita la cadencia de 10 s. La ejecución única de los trabajos que tocan dinero, inventario o sorteo es zona crítica, y su código lo escribe a mano su dueño.
 
 ### 12.7 Outbox y despacho
 
@@ -4409,6 +4570,7 @@ Los reintentos tienen plazo de negocio, backoff acotado y alarma. Que expire un 
 | Cola de auditoría de emergencia no vacía por más de 15 minutos | Alta      |
 | Tasa de webhooks fallidos superior al 1 %                      | Alta      |
 | Falta de partición para el mes siguiente                       | Alta      |
+| **V8.** Filas en una partición `DEFAULT` (B4; procedimiento manual de §1.3) | Alta |
 | `ERR_DRAW_COMMITMENT_MISMATCH` en cualquier ocurrencia         | Alta      |
 | **V8.** Baliza no disponible 5 minutos después de `earliest_execution_at` | Alta |
 | **V8.** Número de `ADMIN_SUPER` activos igual a uno            | Alta      |
@@ -4540,10 +4702,22 @@ Ejecutan secuencias aleatorias de N operaciones y verifican que los invariantes 
 | **V8.** Reactivar una asignación que viola INC-01                           | `ERR_RBAC_INCOMPATIBLE_SUBROLE`          |
 | **V8.** Acceso interno con sesión de nivel `aal1`                           | `ERR_AUTH_MFA_REQUIRED`                  |
 | **V8.** Acceso interno tras 30 minutos sin actividad humana, habiendo renovado testigos | `ERR_AUTH_TOKEN_EXPIRED`     |
+| **V8.** Acción sensible con reautenticación de hace más de 5 minutos (A10)  | `ERR_AUTH_REAUTH_REQUIRED`               |
+| **V8.** `ADMIN_SUPER` firma `MARKET_RESUME` solicitado por otro `ADMIN_SUPER` (A1) | **Admitido**                      |
+| **V8.** `ADMIN_SUPER` firma su propia `SUBROLE_GRANT` (INC-11, en ejecución) | `ERR_RBAC_SELF_SIGNATURE`               |
+| **V8.** Firmante fuera de la política del `action_code`, p. ej. `ADMIN_FINANCE` en `VALUATION_V2_COSIGN` (A1) | `ERR_RBAC_FORBIDDEN` |
+| **V8.** `action_code` sin fila en la política de firma                      | Rechazo: la solicitud no es firmable     |
+| **V8.** Atestación P-C con `second_signer_id` en el cuerpo, sin `SignatureRequest` `ATTEST_PC` firmada (A9) | Rechazo de validación del contrato |
+| **V8.** `VALUATION_REJECTED`, `LEGAL_GATE_OBSERVED` o `LEGAL_GATE_REJECTED` sin motivo (A6) | Rechazo de la transición        |
+| **V8.** `REJECT` en moderación con motivo fuera de la lista A11.1, u `OTHER` sin texto | Rechazo de validación         |
+| **V8.** Decidir KYB con un subrol distinto de `ADMIN_COMPLIANCE` (A7)        | `ERR_RBAC_FORBIDDEN`                     |
+| **V8.** Habilitar la capacidad `LIVE` o `P_C1` como tipo de sorteo (A5)      | Rechazo de validación                    |
 | Suspender la propia cuenta interna                                          | `ck_susp_self`                           |
 | Restaurar una suspensión sin motivo                                         | `ck_susp_restore`                        |
 
 **V8.** Los casos "revocar al penúltimo: admitido" y "revocar al último: rechazado" de la versión anterior contradecían INV-38 del PRD y quedan derogados. Los casos nuevos fallarán contra el código heredado de ZC-11, como se espera.
+
+**V8 (decisiones C1).** Los casos de firma, reautenticación, rechazos manuales, motivos de moderación, KYB y capacidades derivan de A1–A11. Donde el resultado esperado no tiene aún código de error en §8.2, lo fija el dueño del contrato (P-08); no se inventa uno nuevo para estos casos. Su comprobación es lógica de servicio en zona sin IA (ZC-16) y se ejecuta contra el backend en D1.
 
 ### 14.4 Concurrencia
 
@@ -4650,20 +4824,22 @@ Los siguientes valores figuran como `PENDING_LEGAL_OPINION` en la configuración
 
 **Añadidas en V8** [LEGAL→ABOGADO]: custodia del dinero (ASS-001, DP-01) · momento de reconocimiento de comisión e impuesto (H-03, DP-02) · devolución al medio de pago original y pago tardío (DP-03, P-02) · retención por clase de documento y necesidad de Object Lock (DP-10) · retención de `operation_register` y de los registros de pagos (DP-12).
 
+**Añadidas por las decisiones C1** [LEGAL→ABOGADO]: aprobadores de las etapas P-C E2, E4 y E7 (A4) · observación y rechazo del gate legal (A6) · lista cerrada de documentos por etapa P-C (A8, DP-27) · expiración de T1, mínimo vendido y aviso al comprador, por protección al consumidor y reglas de sorteos promocionales (C1, DP-24) · plazo de `psp_events` como soporte contable del pago y de `operation_register` (B6). La fianza propuesta por Cowork no está aprobada y no forma parte de estas materias como regla vigente (§0.8).
+
 ## Anexo C — Criterios de cierre por fase
 
 Cada fase exige solo lo suyo. Una prueba de D1/R1 no condiciona C1, y una decisión que bloquea R1 no condiciona C2. Las restricciones de las zonas sin IA y los hallazgos pendientes siguen vigentes en todas las fases.
 
 **C1 — candidato listo.** Se cierra cuando existen:
 
-1. **SQL candidato desplegable.** Esquema V7, más la capa no crítica (particiones, ACL base, semillas no críticas y DDL de identidad de §2.2), más los aportes humanos de §0.5: H-04, H-07, H-08 (con arranque según DP-16), H-09 y el DDL de semilla cifrada de H-12. Todo se ejecuta sobre PostgreSQL 17 con cero errores y con las pruebas negativas de §0.2.1.
-2. **Contratos.** OpenAPI 3.1 en `2.0.0-draft.2`, con las 61 operaciones del inventario y las auxiliares documentadas, y pruebas estructurales en verde. Los conflictos I-01 a I-11 están decididos o delimitados (DP-21).
+1. **SQL candidato desplegable.** Esquema V7, más la capa no crítica (particiones, ACL base, semillas no críticas y DDL de identidad de §2.2), más los aportes humanos de §0.5: H-04, H-07, H-08 (con arranque según DP-16), H-09 y el DDL de semilla cifrada de H-12. La ACL sigue las clases de B1 (§1.4); las seis tablas reclasificadas (ZC-17) y la `DEFAULT` y ACL de `journal_lines` (ZC-18) las escribe el dueño humano. Todo se ejecuta sobre PostgreSQL 17 con cero errores y con las pruebas negativas de §0.2.1.
+2. **Contratos.** OpenAPI 3.1 en `2.0.0-draft.3`, con las 61 operaciones del inventario y las auxiliares documentadas, y pruebas estructurales en verde; el conteo final lo fija el coordinador. Los conflictos I-01 a I-11 están decididos (A1–A11, C1–C4) e integrados en este candidato (DP-21). Siguen sin valor el mínimo de T1, la lista de documentos P-C y los catálogos `charge_kind` y `macrozone` (DP-24, DP-25, DP-27); el contrato los deja explícitamente pendientes y no se anuncian como completos.
 3. **Vectores de sorteo.** Especificación cerrada (DP-04), verificador sin ambigüedad (H-11) y salidas de los vectores calculadas por dos implementaciones humanas independientes (H-10). Resolución tras la espera de baliza (DP-05).
 4. **Transcripción verificada.** `test_preserved_l3.py` en verde tras la última edición del candidato.
 
 C1 **no** exige: confirmación contable ni T-03 (H-01–H-03, pendientes por D-05), ASS-001, contrato de KYC o KYB, sandbox de Mercado Pago, pruebas de backend ni ensayos de restauración. El código heredado sin hallazgo no se reescribe.
 
-**C2 — emisión.** Un solo acto con: identidad en los cuatro lugares; changelog con "decisión que invalida"; autonomía comprobada; ratificación en bloque de las propuestas P-01 a P-09; V7 archivada sin editar; alta de V8 en BASELINE y en el Registro §1; `verify_corpus.py` con cero fallos; y correlación con el doc 20 (DP-19). Los hallazgos contables se emiten con su estado pendiente explícito (§6), no corregidos.
+**C2 — emisión.** Un solo acto con: identidad en los cuatro lugares; changelog con "decisión que invalida"; autonomía comprobada; ratificación en bloque de las propuestas P-01 a P-09; V7 archivada sin editar; ningún bloque marcado **legado preservado, no listo para emisión en C2** sin resolver por el SQL V8 o el aporte humano; alta de V8 en BASELINE y en el Registro §1; `verify_corpus.py` con cero fallos; y correlación con el doc 20 (DP-19). Los hallazgos contables se emiten con su estado pendiente explícito (§6), no corregidos.
 
 **D1/R1 — pruebas de dominio y operación.** D1 levanta el freeze y añade el CI de código TypeScript. En D1/R1 se ejecutan: §14.3, §14.4 y §14.9 contra el backend; F1–F7 contra PostgreSQL y el sandbox de Mercado Pago; KYC y KYB con el proveedor que resulte de DP-20; el esquema en Supabase (DP-09); y el ensayo de restauración (§13.5). Antes de mover dinero real deben estar resueltos DP-01, DP-02, DP-03, DP-08, DP-10 y DP-12.
 

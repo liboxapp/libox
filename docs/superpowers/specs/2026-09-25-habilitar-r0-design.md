@@ -2,7 +2,7 @@
 title: Programa para habilitar R0 — diseño
 status: borrador
 tags: [libox, r0, harness, programa, spec]
-updated: 2026-09-29
+updated: 2026-10-01
 description: Programa aprobado por Diego para resolver la auditoría del harness (SY-01 a SY-16) y los defectos del canon, y dejar R0 listo para arrancar sobre el backend TypeScript ratificado. Streams, decisiones, secuencia y criterio de éxito.
 ---
 
@@ -35,7 +35,7 @@ R0 queda habilitado cuando se cumplen las cinco condiciones:
 
 1. La auditoría del harness, re-ejecutada, da `sin bloqueos en el alcance revisado`.
 2. ~~Los socios ratifican ASS-002~~: **cumplido el 2026-09-29** (D-01).
-3. L3 V8 está emitida con el stack TypeScript y los proveedores cerrados, y `verify_corpus.py` en cero fallos.
+3. El conjunto L3/artefactos reconciliado está emitido con identidad resuelta, stack TypeScript y proveedores cerrados, y `verify_corpus.py` en cero fallos. La [reconciliación Cowork](c1-l3-v8/reconciliacion-linea-base.md) no está cerrada por un check lexical verde.
 4. El freeze se levanta en el PR de cierre de ASS-002, con CI de código obligatorio.
 5. **Suspendida por instrucción explícita de Diego (2026-09-29):** la revisión
    humana no bloquea R0 hasta que él la reactive explícitamente. La incorporación
@@ -86,6 +86,15 @@ Cada sub-proyecto tiene su propio plan de implementación y su propio PR.
   - Las pruebas F1–F7 en §14.
   - El ledger (H-01, H-02, H-03) queda registrado y pendiente de confirmación contable.
 - **C2.** Emitir L3 V8 con `libox-versionar-doc` (CD-01 a CD-11): `verify_corpus` en cero, Registro §1 y `BASELINE`. Alta del DEC-\* de ASS-002.
+
+**Ampliación Cowork (2026-10-01).** Se mantiene la secuencia y las decisiones
+D-01–D-09. C1 integra las 27 diferencias revisadas por Codex/Opus, conserva
+acuerdos de dominio y añade contrato de viabilidad/fianza, relojes, comprador,
+canales y backlog. El [plan actualizado](../plans/2026-09-30-r0-c1.md) delimita
+trabajo documental y aportes humanos; no ratifica parámetros nuevos ni habilita
+dinero real. La mención histórica V8 en C1/C2/D1 queda condicionada a resolver
+su emisión: V9 si V8 ya fue formalmente emitida, V8 consolidada si no.
+D-05 sigue vigente; ASS-001 y contabilidad se cierran antes de operar sus flujos.
 
 ### Stream D — Preparación de R0 (tras C2)
 

@@ -2,7 +2,7 @@
 title: C1 — paquete de decisiones para el cierre
 status: aprobado
 tags: [r0, c1, l3-v8, decisiones]
-updated: 2026-09-30
+updated: 2026-10-01
 description: Resumen de las decisiones de dominio de C1 tomadas por Diego el 2026-09-30, con enlaces a cada ficha y lo que queda abierto.
 ---
 
@@ -13,11 +13,17 @@ contratos, SQL y configuración en el borrador L3 V8 ([estado de C1](estado-c1.m
 Cada ficha conserva el conflicto, las opciones y la recomendación.
 
 **Alcance.** Son decisiones operativas para el borrador: no cambian el canon
-(CD-07) hasta emitir V8. No incluyen importes, porcentajes, comisiones ni
+(CD-07) hasta emitir el conjunto reconciliado. No incluyen importes, porcentajes, comisiones ni
 impuestos (ver el [bloque E](decisiones-c1-configuracion.md#e-datos-que-no-se-proponen)).
 Donde alimentan código de las [zonas sin IA](../../../../.claude/rules/zonas-sin-ia.md),
 solo fijan la regla; el código sigue siendo implementación humana de Diego.
 Lo marcado [LEGAL→ABOGADO] es provisional hasta su ratificación.
+
+**Tras Cowork.** Esta aprobación conserva su alcance del 30/09. El nuevo flujo
+de fianza y sus parámetros se registran aparte en la
+[reconciliación](reconciliacion-linea-base.md); no heredan el estado `aprobado`
+de esta ficha. La extensión de T1 bajo mínimo requiere resolver el cambio de
+cancelación a cobertura antes de integrarlo en las bases.
 
 | Nota | Fichas |
 |---|---|
@@ -57,13 +63,19 @@ Lo marcado [LEGAL→ABOGADO] es provisional hasta su ratificación.
 
 | Tema | Qué falta | Dueño |
 |---|---|---|
-| Lista de documentos P-C (A8) | Claves por etapa; se prepara plantilla | Diego y [LEGAL→ABOGADO] |
-| Mínimo de T1 (C1) | Umbral, premio y aviso al comprador | Diego y [LEGAL→ABOGADO] |
-| Cifrado (B1-bis) | Supabase Auth, rotación, vistas de reportería, caché de claves | Diego |
+| Lista de documentos P-C (A8) | Claves por etapa; seguimiento en cada revisión de C1, fecha por acordar | Diego y [LEGAL→ABOGADO] |
+| Mínimo de T1 (C1) | Definir umbral, premio y aviso antes de publicar; sin cambios tras la primera compra | Diego y [LEGAL→ABOGADO] |
+| Cifrado (B1-bis) | Compatibilidad con Supabase obligatoria; alcance de Auth, rotación, reportería y caché pendientes | Diego |
 | Retención (B6) | Plazos de `psp_events` y `operation_register` | [LEGAL→ABOGADO] |
 | Enums de costos (C4) | `charge_kind`, `macrozone` | Diego |
 | Datos del bloque E | Comisiones, ledger H-01 a H-03, pago tardío, ASS-001 | Diego y dueño contable |
 | Implementación humana | H-04, H-07 a H-12 y SQL de las seis tablas reclasificadas | Diego |
+
+## Integración autorizada
+
+Diego autorizó el 2026-10-01 aplicar estos acuerdos a los contratos, L3 y SQL
+permitido, según el [plan de integración](../../plans/2026-10-01-c1-integracion.md).
+La evidencia final y lo aún abierto se consolidan en [estado C1](estado-c1.md).
 
 ## Siguiente paso
 
@@ -72,4 +84,6 @@ Lo marcado [LEGAL→ABOGADO] es provisional hasta su ratificación.
    runner. B1-bis y las columnas cifradas nuevas van al SQL V8.
 3. Registrar como hallazgos de V8 las correcciones del canon: §1.3, §3.16, §7.1,
    §7.3 y §11.5.
-4. Preparar la plantilla de documentos P-C para el abogado.
+4. Completar con el abogado la [plantilla P-C](plantilla-documentos-pc.md) y acordar fecha de entrega.
+5. Reconciliar los acuerdos anteriores con C1-V01–V14 sin perder decisiones
+   aprobadas; mantener explícitos los valores y desenlaces aún pendientes.

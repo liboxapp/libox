@@ -8,6 +8,21 @@ const exact: components["schemas"]["Money"] = { amount: "9007199254740993", curr
 const invalid: components["schemas"]["Money"] = { amount: 2500, currency: "PEN" };
 void invalid;
 assert.equal(exact.amount, "9007199254740993");
+// A5: LIVE ya no es capacidad; las categorías P-C van en su propio campo.
+const capabilities: components["schemas"]["CapabilitiesUpdate"] = {
+  // @ts-expect-error LIVE retirado de enabled_raffle_types.
+  enabled_raffle_types: ["LIVE"], enabled_categories: ["P_C1"], expected_version: 1,
+  reason: "Motivo sintético documentado para la operación.",
+};
+void capabilities;
+// A9: la atestación ya no acepta un firmante elegido por el cliente.
+const attestation: components["schemas"]["AttestationRequest"] = {
+  evidence_ids: ["00000000-0000-4000-8000-000000000001"], winner_confirmed: true,
+  statement: "Atestación sintética de entrega documentada.",
+  // @ts-expect-error second_signer_id retirado (SignatureRequest ATTEST_PC).
+  second_signer_id: "00000000-0000-4000-8000-000000000001",
+};
+void attestation;
 
 const baseUrl = process.env.LIBOX_CONTRACT_MOCK_URL;
 assert.ok(baseUrl?.startsWith("http://127.0.0.1:"), "Solo mock local de fixtures");
@@ -75,4 +90,14 @@ const signed = await api.POST("/signature-requests/{id}/sign", {
   body: { expected_version: signature.data.version, decision: "SIGN", reason: "Revisión independiente conforme." },
 });
 assert.equal(signed.data?.status, "SIGNED");
-console.log("Tipos generados y cliente TypeScript: 11 intercambios HTTP de fixtures correctos.");
+assert.ok(signature.data.eligible_signer_subroles.length > 0);
+// A7: la decisión KYB usa la versión leída del cliente.
+const client = await api.GET("/clients/{id}", { params: { path: { id: uuid } } });
+assert.ok(client.data);
+const kyb = await api.POST("/clients/{id}/kyb/decisions", {
+  params: { path: { id: uuid } },
+  body: { expected_version: client.data.version, outcome: "REJECTED", reason: "Documento societario vencido." },
+});
+assert.equal(kyb.response.status, 201);
+assert.equal(kyb.data?.status, "RECORDED");
+console.log("Tipos generados y cliente TypeScript: 13 intercambios HTTP de fixtures correctos.");

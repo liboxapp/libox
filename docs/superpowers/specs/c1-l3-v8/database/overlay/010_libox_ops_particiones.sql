@@ -6,6 +6,9 @@
 -- asistida): el overlay no le crea hijos, DEFAULT ni ACL.
 -- No mueve ni borra filas. No crea disparadores. No toca lógica patrimonial,
 -- RBAC, sorteo, concurrencia de negocio ni incompatibilidades.
+-- retention es metadato documental (B6): nada en el overlay borra ni archiva.
+-- El planificador (B3) y el procedimiento para filas en DEFAULT (B4) se
+-- especifican en database/planificador-default.md; no se implementan aquí.
 -- Ejecutar con el rol dueño de las tablas padre (crear particiones lo exige).
 
 CREATE SCHEMA IF NOT EXISTS libox_ops;
@@ -25,15 +28,15 @@ REVOKE ALL ON TABLE libox_ops.partitioned_parents FROM PUBLIC;
 
 INSERT INTO libox_ops.partitioned_parents (parent_table, partition_key, provisioning, retention) VALUES
   ('analytics_events',      'server_ts',  'overlay', 'L3 V7 §1.3: 24 meses; agregados indefinidos'),
-  ('audit_access_events',   'created_at', 'overlay', 'Pendiente: no figura en L3 V7 §1.3'),
+  ('audit_access_events',   'created_at', 'overlay', 'B6 (Diego, 2026-09-30): indefinida; archivo en frío desde 24 meses'),
   ('audit_events',          'created_at', 'overlay', 'L3 V7 §1.3: indefinida; archivado en frío desde 24 meses'),
   ('event_outbox',          'created_at', 'overlay', 'L3 V7 §1.3: 90 días tras despacho confirmado'),
-  ('journal_lines',         'posted_at',  'humano',  'L3 V7 §1.3: indefinida. Particiones reservadas al dueño del ledger'),
+  ('journal_lines',         'posted_at',  'humano',  'L3 V7 §1.3: indefinida. B5: DEFAULT aprobada; particiones, DEFAULT y ACL las aporta el dueño del ledger'),
   ('notification_attempts', 'server_ts',  'overlay', 'L3 V7 §1.3: 24 meses'),
-  ('operation_register',    'created_at', 'overlay', 'Pendiente [LEGAL→ABOGADO]: no figura en L3 V7 §1.3'),
-  ('psp_events',            'created_at', 'overlay', 'Pendiente: no figura en L3 V7 §1.3'),
+  ('operation_register',    'created_at', 'overlay', 'B6: plazo del registro de operaciones [LEGAL→ABOGADO]; sin borrado hasta plazo aprobado'),
+  ('psp_events',            'created_at', 'overlay', 'B6: la del soporte contable del pago [LEGAL→ABOGADO]; sin borrado hasta plazo aprobado'),
   ('registry_queries',      'created_at', 'overlay', 'L3 V7 §1.3: indefinida'),
-  ('risk_events',           'created_at', 'overlay', 'Pendiente: no figura en L3 V7 §1.3'),
+  ('risk_events',           'created_at', 'overlay', 'B6 (Diego, 2026-09-30): indefinida; archivo en frío desde 24 meses'),
   ('room_messages',         'created_at', 'overlay', 'L3 V7 §1.3: indefinida'),
   ('state_transitions',     'created_at', 'overlay', 'L3 V7 §1.3: indefinida')
 ON CONFLICT (parent_table) DO NOTHING;

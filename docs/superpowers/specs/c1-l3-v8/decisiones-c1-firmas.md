@@ -50,6 +50,11 @@ de recaudación: aquí solo se decide el firmante, no la regla del múltiplo.
 **Desbloquea:** firma de las 11 solicitudes y el apagado global de capacidad.
 **Decisión:** **(c)**, política por acción con la tabla inicial. Diego, 2026-09-30.
 
+**Operación pendiente:** actualmente solo Diego está incorporado. Las acciones
+con segunda firma no pueden operar con una única persona ni con dos cuentas
+de esa persona. Resolver la incorporación y el bootstrap antes de habilitarlas;
+la suspensión de revisión humana del desarrollo no modifica esta regla.
+
 ## A2. Cofirma de la banda V2 por `ADMIN_MODERATION` (I-01)
 
 **Conflicto.** La banda V2 exige cofirma de `ADMIN_MODERATION`, pero §7.1 le da

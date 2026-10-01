@@ -1,0 +1,650 @@
+{
+  "review_id": "comparacion-linea-base-20260930-212305",
+  "received_at": "2026-09-30T21:23:05.786428-05:00",
+  "integrated_on": "2026-10-01",
+  "repo_sha": "ab18a2cd9f8c391253108bafc1931ffd93315348",
+  "source_roots": {
+    "workspace": "workspace compartido Liboxapp",
+    "repo": "Libox/"
+  },
+  "dirty_decision_paths": [
+    "docs/superpowers/specs/c1-l3-v8/decisiones-c1-configuracion.md",
+    "docs/superpowers/specs/c1-l3-v8/decisiones-c1-datos.md",
+    "docs/superpowers/specs/c1-l3-v8/decisiones-c1-transiciones.md",
+    "docs/superpowers/specs/c1-l3-v8/decisiones-c1.md"
+  ],
+  "scope": "comparación documental; no ejecución estándar del harness; decisiones C1 locales incluidas; Outline no consultado",
+  "sources": [
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/00_LEEME/LEEME.md",
+      "snapshot": "evidencia/nueva/00_LEEME/LEEME.md",
+      "sha256": "e6dc7b552ed794529c17b754db3a43e0d327d42d707464e1df68844849af8087"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/AUX_Marca/LIBOX_VISUAL_IDENTITY_ENGINEERING_STANDARD_V4.docx",
+      "snapshot": "evidencia/nueva/AUX_Marca/LIBOX_VISUAL_IDENTITY_ENGINEERING_STANDARD_V4.docx",
+      "sha256": "a4e0b12d9e55f58307ca1bf33aed762846b6052ef427117215e40db6141b4133"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/AUX_Marca/LIBOX_VISUAL_IDENTITY_ENGINEERING_STANDARD_V4.md",
+      "snapshot": "evidencia/nueva/AUX_Marca/LIBOX_VISUAL_IDENTITY_ENGINEERING_STANDARD_V4.md",
+      "sha256": "53e70eb60a5045e04f6aefcc235e9c7d0f576ec38c81d2f7181058b61ec95dc5"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/CONTROL_Registro_y_verificacion/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V7.docx",
+      "snapshot": "evidencia/nueva/CONTROL_Registro_y_verificacion/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V7.docx",
+      "sha256": "7833341af3ced4d3169f59a52d29c215e1f267af08338dfd2b1b1d1821e4669d"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/CONTROL_Registro_y_verificacion/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V7.md",
+      "snapshot": "evidencia/nueva/CONTROL_Registro_y_verificacion/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V7.md",
+      "sha256": "ee7728098250b36f17a0fe0f5fd62b4eaff04ec4c1ac8092aa6723c7e9a40fb9"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/CONTROL_Registro_y_verificacion/verify_corpus.py",
+      "snapshot": "evidencia/nueva/CONTROL_Registro_y_verificacion/verify_corpus.py",
+      "sha256": "bfde484f487e7a518e9315bf2be4117c3987d8f4979cf5ac8bac7a2e8f6fd2b1"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L0_Rector/LIBOX_BEHAVIORAL_PRODUCT_FRAMEWORK_LBPF_V4.docx",
+      "snapshot": "evidencia/nueva/L0_Rector/LIBOX_BEHAVIORAL_PRODUCT_FRAMEWORK_LBPF_V4.docx",
+      "sha256": "0d8235e084c8f8d11827a87271115c0842b85ace20417ed8cb6ab54c7309d81f"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L0_Rector/LIBOX_BEHAVIORAL_PRODUCT_FRAMEWORK_LBPF_V4.md",
+      "snapshot": "evidencia/nueva/L0_Rector/LIBOX_BEHAVIORAL_PRODUCT_FRAMEWORK_LBPF_V4.md",
+      "sha256": "069a7816600d39e549a74c80989ce6888023098386021e61391ba6d82a965fa2"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L1_Estrategia/LIBOX_PRODUCT_STRATEGY_L1_V4.docx",
+      "snapshot": "evidencia/nueva/L1_Estrategia/LIBOX_PRODUCT_STRATEGY_L1_V4.docx",
+      "sha256": "e48cb387f7e7a6e41bb7a9428262dc4e00004c1a6969aac14e57c4a448c8ba88"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L1_Estrategia/LIBOX_PRODUCT_STRATEGY_L1_V4.md",
+      "snapshot": "evidencia/nueva/L1_Estrategia/LIBOX_PRODUCT_STRATEGY_L1_V4.md",
+      "sha256": "ea68809f789b19870e97cc4066e8a0d7c4b9a5432e9a1dd49723d9e188c51d3c"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L2_Contrato/LIBOX_PRD_BLUEPRINT_ENTERPRISE_V4.docx",
+      "snapshot": "evidencia/nueva/L2_Contrato/LIBOX_PRD_BLUEPRINT_ENTERPRISE_V4.docx",
+      "sha256": "6cc35a233c304901cdb42f97341c27a028dffe381b11bb0ed72757fb8127b8aa"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L2_Contrato/LIBOX_PRD_BLUEPRINT_ENTERPRISE_V4.md",
+      "snapshot": "evidencia/nueva/L2_Contrato/LIBOX_PRD_BLUEPRINT_ENTERPRISE_V4.md",
+      "sha256": "846edcd5524f86b901cf9e977753edfb35d2d56a7b896e2486787a7b69c0fdb1"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L2_Contrato/LIBOX_PRD_BLUEPRINT_MVP_V10.docx",
+      "snapshot": "evidencia/nueva/L2_Contrato/LIBOX_PRD_BLUEPRINT_MVP_V10.docx",
+      "sha256": "dd8e456b14f7b2689da938874209895df8f67bc6fafbd265bc638d7b851b3819"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L2_Contrato/LIBOX_PRD_BLUEPRINT_MVP_V10.md",
+      "snapshot": "evidencia/nueva/L2_Contrato/LIBOX_PRD_BLUEPRINT_MVP_V10.md",
+      "sha256": "3958f922c14ff5347a6a0654afc47e8ec678b82aefa2c38c7dbf5b16aef96b04"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L3_Artefactos_ejecutables/libox_openapi_L3_V8.yaml",
+      "snapshot": "evidencia/nueva/L3_Artefactos_ejecutables/libox_openapi_L3_V8.yaml",
+      "sha256": "96f36d71da92fad7dd3caadac74f8880f2ee991a0e61ddd098065d79ecfc7eae"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L3_Artefactos_ejecutables/libox_schema_L3_V8.sql",
+      "snapshot": "evidencia/nueva/L3_Artefactos_ejecutables/libox_schema_L3_V8.sql",
+      "sha256": "42a1e4fa27fcbc2cd83d7f415e0ed6d352b2dea6321eeb8138128616d3d8f913"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L3_Artefactos_ejecutables/seed_v8.sql",
+      "snapshot": "evidencia/nueva/L3_Artefactos_ejecutables/seed_v8.sql",
+      "sha256": "725e45561c9d2663a493e6b4fc95566c64ccd77802a797ab33c09f752574af1d"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L3_Artefactos_ejecutables/tests_negativos_v8.sql",
+      "snapshot": "evidencia/nueva/L3_Artefactos_ejecutables/tests_negativos_v8.sql",
+      "sha256": "2399e8a5782278e628b41a5c42ec05e9f822795de69dc53dae7f35f43b5df05d"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L3_Tecnico/LIBOX_ESPECIFICACION_TECNICA_L3_V8.docx",
+      "snapshot": "evidencia/nueva/L3_Tecnico/LIBOX_ESPECIFICACION_TECNICA_L3_V8.docx",
+      "sha256": "fe56aa5dfbaac7b6fbd4ae19bb8a1dbd19e3ae48b957b819ddb754b36adbac11"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L3_Tecnico/LIBOX_ESPECIFICACION_TECNICA_L3_V8.md",
+      "snapshot": "evidencia/nueva/L3_Tecnico/LIBOX_ESPECIFICACION_TECNICA_L3_V8.md",
+      "sha256": "dc9edbd75a98fc9145f27ad3e9ecbf03e79efc97b271ed6a2fd06aac59651be7"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L3_Tecnico/LIBOX_GUIA_EXTENSION_V2.docx",
+      "snapshot": "evidencia/nueva/L3_Tecnico/LIBOX_GUIA_EXTENSION_V2.docx",
+      "sha256": "c5233bb9f836806ff0010874a4dec578bc2eca24ce88879dc5c37da85179a910"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L3_Tecnico/LIBOX_GUIA_EXTENSION_V2.md",
+      "snapshot": "evidencia/nueva/L3_Tecnico/LIBOX_GUIA_EXTENSION_V2.md",
+      "sha256": "690233dd2c1e1bc50fde054b16506d818ce1aced734a793c90505a6d34169802"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L3_Tecnico/LIBOX_MATRIZ_CASOS_DE_USO_V2.docx",
+      "snapshot": "evidencia/nueva/L3_Tecnico/LIBOX_MATRIZ_CASOS_DE_USO_V2.docx",
+      "sha256": "f9b3a1351cf01d92f98ff24338ff75403bf551a8c6393cc9ae7f22a68bf35456"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L3_Tecnico/LIBOX_MATRIZ_CASOS_DE_USO_V2.md",
+      "snapshot": "evidencia/nueva/L3_Tecnico/LIBOX_MATRIZ_CASOS_DE_USO_V2.md",
+      "sha256": "6f3c01d01bf5db3d1dd4c238082f1def346eb03bec1baabf994586d9ecb84e38"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L4_Diseno/LIBOX_DESIGN_SYSTEM_L4_V3.docx",
+      "snapshot": "evidencia/nueva/L4_Diseno/LIBOX_DESIGN_SYSTEM_L4_V3.docx",
+      "sha256": "540ba51f7dc1de9d282d8bebe4d3ca7eee9208afa9117852e739ef90c875591b"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L4_Diseno/LIBOX_DESIGN_SYSTEM_L4_V3.md",
+      "snapshot": "evidencia/nueva/L4_Diseno/LIBOX_DESIGN_SYSTEM_L4_V3.md",
+      "sha256": "ebac7aed1d5c05c4ef72ccea1896e4c567ae997a71520421ef8053ad07da0014"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/L4_Diseno/libox-design-tokens-L4-V3.json",
+      "snapshot": "evidencia/nueva/L4_Diseno/libox-design-tokens-L4-V3.json",
+      "sha256": "558870beb9f0511c52cbef1b9a0517d8177f050adb5749ca58d0bcf3a4c9e1d9"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/LEGAL/LIBOX_DOSSIER_LEGAL_V1.docx",
+      "snapshot": "evidencia/nueva/LEGAL/LIBOX_DOSSIER_LEGAL_V1.docx",
+      "sha256": "76ca71100889fe06f10e227ff6091fb022cac1030d16f1df8ec7ff3a5eb0d5ba"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/LEGAL/LIBOX_DOSSIER_LEGAL_V1.md",
+      "snapshot": "evidencia/nueva/LEGAL/LIBOX_DOSSIER_LEGAL_V1.md",
+      "sha256": "b1456e54a9cf8e7d62d50baa55c0e4a25a37e8c6fd043ff15949ea7db5da3586"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/PLAN_Backlog/LIBOX_BACKLOG_MVP_V4.docx",
+      "snapshot": "evidencia/nueva/PLAN_Backlog/LIBOX_BACKLOG_MVP_V4.docx",
+      "sha256": "b435d7eeb7a00ee8573caba21317f6e90978ec82f16acaa0cc95257e6fbfd6d1"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/PLAN_Backlog/LIBOX_BACKLOG_MVP_V4.md",
+      "snapshot": "evidencia/nueva/PLAN_Backlog/LIBOX_BACKLOG_MVP_V4.md",
+      "sha256": "c5bca28333ea5bd80af8cb5b3d8c063666d3eba0bc1856615c5ff0f7dc9b6f2f"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/PLAN_Backlog/LIBOX_BACKLOG_MVP_V4.xlsx",
+      "snapshot": "evidencia/nueva/PLAN_Backlog/LIBOX_BACKLOG_MVP_V4.xlsx",
+      "sha256": "4b4a848af4afe897fd2b1d83233c11698aa99d2509856f15b9d2bb1b6515b4c3"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/REGISTROS_de_decision/LIBOX_AUDITORIA_GLOBAL_COHERENCIA_V1.docx",
+      "snapshot": "evidencia/nueva/REGISTROS_de_decision/LIBOX_AUDITORIA_GLOBAL_COHERENCIA_V1.docx",
+      "sha256": "888ce2b10808dc5d9170d7cf685cd6191de1b76e1729e69231885ff4cd79d053"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/REGISTROS_de_decision/LIBOX_AUDITORIA_GLOBAL_COHERENCIA_V1.md",
+      "snapshot": "evidencia/nueva/REGISTROS_de_decision/LIBOX_AUDITORIA_GLOBAL_COHERENCIA_V1.md",
+      "sha256": "73321ce44a42a3f74b32bc37d65e6a6aa9a19b66bdb56486c78fd2b9fa54d5d0"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/REGISTROS_de_decision/LIBOX_AUDITORIA_POST_EMISION_V1.docx",
+      "snapshot": "evidencia/nueva/REGISTROS_de_decision/LIBOX_AUDITORIA_POST_EMISION_V1.docx",
+      "sha256": "beb638bec59ad5279ded14eafa8f4e2ce2ca6d85d516661cfedacc27125cf417"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/REGISTROS_de_decision/LIBOX_AUDITORIA_POST_EMISION_V1.md",
+      "snapshot": "evidencia/nueva/REGISTROS_de_decision/LIBOX_AUDITORIA_POST_EMISION_V1.md",
+      "sha256": "d82061f95b5e72b2572a0fc4876cb2e0e16879e1909d8d15af98fa55964d59ef"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/REGISTROS_de_decision/LIBOX_EVALUACION_COMITE_Y_EQUIPO_TECNICO_V1.docx",
+      "snapshot": "evidencia/nueva/REGISTROS_de_decision/LIBOX_EVALUACION_COMITE_Y_EQUIPO_TECNICO_V1.docx",
+      "sha256": "88e29f1cb7b7c56bf3cf75748a944f1bbf8c52195a4b208e409e040e4055e0e8"
+    },
+    {
+      "scope": "workspace",
+      "path": "Cowork station/LIBOX_LINEA_BASE_VIGENTE/REGISTROS_de_decision/LIBOX_EVALUACION_COMITE_Y_EQUIPO_TECNICO_V1.md",
+      "snapshot": "evidencia/nueva/REGISTROS_de_decision/LIBOX_EVALUACION_COMITE_Y_EQUIPO_TECNICO_V1.md",
+      "sha256": "e9bd636c6d9c379d1e4b2c65b0c7be4f1bf86295d6e5de8cff634a7fdf0baa22"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/ARTEFACTOS/LIBOX_BACKLOG_MVP_V3.xlsx",
+      "snapshot": "evidencia/anterior/ARTEFACTOS/LIBOX_BACKLOG_MVP_V3.xlsx",
+      "sha256": "15272c24ebf447ca6633113350bce85d4714d84504645e0452d14092dcee93c7"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/ARTEFACTOS/libox-design-tokens-L4-V2.json",
+      "snapshot": "evidencia/anterior/ARTEFACTOS/libox-design-tokens-L4-V2.json",
+      "sha256": "09c38ac5316ca6767b2acce587f720ae9fb3048dc9a3ed1e7e9abbb2f69aa965"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/ARTEFACTOS/libox_openapi_L3_V7.yaml",
+      "snapshot": "evidencia/anterior/ARTEFACTOS/libox_openapi_L3_V7.yaml",
+      "sha256": "fd0d1f011d06c97c740e61545ee857c0ee004992f7bd9717552a04ea5b9d2cef"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/ARTEFACTOS/libox_schema_L3_V7.sql",
+      "snapshot": "evidencia/anterior/ARTEFACTOS/libox_schema_L3_V7.sql",
+      "sha256": "9ff3d07f3efef5ee2cf4997d34e361a6b78c64463b346c855a840f4baf937a43"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/ARTEFACTOS/verify_corpus.py",
+      "snapshot": "evidencia/anterior/ARTEFACTOS/verify_corpus.py",
+      "sha256": "ea3c36c22c7c1d79345abc7c6e975052070bb012f09cc21ebb8af1da1bb7b3d0"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/LEEME.md",
+      "snapshot": "evidencia/anterior/LEEME.md",
+      "sha256": "6da763f629c93517d76ce544f6c5b40399c3097d55305326f697bd8de3666761"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/LIBOX_AUDITORIA_GLOBAL_COHERENCIA_V1.md",
+      "snapshot": "evidencia/anterior/LIBOX_AUDITORIA_GLOBAL_COHERENCIA_V1.md",
+      "sha256": "65d28aee27278fddbecb7b29de6e9101b4b478e3dc2cf4671e65fbc4a6813ef6"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/LIBOX_AUDITORIA_POST_EMISION_V1.md",
+      "snapshot": "evidencia/anterior/LIBOX_AUDITORIA_POST_EMISION_V1.md",
+      "sha256": "f68ff5bf9575e48e69edd896cf866e2ff09a5abb80039e296bc467960f352807"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/LIBOX_BACKLOG_MVP_V3.md",
+      "snapshot": "evidencia/anterior/LIBOX_BACKLOG_MVP_V3.md",
+      "sha256": "2f7f8b903d4c407c15cfcb6b37b8af897d3ee135b99377030ea9f513f2d63ce0"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/LIBOX_BEHAVIORAL_PRODUCT_FRAMEWORK_LBPF_V3.md",
+      "snapshot": "evidencia/anterior/LIBOX_BEHAVIORAL_PRODUCT_FRAMEWORK_LBPF_V3.md",
+      "sha256": "a3c7cd9e67a348817457a792b02427182a35db98cae27cf406dfa9a822ee7520"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/LIBOX_DESIGN_SYSTEM_L4_V2.md",
+      "snapshot": "evidencia/anterior/LIBOX_DESIGN_SYSTEM_L4_V2.md",
+      "sha256": "682677a2feee8bd6e8e19baceaa729b48485c439443b2158389d134d5a670bcf"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/LIBOX_DOSSIER_LEGAL_V1.md",
+      "snapshot": "evidencia/anterior/LIBOX_DOSSIER_LEGAL_V1.md",
+      "sha256": "607630881b961eeb1dc97ee9c9559ba7cbc1e06291bcfc1ac68208c7281d593b"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/LIBOX_ESPECIFICACION_TECNICA_L3_V7.md",
+      "snapshot": "evidencia/anterior/LIBOX_ESPECIFICACION_TECNICA_L3_V7.md",
+      "sha256": "13217f018af355f6f827f3926f8562d371bcf475f35f182f089738610d0f1f8d"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/LIBOX_EVALUACION_COMITE_Y_EQUIPO_TECNICO_V1.md",
+      "snapshot": "evidencia/anterior/LIBOX_EVALUACION_COMITE_Y_EQUIPO_TECNICO_V1.md",
+      "sha256": "be511c97d865c95b5336cec9e535e1629fe8b80dba4627814e80f531456476e3"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/LIBOX_GUIA_EXTENSION_V1.md",
+      "snapshot": "evidencia/anterior/LIBOX_GUIA_EXTENSION_V1.md",
+      "sha256": "5ab1f96c00601e58dbc612a89822d070d8ac51db596c35dc895cdcea4dae8b37"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/LIBOX_MATRIZ_CASOS_DE_USO_V1.md",
+      "snapshot": "evidencia/anterior/LIBOX_MATRIZ_CASOS_DE_USO_V1.md",
+      "sha256": "da698e3830d7ea130fb532c0cde402ab28b8f4857ff4d774152f0a446d10ab36"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/LIBOX_PRD_BLUEPRINT_ENTERPRISE_V3.md",
+      "snapshot": "evidencia/anterior/LIBOX_PRD_BLUEPRINT_ENTERPRISE_V3.md",
+      "sha256": "05527decd78edb6c24b62921224b495da2ffc747a8472f8bc03bdf29ec907c9d"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/LIBOX_PRD_BLUEPRINT_MVP_V9.md",
+      "snapshot": "evidencia/anterior/LIBOX_PRD_BLUEPRINT_MVP_V9.md",
+      "sha256": "582b8a37e1e2ab33be5db52bd0f18a1e90b69b52088e68b4006dbe3e20e9c745"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/LIBOX_PRODUCT_STRATEGY_L1_V3.md",
+      "snapshot": "evidencia/anterior/LIBOX_PRODUCT_STRATEGY_L1_V3.md",
+      "sha256": "17cf66d04615eca3f7b4bc1b5a966cfa91f903be156cee9753d10a92d849b1e5"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V6.md",
+      "snapshot": "evidencia/anterior/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V6.md",
+      "sha256": "36693911b5d11c4b927492ba6c3d99d25ee8ab46b91a688b311028a889c3d406"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/linea-base/LIBOX_VISUAL_IDENTITY_ENGINEERING_STANDARD_V3.md",
+      "snapshot": "evidencia/anterior/LIBOX_VISUAL_IDENTITY_ENGINEERING_STANDARD_V3.md",
+      "sha256": "8841853139dc03bd87dff974e2c92795c98a9f6434b23d9e354a91442aa9dea2"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/LIBOX_ESPECIFICACION_TECNICA_L3_V8_DRAFT.md",
+      "snapshot": "evidencia/c1/LIBOX_ESPECIFICACION_TECNICA_L3_V8_DRAFT.md",
+      "sha256": "fb0d28bccf77617652aa511585e9263852e8bd5b57f245c3449c8c1eeb0d5d83"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/baliza-propuesta.md",
+      "snapshot": "evidencia/c1/baliza-propuesta.md",
+      "sha256": "5e490ffca8fe3267b9bd8d93e03b69c2ec0dc8aa1ad6567946ca84df3f144d50"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/cambios.md",
+      "snapshot": "evidencia/c1/cambios.md",
+      "sha256": "154ee02ccfab190c010d286c5e86fb6b5529357a5a21595d3e97e6b9e98c3b89"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/cierre-contratos-decisiones.md",
+      "snapshot": "evidencia/c1/cierre-contratos-decisiones.md",
+      "sha256": "8ad4573d21ffa54ac51a1dd98700a41f06b45eabad39410e873e10b7b7e63f3d"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/cierre-contratos-identidad-evidencias.md",
+      "snapshot": "evidencia/c1/cierre-contratos-identidad-evidencias.md",
+      "sha256": "587f37a7764b6ba7d0df6fe8a03cdf4898ac5c70e63ea20d156c92fe4724356b"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/cierre-contratos-lecturas-configuracion.md",
+      "snapshot": "evidencia/c1/cierre-contratos-lecturas-configuracion.md",
+      "sha256": "6617adeeb4575412bd59b5d6ab598786b95c516a6597e78ad1e672d829c2982f"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/cierre-contratos.md",
+      "snapshot": "evidencia/c1/cierre-contratos.md",
+      "sha256": "81cffb96b4c821ad73b428cb5d572c96bbfde81a9ae75a15cd698226547d2491"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/cierre-sql-alcance.md",
+      "snapshot": "evidencia/c1/cierre-sql-alcance.md",
+      "sha256": "19d6108a3b0d36cfc3ffd38c40e03ca4cc4ffe16979e702239c0d9f3d2beb81a"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/cierre-sql-pendientes.md",
+      "snapshot": "evidencia/c1/cierre-sql-pendientes.md",
+      "sha256": "e25d3842bc3df6edcdc5bfc1ab8738557b0d63324ec23a89bebdc4b9f365183e"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/cierre-sql.md",
+      "snapshot": "evidencia/c1/cierre-sql.md",
+      "sha256": "8b54376f96efc59763fcfeea12f3f7d50d9ea79438cd1be36eee6e1611c7e9cc"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/contratos.md",
+      "snapshot": "evidencia/c1/contratos.md",
+      "sha256": "81e2ffed23cc8fd0cac6222c98e98f1c5ce6b2b796c3cd9e17c41c63b694263b"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/database/README.md",
+      "snapshot": "evidencia/c1/database/README.md",
+      "sha256": "c08c78b928d23fa84a9353469d1c55c06d7fd45734fd9fe263ce7e7430f0677f"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/database/acl-manifest.json",
+      "snapshot": "evidencia/c1/database/acl-manifest.json",
+      "sha256": "e1426355e86b7a2ddf4fd5c6edb7b04561cf8b28199cba862bfd65ee2e827987"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/database/evidencia/dueno-createrole.json",
+      "snapshot": "evidencia/c1/database/evidencia/dueno-createrole.json",
+      "sha256": "e2efb5787c542cb77cb9373a01582256b407070371be159622a4811f6ccb8504"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/database/evidencia/privilegios-api-simulados.json",
+      "snapshot": "evidencia/c1/database/evidencia/privilegios-api-simulados.json",
+      "sha256": "140be93ef19c199cd54b94f7d995b9a2d263475aad95341965f130e0296ababf"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/database/evidencia/superusuario.json",
+      "snapshot": "evidencia/c1/database/evidencia/superusuario.json",
+      "sha256": "597f75d657c27e8b81883767bc51d1a2ed6365a41fa700e226cca803918dd78d"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/database/overlay/010_libox_ops_particiones.sql",
+      "snapshot": "evidencia/c1/database/overlay/010_libox_ops_particiones.sql",
+      "sha256": "c58f7dcc4fd87139431a57ff4e06d336da15ff935220043906c78909273bb7d8"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/database/overlay/020_acl_base.sql",
+      "snapshot": "evidencia/c1/database/overlay/020_acl_base.sql",
+      "sha256": "392e95f07f1921126197971d1d806e6a542e2ef21b6c4358a7043a86dbb5a8c1"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/database/overlay/030_semilla_mercado_pe.sql",
+      "snapshot": "evidencia/c1/database/overlay/030_semilla_mercado_pe.sql",
+      "sha256": "8c36f108fd32ee96d684158fbde602c83a2b952e23217f4403e84e9705b67653"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/database/overlay/040_arranque_particiones.sql",
+      "snapshot": "evidencia/c1/database/overlay/040_arranque_particiones.sql",
+      "sha256": "d3410ee3fdf60bec5512de31c6a3be16b934575fc83f6b26f24c71aaad797b6b"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/decisiones-c1-configuracion.md",
+      "snapshot": "evidencia/c1/decisiones-c1-configuracion.md",
+      "sha256": "48bd47274820da11c0ce2b62435579762afff8b9b71924a7420660f97ec1201a"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/decisiones-c1-datos.md",
+      "snapshot": "evidencia/c1/decisiones-c1-datos.md",
+      "sha256": "779e80b0eb2505c89915718e169f86a45d793dc13466563654f15647d5f90efb"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/decisiones-c1-firmas.md",
+      "snapshot": "evidencia/c1/decisiones-c1-firmas.md",
+      "sha256": "f5643b447fec0e8b49b349b2791b640b872a7fb81a0b36f735b263496b2b49ca"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/decisiones-c1-transiciones.md",
+      "snapshot": "evidencia/c1/decisiones-c1-transiciones.md",
+      "sha256": "ea091675a172cbb5edd97f7c3b054359f7c2f27519b0b95c55efc72a743dabda"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/decisiones-c1.md",
+      "snapshot": "evidencia/c1/decisiones-c1.md",
+      "sha256": "83eb073c10e3c307d4b094fdfc2113009c7582ea6ffa3867bd6c6be4570f867a"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/estado-c1.md",
+      "snapshot": "evidencia/c1/estado-c1.md",
+      "sha256": "eac314cbc54e150a87d507d604c0a2c43b0d267b2573f02b1972f6bba92f670f"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/identidad-proveedores.md",
+      "snapshot": "evidencia/c1/identidad-proveedores.md",
+      "sha256": "eba12e526355b04cc9275798ad17091db9ba0703ac882c303a8f54b1846e6d2d"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/libox_openapi_L3_V8_DRAFT.yaml",
+      "snapshot": "evidencia/c1/libox_openapi_L3_V8_DRAFT.yaml",
+      "sha256": "c29621b75c51e3193a7849190f22392205eedc35a1d55aff5c262cf14b31856e"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/mercado-pago.md",
+      "snapshot": "evidencia/c1/mercado-pago.md",
+      "sha256": "1d5a057665622562c74d8e79ce6e053af6d91731e695543ffe20a48afd6659d1"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/notas-contractuales.md",
+      "snapshot": "evidencia/c1/notas-contractuales.md",
+      "sha256": "4178d91528b1faa6ead223fbfa1f13c4121bdb88097f0749c41b0e4ae0b8b1de"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/operacion.md",
+      "snapshot": "evidencia/c1/operacion.md",
+      "sha256": "43834b568a64d43e7da8411af4870144bae40b991822d0930393138405beed9b"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/proveedores.md",
+      "snapshot": "evidencia/c1/proveedores.md",
+      "sha256": "5a84705e02be97a5849e0a0bb1f6f75a1fa1eecf5e100d0b3477059065759264"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/seguridad.md",
+      "snapshot": "evidencia/c1/seguridad.md",
+      "sha256": "92027f8425ac1bc166b8798e52f331740f0b5e2d2a9a99fb3ce4dffaf968510d"
+    },
+    {
+      "scope": "repo",
+      "path": "docs/superpowers/specs/c1-l3-v8/truora-evaluacion.md",
+      "snapshot": "evidencia/c1/truora-evaluacion.md",
+      "sha256": "976e375bb64bc10ac9c8b702d0ccd47d8b2bfb6f0d6d48ea79b5ffa44f09a7f4"
+    }
+  ],
+  "review_closure": {
+    "verified_at": "2026-10-01T04:47:33.395381+00:00",
+    "sources_count": 93,
+    "source_changed": [],
+    "snapshot_mismatches": [],
+    "missing_local_links": [],
+    "catalog_groups": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27
+    ],
+    "codex_firstpass_preserved": true,
+    "opus_firstpass_preserved": true,
+    "reports": {
+      "informe-comparativo.md": "496d1b55a679fc3e0e70e91399d37fa73764d6ba6e86cd6156d251e28a805f00",
+      "contraste-codex-opus.md": "cd36cc3b9ebf14bc19e8b67e8198e255df76ea59d4ac95d84a344121a92cf079",
+      "opus-report.md": "055f1c0f939b31bac1aa884923d085bbcc031091fd988bdef9dcdfd4ddb8eef5",
+      "adenda-opus.md": "d70c3e82b2bdb0f51e0e98317bb31878174a0a9458b8dcb1faffb6ac0c588657",
+      "codex-report.md": "9266aac398fb6084028028353806d6317f161facbb292cb223fdbbd376e15ee3",
+      "codex-adenda-verificacion.md": "d0a2cf256584d46d030527f3979728dd5041492c767e164d8e168e8ac786a6e6"
+    },
+    "scope": "documentation comparison; no source edits; SQL executed only by Opus in disposable sandbox"
+  },
+  "opus_evidence": [
+    {
+      "path": "evidencia-opus/anexos/03_reejecucion/suite_original.out",
+      "sha256": "4152c914daa79ff088064869726d69fbd320865b90f62cb7344b6b54db0aee28"
+    },
+    {
+      "path": "evidencia-opus/anexos/03_reejecucion/sondas_P1_P9.out",
+      "sha256": "ab10da42cb456204f81fb73493efad984914dbd3ab29428c0305d88054ad280e"
+    },
+    {
+      "path": "evidencia-opus/anexos/03_reejecucion/sondas_P10_P11.out",
+      "sha256": "23a8ee1cfe7885f9c3d0d9ad06b43b69c1050d4718e2853bd5c30962bae6096c"
+    },
+    {
+      "path": "evidencia-opus/anexos/03_reejecucion/excel_recalculo.out",
+      "sha256": "9bfcc009cae5cc4b70cf27938a4227fb9c59a6c33dc2d534d7d362d560552477"
+    },
+    {
+      "path": "evidencia-opus/anexos/03_reejecucion/verificador_mutaciones_M1_M3.out",
+      "sha256": "c6b9121e21c18b30db8e8958b39cdf72797c102da1c5940ca4939e2e0fd10f9d"
+    },
+    {
+      "path": "evidencia-opus/anexos/02_estado_persistido/libox_estado_esquema_semillas.txt",
+      "sha256": "5d9046a2d256464baf419087a79b1ddfd49fd10f35ed69c5ca0c38ca9163c8cf"
+    }
+  ]
+}

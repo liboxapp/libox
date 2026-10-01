@@ -1,19 +1,21 @@
 ---
-title: C1 — propuesta de baliza y aceptación del verificador
+title: C1 — baliza ratificada y aceptación del verificador
 status: borrador
 tags: [r0, c1, sorteo, baliza]
-updated: 2026-09-30
-description: Candidato drand quicknet y requisitos para el aporte humano de H-10 a H-12, sin implementar el motor.
+updated: 2026-10-01
+description: drand quicknet ratificado como fuente (D1) y requisitos para el aporte humano de H-10 a H-12, sin implementar el motor ni calcular vectores.
 ---
 
-# Baliza candidata y entrega humana
+# Baliza ratificada y entrega humana
 
-Se propone evaluar **drand quicknet** como fuente pública. No es una selección
-ratificada ni una implementación del motor. Las restricciones de
+Diego ratificó el 2026-09-30 **drand quicknet** como fuente pública de
+aleatoriedad ([D1](decisiones-c1-configuracion.md#d1-fuente-de-aleatoriedad-pública)).
+La ratificación elige la fuente; no es una implementación del motor ni cierra
+H-10, H-11 o H-12. Las restricciones de
 [zonas sin IA](../../../../.claude/rules/zonas-sin-ia.md) se mantienen: este documento
 especifica aceptación y dependencias, sin generar verificador ni vectores esperados.
 
-## Fuente propuesta
+## Fuente ratificada
 
 La documentación oficial describe quicknet como red principal con período de
 3 segundos y modo no encadenado, identificada por el hash:
@@ -28,9 +30,10 @@ asocia cada ronda a un instante y permite verificar su firma.
 [consideraciones de seguridad](https://docs.drand.love/blog/2023/10/16/quicknet-is-live/).
 
 No se ha consultado una ronda para declarar un sorteo válido, comprobado la firma
-con una implementación ni calculado ganadores. La elección requiere comprobar
-biblioteca compatible con el esquema de firma concreto, licencia y mantenimiento.
-El SDK genérico de otra cadena no se presume compatible.
+con una implementación ni calculado ganadores. Antes de implementar falta elegir
+una biblioteca compatible con el esquema de firma concreto, con licencia y
+mantenimiento comprobados. El SDK genérico de otra cadena no se presume compatible.
+El candidato L3 recoge la fuente en §5.8 y deja esos datos en DP-04.
 
 ## Contrato que debe cerrar el dueño del motor
 
@@ -62,6 +65,7 @@ Nunca convertir la caída del beacon en un resultado ficticio de sorteo.
 
 ## Entrega mínima pendiente de H-10–H-12
 
+La ratificación de la fuente no cambia esta lista: los vectores siguen pendientes.
 Diego es el dueño actual. Debe entregar:
 
 1. Especificación inequívoca e implementación humana del verificador, con la

@@ -1,5 +1,6 @@
 {
-  "estado": "borrador C1; no es matriz V8 ni cierra H-06",
+  "estado": "borrador C1 con la matriz B1 aprobada por Diego (2026-09-30); no es la matriz V8 ni cierra H-06: faltan logins reales, propiedad y SQL V8",
+  "fuente_decision": "docs/superpowers/specs/c1-l3-v8/decisiones-c1-datos.md#b1-matriz-de-privilegios-de-las-67-tablas-pendiente_matriz",
   "fuente_esquema": "docs/linea-base/ARTEFACTOS/libox_schema_L3_V7.sql",
   "fuente_esquema_sha256": "9ff3d07f3efef5ee2cf4997d34e361a6b78c64463b346c855a840f4baf937a43",
   "roles_grupo": [
@@ -25,7 +26,7 @@
   ],
   "clases": {
     "catalogo_lectura": {
-      "descripcion": "Catálogos de referencia sin importes propios ni datos personales; solo lectura.",
+      "descripcion": "Catálogos de referencia sin importes propios ni datos personales; solo lectura. aml_thresholds cambia solo por migración (B1).",
       "privilegios": {
         "libox_app": [
           "SELECT"
@@ -54,55 +55,95 @@
         ]
       }
     },
-    "reservado_humano": {
-      "descripcion": "Dinero, ledger, inventario, sorteo, RBAC, incompatibilidades, exactamente-una-vez o régimen económico. Sin privilegios hasta que el dueño humano defina la matriz.",
-      "privilegios": {}
+    "operativa": {
+      "descripcion": "B1: tablas operativas no críticas; la app lee, inserta y actualiza; la reportería lee. Sin DELETE.",
+      "privilegios": {
+        "libox_app": [
+          "INSERT",
+          "SELECT",
+          "UPDATE"
+        ],
+        "libox_read": [
+          "SELECT"
+        ]
+      }
     },
-    "pendiente_matriz": {
-      "descripcion": "No crítica pero sin matriz decidida (incluye datos personales). Sin privilegios hasta decidir en L3 V8.",
+    "registro_inmutable": {
+      "descripcion": "B1: registros que no se modifican; la app lee e inserta; la reportería lee. Sin UPDATE ni DELETE.",
+      "privilegios": {
+        "libox_app": [
+          "INSERT",
+          "SELECT"
+        ],
+        "libox_read": [
+          "SELECT"
+        ]
+      }
+    },
+    "sensible": {
+      "descripcion": "B1: datos personales; solo la app (S, I, U). Sin libox_read: la reportería irá por vistas seudonimizadas pendientes.",
+      "privilegios": {
+        "libox_app": [
+          "INSERT",
+          "SELECT",
+          "UPDATE"
+        ]
+      }
+    },
+    "sensible_inmutable": {
+      "descripcion": "B1: datos personales inmutables; solo la app (S, I). Sin libox_read.",
+      "privilegios": {
+        "libox_app": [
+          "INSERT",
+          "SELECT"
+        ]
+      }
+    },
+    "reservado_humano": {
+      "descripcion": "Dinero, ledger, inventario, sorteo, RBAC, incompatibilidades, exactamente-una-vez o régimen económico, más las seis tablas que B1 reclasifica. Sin privilegios hasta que el dueño humano defina su matriz.",
       "privilegios": {}
     }
   },
   "particiones": "Ningún beneficiario distinto del dueño en particiones gestionadas por el overlay; el acceso va por la tabla padre. journal_lines no tiene particiones del overlay.",
   "tablas": {
-    "age_verifications": "pendiente_matriz",
-    "alarm_resolutions": "pendiente_matriz",
-    "alarms": "pendiente_matriz",
-    "aml_case_documents": "pendiente_matriz",
-    "aml_cases": "pendiente_matriz",
-    "aml_thresholds": "pendiente_matriz",
+    "age_verifications": "sensible_inmutable",
+    "alarm_resolutions": "registro_inmutable",
+    "alarms": "operativa",
+    "aml_case_documents": "sensible_inmutable",
+    "aml_cases": "sensible",
+    "aml_thresholds": "catalogo_lectura",
     "analytics_events": "telemetria_insercion",
-    "attribution_touches": "pendiente_matriz",
+    "attribution_touches": "registro_inmutable",
     "audit_access_events": "agregacion_no_patrimonial",
-    "audit_emergency_queue": "pendiente_matriz",
+    "audit_emergency_queue": "operativa",
     "audit_events": "agregacion_no_patrimonial",
-    "benefit_redemptions": "pendiente_matriz",
-    "benefits": "pendiente_matriz",
-    "blocked_documents": "pendiente_matriz",
-    "client_capabilities": "pendiente_matriz",
+    "benefit_redemptions": "registro_inmutable",
+    "benefits": "operativa",
+    "blocked_documents": "sensible",
+    "client_capabilities": "operativa",
     "client_fee_levels": "reservado_humano",
-    "client_kyb": "pendiente_matriz",
-    "client_kyb_documents": "pendiente_matriz",
-    "client_members": "pendiente_matriz",
-    "client_reputation": "pendiente_matriz",
-    "client_reputation_history": "pendiente_matriz",
-    "client_transfer_acceptances": "pendiente_matriz",
-    "clients": "pendiente_matriz",
-    "credentials": "pendiente_matriz",
-    "daily_codes": "pendiente_matriz",
+    "client_kyb": "sensible",
+    "client_kyb_documents": "operativa",
+    "client_members": "operativa",
+    "client_reputation": "operativa",
+    "client_reputation_history": "registro_inmutable",
+    "client_transfer_acceptances": "registro_inmutable",
+    "clients": "operativa",
+    "credentials": "sensible",
+    "daily_codes": "registro_inmutable",
     "delivery_attestations": "reservado_humano",
-    "devices": "pendiente_matriz",
+    "devices": "operativa",
     "dispute_adjudications": "reservado_humano",
-    "dispute_evidence": "pendiente_matriz",
-    "disputes": "pendiente_matriz",
+    "dispute_evidence": "registro_inmutable",
+    "disputes": "operativa",
     "draw_commitments": "reservado_humano",
     "draw_executions": "reservado_humano",
     "draw_proofs": "reservado_humano",
     "draw_winners": "reservado_humano",
     "event_outbox": "reservado_humano",
     "evidence_strength_rules": "catalogo_lectura",
-    "feature_toggle_log": "pendiente_matriz",
-    "featured_placements": "pendiente_matriz",
+    "feature_toggle_log": "registro_inmutable",
+    "featured_placements": "operativa",
     "fee_exceptions": "reservado_humano",
     "fee_schedules": "reservado_humano",
     "free_entry_campaigns": "reservado_humano",
@@ -110,34 +151,34 @@
     "fsm_transitions": "reservado_humano",
     "holidays_calendar": "catalogo_lectura",
     "idempotency_keys": "reservado_humano",
-    "identity_documents": "pendiente_matriz",
-    "identity_verifications": "pendiente_matriz",
+    "identity_documents": "sensible",
+    "identity_verifications": "sensible_inmutable",
     "internal_account_suspensions": "reservado_humano",
     "journal_entries": "reservado_humano",
     "journal_lines": "reservado_humano",
-    "kpi_snapshots": "pendiente_matriz",
-    "leads": "pendiente_matriz",
+    "kpi_snapshots": "registro_inmutable",
+    "leads": "sensible",
     "ledger_accounts": "reservado_humano",
     "market_config_versions": "reservado_humano",
     "market_legal_requirements": "catalogo_lectura",
     "market_prize_categories": "catalogo_lectura",
     "markets": "catalogo_lectura",
-    "notarial_instruments": "pendiente_matriz",
+    "notarial_instruments": "operativa",
     "notification_attempts": "telemetria_insercion",
-    "notification_preferences": "pendiente_matriz",
+    "notification_preferences": "operativa",
     "notification_templates": "catalogo_lectura",
     "operating_windows": "catalogo_lectura",
-    "operation_register": "pendiente_matriz",
+    "operation_register": "reservado_humano",
     "orders": "reservado_humano",
-    "organizer_referral_codes": "pendiente_matriz",
-    "partners": "pendiente_matriz",
+    "organizer_referral_codes": "registro_inmutable",
+    "partners": "operativa",
     "payments": "reservado_humano",
     "payout_instructions": "reservado_humano",
-    "pc_stage_documents": "pendiente_matriz",
-    "pc_workflow_stages": "pendiente_matriz",
+    "pc_stage_documents": "operativa",
+    "pc_workflow_stages": "operativa",
     "platform_capabilities": "catalogo_lectura",
-    "prize_market_references": "pendiente_matriz",
-    "prize_valuation_documents": "pendiente_matriz",
+    "prize_market_references": "registro_inmutable",
+    "prize_valuation_documents": "operativa",
     "prize_valuations": "reservado_humano",
     "prizes": "reservado_humano",
     "processed_psp_events": "reservado_humano",
@@ -146,41 +187,41 @@
     "promotional_plans": "reservado_humano",
     "promotions": "reservado_humano",
     "psp_events": "reservado_humano",
-    "raffle_media": "pendiente_matriz",
-    "raffle_milestones": "pendiente_matriz",
-    "raffle_recurrences": "pendiente_matriz",
-    "raffle_terms": "pendiente_matriz",
+    "raffle_media": "operativa",
+    "raffle_milestones": "reservado_humano",
+    "raffle_recurrences": "operativa",
+    "raffle_terms": "registro_inmutable",
     "raffle_type_rules": "catalogo_lectura",
     "raffles": "reservado_humano",
     "reconciliation_batches": "reservado_humano",
     "reconciliation_exceptions": "reservado_humano",
     "redraws": "reservado_humano",
     "referrals": "reservado_humano",
-    "refresh_tokens": "pendiente_matriz",
+    "refresh_tokens": "sensible",
     "refund_credit_entries": "reservado_humano",
     "refund_credit_withdrawals": "reservado_humano",
     "refund_credits": "reservado_humano",
-    "registrable_assets": "pendiente_matriz",
-    "registry_blocks": "pendiente_matriz",
-    "registry_queries": "pendiente_matriz",
-    "resolution_rooms": "pendiente_matriz",
-    "responsible_play_events": "pendiente_matriz",
-    "risk_events": "pendiente_matriz",
-    "risk_rules": "pendiente_matriz",
-    "room_assignments": "pendiente_matriz",
-    "room_evidence": "pendiente_matriz",
+    "registrable_assets": "operativa",
+    "registry_blocks": "operativa",
+    "registry_queries": "registro_inmutable",
+    "resolution_rooms": "operativa",
+    "responsible_play_events": "registro_inmutable",
+    "risk_events": "registro_inmutable",
+    "risk_rules": "operativa",
+    "room_assignments": "operativa",
+    "room_evidence": "registro_inmutable",
     "room_message_sequences": "reservado_humano",
     "room_messages": "agregacion_no_patrimonial",
-    "room_participants": "pendiente_matriz",
-    "self_exclusions": "pendiente_matriz",
+    "room_participants": "operativa",
+    "self_exclusions": "reservado_humano",
     "settlement_holds": "reservado_humano",
     "settlements": "reservado_humano",
     "shipping_quotes": "reservado_humano",
     "sla_definitions": "catalogo_lectura",
-    "sla_extensions": "pendiente_matriz",
+    "sla_extensions": "operativa",
     "spend_accumulators": "reservado_humano",
-    "spending_limit_changes": "pendiente_matriz",
-    "spending_limits": "pendiente_matriz",
+    "spending_limit_changes": "reservado_humano",
+    "spending_limits": "reservado_humano",
     "state_transitions": "agregacion_no_patrimonial",
     "subrole_assignments": "reservado_humano",
     "subrole_grant_matrix": "reservado_humano",
@@ -189,19 +230,65 @@
     "subscriptions": "reservado_humano",
     "substitute_guarantees": "reservado_humano",
     "survey_instruments": "catalogo_lectura",
-    "survey_responses": "pendiente_matriz",
+    "survey_responses": "registro_inmutable",
     "tickets": "reservado_humano",
-    "transfer_acts": "pendiente_matriz",
-    "transfer_costs": "pendiente_matriz",
-    "user_attributions": "pendiente_matriz",
-    "user_devices": "pendiente_matriz",
-    "user_reputation": "pendiente_matriz",
-    "users": "pendiente_matriz",
+    "transfer_acts": "operativa",
+    "transfer_costs": "reservado_humano",
+    "user_attributions": "registro_inmutable",
+    "user_devices": "operativa",
+    "user_reputation": "operativa",
+    "users": "sensible",
     "valuation_exceptions": "reservado_humano",
-    "waitlists": "pendiente_matriz",
-    "winner_legal_readiness": "pendiente_matriz"
+    "waitlists": "operativa",
+    "winner_legal_readiness": "operativa"
   },
   "particiones_reservadas_humano": [
     "journal_lines"
-  ]
+  ],
+  "reclasificadas_b1_reservado_humano": [
+    "operation_register",
+    "raffle_milestones",
+    "self_exclusions",
+    "spending_limit_changes",
+    "spending_limits",
+    "transfer_costs"
+  ],
+  "logins_componente_b2": {
+    "estado": "B2 aprobada (Diego, 2026-09-30). Solo simulación local en transacción revertida: no se crean logins, no hay secretos y no se tocan roles de Supabase.",
+    "miembros": {
+      "libox_api": [
+        "libox_app"
+      ],
+      "libox_worker": [
+        "libox_app",
+        "libox_append"
+      ],
+      "libox_reporting": [
+        "libox_read"
+      ],
+      "libox_deployer": [
+        "libox_migrate"
+      ]
+    },
+    "propiedad": "libox_migrate dueño del esquema de dominio: requisito del SQL V8. No se simula sobre V7 porque cambiaría la huella del esquema protegido."
+  },
+  "procedimiento_default_b4": {
+    "estado": "B4 aprobada: procedimiento escrito, nunca automático. Solo especificado; el overlay no mueve filas.",
+    "padres_permitidos": [
+      "analytics_events",
+      "audit_access_events",
+      "audit_events",
+      "notification_attempts",
+      "registry_queries",
+      "risk_events",
+      "room_messages",
+      "state_transitions"
+    ],
+    "padres_humano": [
+      "event_outbox",
+      "journal_lines",
+      "operation_register",
+      "psp_events"
+    ]
+  }
 }

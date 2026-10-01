@@ -2,7 +2,7 @@
 title: C1 — alcance del cierre SQL frente a R1
 status: borrador
 tags: [r0, c1, l3-v8, sql, alcance]
-updated: 2026-09-30
+updated: 2026-10-01
 description: Qué exige C1 al SQL, qué queda para C2, D1 y R1, y discrepancias de alcance con sus referencias.
 ---
 
@@ -17,7 +17,7 @@ pruebas de negocio de R1, para no convertir estas en requisitos de C1.
 
 | Línea | Exigencia | Situación tras este overlay |
 |---|---|---|
-| l.82 | SQL desplegable: particiones, GRANTs, semillas, disparadores prometidos e INV-38 | Particiones: 11/12 padres verificados; `journal_lines` es aporte humano (ledger). GRANTs: parcial (H-06 no cerrado). Semillas: solo PE. Disparadores prometidos e INV-38: **humano, abierto** |
+| l.82 | SQL desplegable: particiones, GRANTs, semillas, disparadores prometidos e INV-38 | Particiones: 11/12 padres verificados; `journal_lines` es aporte humano (ledger). GRANTs: matriz B1 aplicada a las clases no patrimoniales; H-06 sigue parcial. Semillas: solo PE. Disparadores prometidos e INV-38: **humano, abierto** |
 | l.84 | Vectores de prueba **con resultado esperado** y `verify_draw` sin ambigüedad | **Pendiente humano.** Es entregable de C1 aunque su ejecución corresponda a la integración (L3 V7 §14.5, R1/E14). No se fabrican valores |
 | l.88 (C2) | Emisión con `verify_corpus` en cero, Registro y BASELINE | Fuera de este paquete |
 | l.95 (D1) | CI con migraciones sobre PostgreSQL efímero y esquema V8 | El runner es candidato, pero no está conectado a CI y opera sobre V7 más el overlay, no sobre V8 |
@@ -45,14 +45,15 @@ que sus restricciones se prueben contra casos que deben fallar. Eso aplica a la
 2. **"Retención y recuperación"** en [cambios](cambios.md) l.47–48, dentro de la
    evidencia de particiones. La recuperación es un ensayo de R1 (operación l.87).
    La retención de 4 de los 12 padres (`psp_events`, `operation_register`,
-   `risk_events`, `audit_access_events`) no está definida en L3 V7 §1.3; la de
-   `operation_register` está pendiente de [LEGAL→ABOGADO]. Aquí no se ejecuta
-   retención ni recuperación.
+   `risk_events`, `audit_access_events`) no está definida en L3 V7 §1.3. B6 la fija
+   para auditoría de accesos y riesgo; `psp_events` y `operation_register` siguen
+   pendientes de [LEGAL→ABOGADO]. Aquí la retención es solo metadato del inventario
+   y no se ejecuta retención ni recuperación.
 3. **C1-H06** (l.23) pide pruebas como `libox_app`, `libox_append`, `libox_read` y
-   `libox_migrate`. Se hicieron sobre las 17 tablas concedidas y las
-   denegaciones, junto con la comprobación de que ningún otro rol (incluidos
-   `service_role` y un rol propio) tiene privilegios. No cierran H-06 sin la
-   matriz completa ni los logins reales.
+   `libox_migrate`. Se hicieron sobre las 78 tablas concedidas por B1 y las
+   denegaciones, con los logins B2 simulados y la comprobación de que ningún otro
+   rol (incluidos `service_role` y un rol propio) tiene privilegios. No cierran
+   H-06 sin las 57 tablas reservadas, los logins reales ni la propiedad del SQL V8.
 4. **C1-H05** (l.22) pide rotación mensual en 12 tablas. Aquí se cubren 11:
    las particiones de `journal_lines` son SQL del ledger (zona sin generación
    asistida) y quedan como aporte humano.
