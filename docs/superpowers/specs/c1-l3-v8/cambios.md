@@ -2,8 +2,8 @@
 title: C1 — registro local CD-07 y cambios propuestos
 status: borrador
 tags: [r0, c1, l3-v8]
-updated: 2026-09-30
-description: Trazabilidad H-01 a H-19 sin asignar números del doc20 ni editar el canon.
+updated: 2026-10-01
+description: Trazabilidad H-01 a H-19 y deltas C1-V de Cowork sin asignar números del doc20 ni editar el canon.
 ---
 
 # Registro local de cambios candidatos (CD-07)
@@ -12,6 +12,11 @@ Origen: [hallazgos técnicos](../2026-09-25-revision-sistema-hallazgos-l3.md).
 Dueño disponible: Diego. Fecha: 2026-09-30. Estado general: propuesta documentada,
 no emitida. C1-H identifica filas locales, no un CHANGE/DEC de Outline.
 Documento afectado: L3 V7 y sus artefactos; candidato al backlog de cambio: sí.
+
+La [ampliación Cowork](reconciliacion-linea-base.md) añade C1-V01–V14 para las
+27 diferencias revisadas con Opus. Sus IDs y los D-1–D-6 de origen son distintos
+de H-01–H-19 y de las decisiones D-01–D-09 del programa R0. Los valores nuevos
+permanecen candidatos; ver [decisiones pendientes](reconciliacion-decisiones-planificacion.md).
 
 | ID local | Cambio para el borrador | Evidencia necesaria para cerrar |
 |---|---|---|
@@ -33,7 +38,7 @@ Documento afectado: L3 V7 y sus artefactos; candidato al backlog de cambio: sí.
 | C1-H16 | Pago tardío no produce tickets fuera del pool; excepción y devolución | Política ratificada, F7 y T-03 consistente |
 | C1-H17 | TLS, CSP, WAF y límites por identidad/recurso | Pruebas de abuso y fallback, sin falsear garantía patrimonial |
 | C1-H18 | Backend TypeScript/Next.js ratificado; retirar .NET8/Next14 en V8 | Proveedores elegidos, major PG decidido y CI TypeScript en D1 |
-| C1-H19 | Alinear nombre/título/pie/versión y referencia PRD V9 | Validación de identidad + BASELINE/Registro en acto C2 |
+| C1-H19 | Alinear nombre/título/pie/versión y gobernantes de la emisión reconciliada | Confirmar emisión de V8 recibida, resolver identidad + BASELINE/Registro en acto C2 |
 
 ## Borrador de migraciones y propiedad
 
@@ -61,8 +66,9 @@ confirmación contable y código humano; H-10–H-12 requieren especificación c
 implementación independiente. El resto exige artefactos o pruebas descritos arriba.
 
 La siguiente versión debe ser autónoma: consolidar secciones no modificadas y
-reemplazos aprobados, sin remitir a V7 como norma. Archivar V7 intacta y emitir V8,
-Registro actualizado y BASELINE en un único acto de C2; este paquete no lo ejecuta.
+reemplazos aprobados, sin remitir a V7 como norma. Archivar versiones previas
+intactas y emitir el conjunto con identidad resuelta, Registro y BASELINE en C2;
+este paquete no lo ejecuta. V9 exige confirmar que V8 fue formalmente emitida.
 
 La entrega actual se detalla en [cierre SQL](cierre-sql.md),
 [cierre contractual](cierre-contratos.md) y [estado C1](estado-c1.md).

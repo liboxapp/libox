@@ -1,7 +1,7 @@
 {
   "tipo": "evidencia-c1-sql-overlay",
   "esquema_evidencia": 2,
-  "generado_utc": "2026-09-30T20:04:50+00:00",
+  "generado_utc": "2026-10-01T05:45:59+00:00",
   "escenario": "dueno-createrole",
   "descripcion_escenario": "Instalador dueño de la base, sin SUPERUSER, con CREATEROLE.",
   "alcance": "C1: despliegue no crítico (particiones, ACL base, semilla PE). No R1.",
@@ -9,7 +9,9 @@
     "Overlay borrador sobre V7 intacto; no es el SQL V8 ni una migración completa.",
     "No acredita comportamiento de Supabase gestionado, pooler ni Data API reales.",
     "H-05 queda parcial (11/12 padres): journal_lines no recibe particiones del overlay; las aporta su dueño humano.",
-    "H-06 queda parcial: solo hay privilegios para clases no patrimoniales; la matriz completa está pendiente.",
+    "H-06 queda parcial: aplica la matriz B1 aprobada a las clases no patrimoniales; las 57 tablas reservadas a humano, los logins reales, la propiedad por libox_migrate y el SQL V8 siguen pendientes.",
+    "Los logins de B2 solo se simulan en una transacción revertida, sin contraseñas; no se crean ni se alteran roles de Supabase.",
+    "El cifrado de datos personales con AWS KMS (B1-bis) y sus columnas *_enc pertenecen al SQL V8; aquí no se simulan.",
     "Precondición antes de aplicar en Supabase: validar Data API/exposición del esquema, RLS gestionado y privilegios por defecto de otros roles (supabase_admin).",
     "Las zonas críticas (ledger, RBAC, sorteo, concurrencia, incompatibilidades, comisión) no se implementan aquí."
   ],
@@ -24,15 +26,15 @@
     },
     {
       "ruta": "docs/superpowers/specs/c1-l3-v8/database/acl-manifest.json",
-      "sha256": "e1426355e86b7a2ddf4fd5c6edb7b04561cf8b28199cba862bfd65ee2e827987"
+      "sha256": "1694725b6e06a35c654dcc17950816508520d1d1840b0afbaf54610ee323dba2"
     },
     {
       "ruta": "docs/superpowers/specs/c1-l3-v8/database/overlay/010_libox_ops_particiones.sql",
-      "sha256": "c58f7dcc4fd87139431a57ff4e06d336da15ff935220043906c78909273bb7d8"
+      "sha256": "5b8b98a41f9f751a9bd0bb5e02311db4bcf8385c3b2a50009b7f9b13581e4eee"
     },
     {
       "ruta": "docs/superpowers/specs/c1-l3-v8/database/overlay/020_acl_base.sql",
-      "sha256": "392e95f07f1921126197971d1d806e6a542e2ef21b6c4358a7043a86dbb5a8c1"
+      "sha256": "a135c4cdb004792bf695cd3dd7d38cfabcd06d1a8f871f175b97dc422bc80d1e"
     },
     {
       "ruta": "docs/superpowers/specs/c1-l3-v8/database/overlay/030_semilla_mercado_pe.sql",
@@ -44,7 +46,7 @@
     },
     {
       "ruta": "scripts/database/c1_sql_check.py",
-      "sha256": "a42e21af4711bd90a783b5a0e97c96ec3ac8bc093c00f179d91505a25466c472"
+      "sha256": "5759888fcf1823d50e4f29bdbe817c3abcfcc4a7f3a46101066b83061604c6b9"
     },
     {
       "ruta": "scripts/database/pgdocker.py",
@@ -68,7 +70,7 @@
       "puertos": {},
       "enlaces_puerto": {}
     },
-    "contenedor": "libox-c1-sql-dueno-createrole-450feb6593",
+    "contenedor": "libox-c1-sql-dueno-createrole-226228809f",
     "postgres": "PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
     "instalador": {
       "rolname": "libox_installer",
@@ -85,7 +87,7 @@
       "particiones": 296,
       "funciones_public": 5,
       "disparadores": 5,
-      "concesiones_a_no_duenos": 30,
+      "concesiones_a_no_duenos": 240,
       "filas": {
         "raffle_type_rules": 8,
         "subrole_grant_matrix": 14,
@@ -97,9 +99,9 @@
     },
     "hijos_por_padre": {
       "analytics_events": {
-        "analytics_events_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
         "analytics_events_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
         "analytics_events_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "analytics_events_p202612": "FOR VALUES FROM ('2026-12-01 00:00:00+00') TO ('2027-01-01 00:00:00+00')",
         "analytics_events_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
         "analytics_events_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
         "analytics_events_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
@@ -107,9 +109,9 @@
         "analytics_events_pdefault": "DEFAULT"
       },
       "analytics_events_pkey": {
-        "analytics_events_p202609_pkey": null,
         "analytics_events_p202610_pkey": null,
         "analytics_events_p202611_pkey": null,
+        "analytics_events_p202612_pkey": null,
         "analytics_events_p203001_pkey": null,
         "analytics_events_p203002_pkey": null,
         "analytics_events_p203107_pkey": null,
@@ -117,9 +119,9 @@
         "analytics_events_pdefault_pkey": null
       },
       "audit_access_events": {
-        "audit_access_events_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
         "audit_access_events_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
         "audit_access_events_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "audit_access_events_p202612": "FOR VALUES FROM ('2026-12-01 00:00:00+00') TO ('2027-01-01 00:00:00+00')",
         "audit_access_events_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
         "audit_access_events_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
         "audit_access_events_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
@@ -127,9 +129,9 @@
         "audit_access_events_pdefault": "DEFAULT"
       },
       "audit_access_events_pkey": {
-        "audit_access_events_p202609_pkey": null,
         "audit_access_events_p202610_pkey": null,
         "audit_access_events_p202611_pkey": null,
+        "audit_access_events_p202612_pkey": null,
         "audit_access_events_p203001_pkey": null,
         "audit_access_events_p203002_pkey": null,
         "audit_access_events_p203107_pkey": null,
@@ -137,9 +139,9 @@
         "audit_access_events_pdefault_pkey": null
       },
       "audit_events": {
-        "audit_events_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
         "audit_events_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
         "audit_events_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "audit_events_p202612": "FOR VALUES FROM ('2026-12-01 00:00:00+00') TO ('2027-01-01 00:00:00+00')",
         "audit_events_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
         "audit_events_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
         "audit_events_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
@@ -147,9 +149,9 @@
         "audit_events_pdefault": "DEFAULT"
       },
       "audit_events_pkey": {
-        "audit_events_p202609_pkey": null,
         "audit_events_p202610_pkey": null,
         "audit_events_p202611_pkey": null,
+        "audit_events_p202612_pkey": null,
         "audit_events_p203001_pkey": null,
         "audit_events_p203002_pkey": null,
         "audit_events_p203107_pkey": null,
@@ -157,9 +159,9 @@
         "audit_events_pdefault_pkey": null
       },
       "event_outbox": {
-        "event_outbox_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
         "event_outbox_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
         "event_outbox_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "event_outbox_p202612": "FOR VALUES FROM ('2026-12-01 00:00:00+00') TO ('2027-01-01 00:00:00+00')",
         "event_outbox_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
         "event_outbox_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
         "event_outbox_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
@@ -167,9 +169,9 @@
         "event_outbox_pdefault": "DEFAULT"
       },
       "event_outbox_pkey": {
-        "event_outbox_p202609_pkey": null,
         "event_outbox_p202610_pkey": null,
         "event_outbox_p202611_pkey": null,
+        "event_outbox_p202612_pkey": null,
         "event_outbox_p203001_pkey": null,
         "event_outbox_p203002_pkey": null,
         "event_outbox_p203107_pkey": null,
@@ -177,9 +179,9 @@
         "event_outbox_pdefault_pkey": null
       },
       "ix_aae_actor": {
-        "audit_access_events_p202609_actor_id_created_at_idx": null,
         "audit_access_events_p202610_actor_id_created_at_idx": null,
         "audit_access_events_p202611_actor_id_created_at_idx": null,
+        "audit_access_events_p202612_actor_id_created_at_idx": null,
         "audit_access_events_p203001_actor_id_created_at_idx": null,
         "audit_access_events_p203002_actor_id_created_at_idx": null,
         "audit_access_events_p203107_actor_id_created_at_idx": null,
@@ -187,9 +189,9 @@
         "audit_access_events_pdefault_actor_id_created_at_idx": null
       },
       "ix_aae_resource": {
-        "audit_access_events_p202609_resource_type_resource_id_creat_idx": null,
         "audit_access_events_p202610_resource_type_resource_id_creat_idx": null,
         "audit_access_events_p202611_resource_type_resource_id_creat_idx": null,
+        "audit_access_events_p202612_resource_type_resource_id_creat_idx": null,
         "audit_access_events_p203001_resource_type_resource_id_creat_idx": null,
         "audit_access_events_p203002_resource_type_resource_id_creat_idx": null,
         "audit_access_events_p203107_resource_type_resource_id_creat_idx": null,
@@ -197,9 +199,9 @@
         "audit_access_events_pdefault_resource_type_resource_id_crea_idx": null
       },
       "ix_ae_name": {
-        "analytics_events_p202609_event_name_server_ts_idx": null,
         "analytics_events_p202610_event_name_server_ts_idx": null,
         "analytics_events_p202611_event_name_server_ts_idx": null,
+        "analytics_events_p202612_event_name_server_ts_idx": null,
         "analytics_events_p203001_event_name_server_ts_idx": null,
         "analytics_events_p203002_event_name_server_ts_idx": null,
         "analytics_events_p203107_event_name_server_ts_idx": null,
@@ -207,9 +209,9 @@
         "analytics_events_pdefault_event_name_server_ts_idx": null
       },
       "ix_ae_session": {
-        "analytics_events_p202609_session_id_server_ts_idx": null,
         "analytics_events_p202610_session_id_server_ts_idx": null,
         "analytics_events_p202611_session_id_server_ts_idx": null,
+        "analytics_events_p202612_session_id_server_ts_idx": null,
         "analytics_events_p203001_session_id_server_ts_idx": null,
         "analytics_events_p203002_session_id_server_ts_idx": null,
         "analytics_events_p203107_session_id_server_ts_idx": null,
@@ -217,9 +219,9 @@
         "analytics_events_pdefault_session_id_server_ts_idx": null
       },
       "ix_audit_actor": {
-        "audit_events_p202609_actor_id_created_at_idx": null,
         "audit_events_p202610_actor_id_created_at_idx": null,
         "audit_events_p202611_actor_id_created_at_idx": null,
+        "audit_events_p202612_actor_id_created_at_idx": null,
         "audit_events_p203001_actor_id_created_at_idx": null,
         "audit_events_p203002_actor_id_created_at_idx": null,
         "audit_events_p203107_actor_id_created_at_idx": null,
@@ -227,9 +229,9 @@
         "audit_events_pdefault_actor_id_created_at_idx": null
       },
       "ix_audit_entity": {
-        "audit_events_p202609_entity_type_entity_id_created_at_idx": null,
         "audit_events_p202610_entity_type_entity_id_created_at_idx": null,
         "audit_events_p202611_entity_type_entity_id_created_at_idx": null,
+        "audit_events_p202612_entity_type_entity_id_created_at_idx": null,
         "audit_events_p203001_entity_type_entity_id_created_at_idx": null,
         "audit_events_p203002_entity_type_entity_id_created_at_idx": null,
         "audit_events_p203107_entity_type_entity_id_created_at_idx": null,
@@ -237,9 +239,9 @@
         "audit_events_pdefault_entity_type_entity_id_created_at_idx": null
       },
       "ix_audit_trace": {
-        "audit_events_p202609_trace_id_idx": null,
         "audit_events_p202610_trace_id_idx": null,
         "audit_events_p202611_trace_id_idx": null,
+        "audit_events_p202612_trace_id_idx": null,
         "audit_events_p203001_trace_id_idx": null,
         "audit_events_p203002_trace_id_idx": null,
         "audit_events_p203107_trace_id_idx": null,
@@ -247,9 +249,9 @@
         "audit_events_pdefault_trace_id_idx": null
       },
       "ix_na_user_ref": {
-        "notification_attempts_p202609_user_id_reference_id_server_t_idx": null,
         "notification_attempts_p202610_user_id_reference_id_server_t_idx": null,
         "notification_attempts_p202611_user_id_reference_id_server_t_idx": null,
+        "notification_attempts_p202612_user_id_reference_id_server_t_idx": null,
         "notification_attempts_p203001_user_id_reference_id_server_t_idx": null,
         "notification_attempts_p203002_user_id_reference_id_server_t_idx": null,
         "notification_attempts_p203107_user_id_reference_id_server_t_idx": null,
@@ -257,9 +259,9 @@
         "notification_attempts_pdefaul_user_id_reference_id_server_t_idx": null
       },
       "ix_outbox_pending": {
-        "event_outbox_p202609_created_at_idx": null,
         "event_outbox_p202610_created_at_idx": null,
         "event_outbox_p202611_created_at_idx": null,
+        "event_outbox_p202612_created_at_idx": null,
         "event_outbox_p203001_created_at_idx": null,
         "event_outbox_p203002_created_at_idx": null,
         "event_outbox_p203107_created_at_idx": null,
@@ -267,9 +269,9 @@
         "event_outbox_pdefault_created_at_idx": null
       },
       "ix_psp_events_lookup": {
-        "psp_events_p202609_provider_provider_event_id_created_at_idx": null,
         "psp_events_p202610_provider_provider_event_id_created_at_idx": null,
         "psp_events_p202611_provider_provider_event_id_created_at_idx": null,
+        "psp_events_p202612_provider_provider_event_id_created_at_idx": null,
         "psp_events_p203001_provider_provider_event_id_created_at_idx": null,
         "psp_events_p203002_provider_provider_event_id_created_at_idx": null,
         "psp_events_p203107_provider_provider_event_id_created_at_idx": null,
@@ -277,9 +279,9 @@
         "psp_events_pdefault_provider_provider_event_id_created_at_idx": null
       },
       "ix_risk_subject": {
-        "risk_events_p202609_subject_type_subject_id_created_at_idx": null,
         "risk_events_p202610_subject_type_subject_id_created_at_idx": null,
         "risk_events_p202611_subject_type_subject_id_created_at_idx": null,
+        "risk_events_p202612_subject_type_subject_id_created_at_idx": null,
         "risk_events_p203001_subject_type_subject_id_created_at_idx": null,
         "risk_events_p203002_subject_type_subject_id_created_at_idx": null,
         "risk_events_p203107_subject_type_subject_id_created_at_idx": null,
@@ -287,9 +289,9 @@
         "risk_events_pdefault_subject_type_subject_id_created_at_idx": null
       },
       "ix_room_msg_seq": {
-        "room_messages_p202609_room_id_sequence_created_at_idx": null,
         "room_messages_p202610_room_id_sequence_created_at_idx": null,
         "room_messages_p202611_room_id_sequence_created_at_idx": null,
+        "room_messages_p202612_room_id_sequence_created_at_idx": null,
         "room_messages_p203001_room_id_sequence_created_at_idx": null,
         "room_messages_p203002_room_id_sequence_created_at_idx": null,
         "room_messages_p203107_room_id_sequence_created_at_idx": null,
@@ -297,9 +299,9 @@
         "room_messages_pdefault_room_id_sequence_created_at_idx": null
       },
       "ix_rq_asset": {
-        "registry_queries_p202609_asset_id_created_at_idx": null,
         "registry_queries_p202610_asset_id_created_at_idx": null,
         "registry_queries_p202611_asset_id_created_at_idx": null,
+        "registry_queries_p202612_asset_id_created_at_idx": null,
         "registry_queries_p203001_asset_id_created_at_idx": null,
         "registry_queries_p203002_asset_id_created_at_idx": null,
         "registry_queries_p203107_asset_id_created_at_idx": null,
@@ -307,9 +309,9 @@
         "registry_queries_pdefault_asset_id_created_at_idx": null
       },
       "ix_transitions_entity": {
-        "state_transitions_p202609_entity_type_entity_id_created_at_idx": null,
         "state_transitions_p202610_entity_type_entity_id_created_at_idx": null,
         "state_transitions_p202611_entity_type_entity_id_created_at_idx": null,
+        "state_transitions_p202612_entity_type_entity_id_created_at_idx": null,
         "state_transitions_p203001_entity_type_entity_id_created_at_idx": null,
         "state_transitions_p203002_entity_type_entity_id_created_at_idx": null,
         "state_transitions_p203107_entity_type_entity_id_created_at_idx": null,
@@ -317,9 +319,9 @@
         "state_transitions_pdefault_entity_type_entity_id_created_at_idx": null
       },
       "ix_transitions_trace": {
-        "state_transitions_p202609_trace_id_idx": null,
         "state_transitions_p202610_trace_id_idx": null,
         "state_transitions_p202611_trace_id_idx": null,
+        "state_transitions_p202612_trace_id_idx": null,
         "state_transitions_p203001_trace_id_idx": null,
         "state_transitions_p203002_trace_id_idx": null,
         "state_transitions_p203107_trace_id_idx": null,
@@ -327,9 +329,9 @@
         "state_transitions_pdefault_trace_id_idx": null
       },
       "notification_attempts": {
-        "notification_attempts_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
         "notification_attempts_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
         "notification_attempts_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "notification_attempts_p202612": "FOR VALUES FROM ('2026-12-01 00:00:00+00') TO ('2027-01-01 00:00:00+00')",
         "notification_attempts_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
         "notification_attempts_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
         "notification_attempts_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
@@ -337,9 +339,9 @@
         "notification_attempts_pdefault": "DEFAULT"
       },
       "notification_attempts_pkey": {
-        "notification_attempts_p202609_pkey": null,
         "notification_attempts_p202610_pkey": null,
         "notification_attempts_p202611_pkey": null,
+        "notification_attempts_p202612_pkey": null,
         "notification_attempts_p203001_pkey": null,
         "notification_attempts_p203002_pkey": null,
         "notification_attempts_p203107_pkey": null,
@@ -347,9 +349,9 @@
         "notification_attempts_pdefault_pkey": null
       },
       "operation_register": {
-        "operation_register_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
         "operation_register_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
         "operation_register_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "operation_register_p202612": "FOR VALUES FROM ('2026-12-01 00:00:00+00') TO ('2027-01-01 00:00:00+00')",
         "operation_register_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
         "operation_register_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
         "operation_register_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
@@ -357,9 +359,9 @@
         "operation_register_pdefault": "DEFAULT"
       },
       "operation_register_pkey": {
-        "operation_register_p202609_pkey": null,
         "operation_register_p202610_pkey": null,
         "operation_register_p202611_pkey": null,
+        "operation_register_p202612_pkey": null,
         "operation_register_p203001_pkey": null,
         "operation_register_p203002_pkey": null,
         "operation_register_p203107_pkey": null,
@@ -367,9 +369,9 @@
         "operation_register_pdefault_pkey": null
       },
       "psp_events": {
-        "psp_events_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
         "psp_events_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
         "psp_events_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "psp_events_p202612": "FOR VALUES FROM ('2026-12-01 00:00:00+00') TO ('2027-01-01 00:00:00+00')",
         "psp_events_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
         "psp_events_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
         "psp_events_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
@@ -377,9 +379,9 @@
         "psp_events_pdefault": "DEFAULT"
       },
       "psp_events_pkey": {
-        "psp_events_p202609_pkey": null,
         "psp_events_p202610_pkey": null,
         "psp_events_p202611_pkey": null,
+        "psp_events_p202612_pkey": null,
         "psp_events_p203001_pkey": null,
         "psp_events_p203002_pkey": null,
         "psp_events_p203107_pkey": null,
@@ -387,9 +389,9 @@
         "psp_events_pdefault_pkey": null
       },
       "registry_queries": {
-        "registry_queries_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
         "registry_queries_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
         "registry_queries_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "registry_queries_p202612": "FOR VALUES FROM ('2026-12-01 00:00:00+00') TO ('2027-01-01 00:00:00+00')",
         "registry_queries_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
         "registry_queries_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
         "registry_queries_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
@@ -397,9 +399,9 @@
         "registry_queries_pdefault": "DEFAULT"
       },
       "registry_queries_pkey": {
-        "registry_queries_p202609_pkey": null,
         "registry_queries_p202610_pkey": null,
         "registry_queries_p202611_pkey": null,
+        "registry_queries_p202612_pkey": null,
         "registry_queries_p203001_pkey": null,
         "registry_queries_p203002_pkey": null,
         "registry_queries_p203107_pkey": null,
@@ -407,9 +409,9 @@
         "registry_queries_pdefault_pkey": null
       },
       "risk_events": {
-        "risk_events_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
         "risk_events_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
         "risk_events_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "risk_events_p202612": "FOR VALUES FROM ('2026-12-01 00:00:00+00') TO ('2027-01-01 00:00:00+00')",
         "risk_events_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
         "risk_events_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
         "risk_events_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
@@ -417,9 +419,9 @@
         "risk_events_pdefault": "DEFAULT"
       },
       "risk_events_pkey": {
-        "risk_events_p202609_pkey": null,
         "risk_events_p202610_pkey": null,
         "risk_events_p202611_pkey": null,
+        "risk_events_p202612_pkey": null,
         "risk_events_p203001_pkey": null,
         "risk_events_p203002_pkey": null,
         "risk_events_p203107_pkey": null,
@@ -427,9 +429,9 @@
         "risk_events_pdefault_pkey": null
       },
       "room_messages": {
-        "room_messages_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
         "room_messages_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
         "room_messages_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "room_messages_p202612": "FOR VALUES FROM ('2026-12-01 00:00:00+00') TO ('2027-01-01 00:00:00+00')",
         "room_messages_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
         "room_messages_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
         "room_messages_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
@@ -437,9 +439,9 @@
         "room_messages_pdefault": "DEFAULT"
       },
       "room_messages_pkey": {
-        "room_messages_p202609_pkey": null,
         "room_messages_p202610_pkey": null,
         "room_messages_p202611_pkey": null,
+        "room_messages_p202612_pkey": null,
         "room_messages_p203001_pkey": null,
         "room_messages_p203002_pkey": null,
         "room_messages_p203107_pkey": null,
@@ -447,9 +449,9 @@
         "room_messages_pdefault_pkey": null
       },
       "state_transitions": {
-        "state_transitions_p202609": "FOR VALUES FROM ('2026-09-01 00:00:00+00') TO ('2026-10-01 00:00:00+00')",
         "state_transitions_p202610": "FOR VALUES FROM ('2026-10-01 00:00:00+00') TO ('2026-11-01 00:00:00+00')",
         "state_transitions_p202611": "FOR VALUES FROM ('2026-11-01 00:00:00+00') TO ('2026-12-01 00:00:00+00')",
+        "state_transitions_p202612": "FOR VALUES FROM ('2026-12-01 00:00:00+00') TO ('2027-01-01 00:00:00+00')",
         "state_transitions_p203001": "FOR VALUES FROM ('2030-01-01 00:00:00+00') TO ('2030-02-01 00:00:00+00')",
         "state_transitions_p203002": "FOR VALUES FROM ('2030-02-01 00:00:00+00') TO ('2030-03-01 00:00:00+00')",
         "state_transitions_p203107": "FOR VALUES FROM ('2031-07-01 00:00:00+00') TO ('2031-08-01 00:00:00+00')",
@@ -457,9 +459,9 @@
         "state_transitions_pdefault": "DEFAULT"
       },
       "state_transitions_pkey": {
-        "state_transitions_p202609_pkey": null,
         "state_transitions_p202610_pkey": null,
         "state_transitions_p202611_pkey": null,
+        "state_transitions_p202612_pkey": null,
         "state_transitions_p203001_pkey": null,
         "state_transitions_p203002_pkey": null,
         "state_transitions_p203107_pkey": null,
@@ -1136,7 +1138,7 @@
       },
       "observado": {
         "rc": 3,
-        "error": "ERROR:  42501: permission denied for table analytics_events_p202609"
+        "error": "ERROR:  42501: permission denied for table analytics_events_p202610"
       },
       "resultado": "pasa"
     },
@@ -1283,7 +1285,7 @@
       },
       "observado": {
         "rc": 3,
-        "error": "ERROR:  42501: permission denied for table audit_events_p202609"
+        "error": "ERROR:  42501: permission denied for table audit_events_p202610"
       },
       "resultado": "pasa"
     },
@@ -1417,6 +1419,622 @@
       "observado": {
         "rc": 3,
         "error": "ERROR:  42501: permission denied for table settlements"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-OPERATIVA-APP",
+      "descripcion": "libox_app ejerce sus privilegios B1 sobre clients",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "rc": 0
+      },
+      "observado": {
+        "rc": 0,
+        "error": null
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-OPERATIVA-READ",
+      "descripcion": "libox_read ejerce sus privilegios B1 sobre clients",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "rc": 0
+      },
+      "observado": {
+        "rc": 0,
+        "error": null
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-INMUTABLE-APP",
+      "descripcion": "libox_app ejerce sus privilegios B1 sobre alarm_resolutions",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "rc": 0
+      },
+      "observado": {
+        "rc": 0,
+        "error": null
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-INMUTABLE-READ",
+      "descripcion": "libox_read ejerce sus privilegios B1 sobre alarm_resolutions",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "rc": 0
+      },
+      "observado": {
+        "rc": 0,
+        "error": null
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-SENSIBLE-APP",
+      "descripcion": "libox_app ejerce sus privilegios B1 sobre users",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "rc": 0
+      },
+      "observado": {
+        "rc": 0,
+        "error": null
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-SENSIBLE-INMUTABLE-APP",
+      "descripcion": "libox_app ejerce sus privilegios B1 sobre identity_verifications",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "rc": 0
+      },
+      "observado": {
+        "rc": 0,
+        "error": null
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-CATALOGO-AML-READ",
+      "descripcion": "libox_read ejerce sus privilegios B1 sobre aml_thresholds",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json"
+      ],
+      "esperado": {
+        "rc": 0
+      },
+      "observado": {
+        "rc": 0,
+        "error": null
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-OPERATIVA-APP-NO-BORRA",
+      "descripcion": "libox_app denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table clients"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-OPERATIVA-READ-NO-ESCRIBE",
+      "descripcion": "libox_read denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table clients"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-INMUTABLE-APP-NO-ACTUALIZA",
+      "descripcion": "libox_app denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table alarm_resolutions"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-INMUTABLE-APP-NO-BORRA",
+      "descripcion": "libox_app denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table risk_events"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-SENSIBLE-READ-NO-LEE",
+      "descripcion": "libox_read denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table users"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-SENSIBLE-APPEND-NO-LEE",
+      "descripcion": "libox_append denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table credentials"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-SENSIBLE-APP-NO-BORRA",
+      "descripcion": "libox_app denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table users"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-SENSIBLE-INMUTABLE-APP-NO-ACTUALIZA",
+      "descripcion": "libox_app denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table identity_verifications"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-SENSIBLE-INMUTABLE-READ-NO-LEE",
+      "descripcion": "libox_read denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table age_verifications"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-CATALOGO-AML-APP-NO-ESCRIBE",
+      "descripcion": "libox_app denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table aml_thresholds"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-RESERVADO-OPERATION-REGISTER-LIBOX-APP",
+      "descripcion": "libox_app denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table operation_register"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-RESERVADO-OPERATION-REGISTER-LIBOX-READ",
+      "descripcion": "libox_read denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table operation_register"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-RESERVADO-OPERATION-REGISTER-LIBOX-APPEND",
+      "descripcion": "libox_append denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table operation_register"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-RESERVADO-RAFFLE-MILESTONES-LIBOX-APP",
+      "descripcion": "libox_app denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table raffle_milestones"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-RESERVADO-RAFFLE-MILESTONES-LIBOX-READ",
+      "descripcion": "libox_read denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table raffle_milestones"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-RESERVADO-RAFFLE-MILESTONES-LIBOX-APPEND",
+      "descripcion": "libox_append denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table raffle_milestones"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-RESERVADO-SELF-EXCLUSIONS-LIBOX-APP",
+      "descripcion": "libox_app denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table self_exclusions"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-RESERVADO-SELF-EXCLUSIONS-LIBOX-READ",
+      "descripcion": "libox_read denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table self_exclusions"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-RESERVADO-SELF-EXCLUSIONS-LIBOX-APPEND",
+      "descripcion": "libox_append denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table self_exclusions"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-RESERVADO-SPENDING-LIMIT-CHANGES-LIBOX-APP",
+      "descripcion": "libox_app denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table spending_limit_changes"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-RESERVADO-SPENDING-LIMIT-CHANGES-LIBOX-READ",
+      "descripcion": "libox_read denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table spending_limit_changes"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-RESERVADO-SPENDING-LIMIT-CHANGES-LIBOX-APPEND",
+      "descripcion": "libox_append denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table spending_limit_changes"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-RESERVADO-SPENDING-LIMITS-LIBOX-APP",
+      "descripcion": "libox_app denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table spending_limits"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-RESERVADO-SPENDING-LIMITS-LIBOX-READ",
+      "descripcion": "libox_read denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table spending_limits"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-RESERVADO-SPENDING-LIMITS-LIBOX-APPEND",
+      "descripcion": "libox_append denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table spending_limits"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-RESERVADO-TRANSFER-COSTS-LIBOX-APP",
+      "descripcion": "libox_app denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table transfer_costs"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-RESERVADO-TRANSFER-COSTS-LIBOX-READ",
+      "descripcion": "libox_read denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table transfer_costs"
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "ACL-B1-RESERVADO-TRANSFER-COSTS-LIBOX-APPEND",
+      "descripcion": "libox_append denegado según B1",
+      "referencias": [
+        "B1 (decisiones-c1-datos.md)",
+        "acl-manifest.json",
+        "zonas-sin-ia"
+      ],
+      "esperado": {
+        "sqlstate": "42501",
+        "mensaje_contiene": "permission denied"
+      },
+      "observado": {
+        "rc": 3,
+        "error": "ERROR:  42501: permission denied for table transfer_costs"
       },
       "resultado": "pasa"
     },
@@ -1706,7 +2324,82 @@
       "observado": {
         "indebidos": [],
         "total": 0,
-        "beneficiarios_revisados": 33
+        "beneficiarios_revisados": 144
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "B2-LOGINS-SIMULADOS",
+      "descripcion": "El instalador del escenario crea los cuatro logins de B2 sin contraseña ni atributos elevados; cada uno hereda exactamente la unión de privilegios de sus roles de grupo; se revierte",
+      "referencias": [
+        "B2 (decisiones-c1-datos.md)",
+        "cierre-sql-pendientes.md precondición 5"
+      ],
+      "esperado": {
+        "logins": {
+          "libox_api": {
+            "miembro_de": [
+              "libox_app"
+            ],
+            "tablas_con_privilegios": 74
+          },
+          "libox_worker": {
+            "miembro_de": [
+              "libox_app",
+              "libox_append"
+            ],
+            "tablas_con_privilegios": 78
+          },
+          "libox_reporting": {
+            "miembro_de": [
+              "libox_read"
+            ],
+            "tablas_con_privilegios": 63
+          },
+          "libox_deployer": {
+            "miembro_de": [
+              "libox_migrate"
+            ],
+            "tablas_con_privilegios": 0
+          }
+        },
+        "diferencias": {},
+        "roles_tras_revertir": 0
+      },
+      "observado": {
+        "error": null,
+        "diferencias": {},
+        "roles_tras_revertir": 0
+      },
+      "resultado": "pasa"
+    },
+    {
+      "id": "B2-PROPIEDAD-V7-SIN-CAMBIO",
+      "descripcion": "La propiedad de V7 sigue en el instalador y libox_migrate no posee objetos: la cesión de B2 es requisito del SQL V8 y no se simula (cambiaría la huella del esquema protegido)",
+      "referencias": [
+        "B2 (decisiones-c1-datos.md)",
+        "OV-NO-MODIFICA-V7"
+      ],
+      "esperado": {
+        "relaciones": [
+          "libox_installer"
+        ],
+        "funciones": [
+          "libox_installer"
+        ],
+        "objetos_de_libox_migrate": 0
+      },
+      "observado": {
+        "observado": {
+          "relaciones": [
+            "libox_installer"
+          ],
+          "funciones": [
+            "libox_installer"
+          ],
+          "objetos_de_libox_migrate": 0
+        },
+        "esquema_public": "pg_database_owner"
       },
       "resultado": "pasa"
     },
@@ -1750,8 +2443,8 @@
     }
   ],
   "resumen": {
-    "comprobaciones": 63,
-    "pasan": 63,
+    "comprobaciones": 100,
+    "pasan": 100,
     "fallan": [],
     "interrumpido": null,
     "resultado": "pasa"

@@ -2,7 +2,7 @@
 title: C1 — borrador de seguridad, sesiones y evidencias
 status: borrador
 tags: [r0, c1, l3-v8]
-updated: 2026-09-30
+updated: 2026-10-01
 description: Cambios explícitos del contrato de auth y propuestas de protección de datos y sorteo.
 ---
 
@@ -41,6 +41,9 @@ INV-38 se conserva: mínimo dos ADMIN_SUPER activos, prohibida revocación del
 penúltimo. La excepción de revisión humana del repositorio no permite debilitar
 este control del producto. R0 puede usar identidades sintéticas en pruebas; antes
 de operar hay que resolver el bootstrap conforme al PRD, sin cuentas ficticias reales.
+
+La compatibilidad con Supabase es obligatoria. El [alcance KMS/Auth](compatibilidad-supabase-kms.md)
+conserva pendiente la excepción de identidad y concreta las pruebas antes de implementar.
 
 ## DNI, evidencias y transporte
 
@@ -85,7 +88,7 @@ serialización ni verificación, que siguen siendo zonas sin generación asistid
 Propuesta de baliza tardía: alarma a 5 min y espera operativa máxima de 30 min antes de
 escalar a incidente; el vencimiento **no** autoriza otra ronda, seed ni sorteo
 manual. Conserva compromiso y fondos bloqueados. La política final de reanudación
-o cancelación debe ser explícita; fuente/timeout requieren elección antes de C2.
+o cancelación debe ser explícita antes de C2; drand quicknet ya fue ratificada.
 
 Propuesta F7: pago aprobado tras reserva vencida o pool congelado no emite boletos
 ni amplía pool. Registrar excepción, notificar y conciliar; devolver íntegramente

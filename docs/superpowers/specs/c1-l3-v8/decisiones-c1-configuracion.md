@@ -2,7 +2,7 @@
 title: C1 — decisiones de configuración y sorteo
 status: aprobado
 tags: [r0, c1, l3-v8, decisiones, configuracion]
-updated: 2026-09-30
+updated: 2026-10-01
 description: Expiración de T1, duración de T7, entrada de precio, régimen, costos, baliza drand y datos que no se proponen (C1–C4, D1, E).
 ---
 
@@ -13,7 +13,8 @@ Parte del [paquete de decisiones de C1](decisiones-c1.md). Decidido por Diego el
 ## C. Configuración por tipo de sorteo
 
 Fuente: [lecturas y configuración](cierre-contratos-lecturas-configuracion.md#configuración-por-tipo-de-sorteo-solo-diseño).
-El diseño de `RaffleConfiguration` ya existe. Falta decidir:
+El diseño de `RaffleConfiguration` ya existe. Las decisiones siguientes están
+tomadas; falta integrarlas en el contrato y los artefactos.
 
 ### C1. Política de expiración de T1 (I-09)
 
@@ -38,6 +39,19 @@ por definir, como dueño humano:
   el organizador dentro de unos límites;
 - si el premio se entrega completo cuando se alcanza el mínimo;
 - cómo se informa al comprador antes de pagar.
+
+**Aclaración aprobada por Diego, 2026-09-30:** el mínimo vendido, el premio que se
+entregará y las condiciones comunicadas al comprador deben quedar fijados antes
+de publicar. No pueden cambiar después de la primera compra. Esto aprueba la
+regla de estabilidad; no fija todavía el umbral ni resuelve el premio pendiente.
+Su aplicación patrimonial sigue siendo implementación humana.
+
+**Delta Cowork (pendiente).** La nueva fuente añade un mínimo económico y la
+posibilidad de fianza antes de cancelar. Esa ampliación no sustituye la decisión
+de C1: mientras no se ratifique, bajo mínimo corresponde cancelar/reembolsar.
+Registrar fórmula, premio, plazo y bases en la
+[reconciliación](reconciliacion-decisiones-planificacion.md); 1,25 y 48 h son
+valores recibidos, no una aprobación nueva de esta ficha.
 
 [LEGAL→ABOGADO]: protección al consumidor y reglas de sorteos promocionales.
 
@@ -98,3 +112,4 @@ Estos valores no se infieren ni se proponen aquí. Deben venir de su dueño:
 | Política de pago tardío (H-16) | Diego | Pendiente SQL #10 |
 | Secciones tributarias del documento de mercado | [LEGAL→ABOGADO] | `POST /markets/{code}/config` versionado |
 | Custodia del dinero (ASS-001) | Diego | Dinero real |
+| Mínimo/caja, fianza y costes de canal de Cowork | Diego, dueño contable y abogado | Especificación coherente del nuevo flujo; operación con dinero real [LEGAL→ABOGADO] |

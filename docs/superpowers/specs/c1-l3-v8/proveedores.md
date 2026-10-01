@@ -2,8 +2,8 @@
 title: C1 — comparación de proveedores y presupuesto
 status: borrador
 tags: [r0, c1, l3-v8]
-updated: 2026-09-30
-description: Fuentes oficiales al 2026-09-30 y escenarios de infraestructura dentro de US$250.
+updated: 2026-10-01
+description: Comparativa al 2026-09-30; escenarios previos a KMS y presupuesto pendiente de ajustar dentro del techo de US$250.
 ---
 
 # Proveedores y presupuesto
@@ -79,6 +79,13 @@ el valor contratado. Ninguno sustituye idempotencia/transacciones patrimoniales.
   [Precios](https://resend.com/pricing).
 
 ## Escenarios, sin doble contar créditos
+
+**Actualización B1-bis (2026-10-01):** AWS KMS aprobado añade gestión de claves,
+llamadas y auditoría al presupuesto de infraestructura. Los subtotales de abajo
+son el escenario anterior a KMS, no un coste total actualizado. Medir claves,
+región, volumen, caché y conservación de logs; descontar esos cargos del margen
+antes de afirmar que el conjunto cabe en US$250. Ver el
+[alcance de compatibilidad](compatibilidad-supabase-kms.md).
 
 | Concepto | R0 desarrollo compartido | R1 ilustrativo |
 |---|---:|---:|

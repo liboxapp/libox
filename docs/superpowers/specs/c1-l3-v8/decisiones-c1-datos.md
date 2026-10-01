@@ -57,7 +57,7 @@ personales en claro**; se cifran con un servicio externo de claves.
 - **Servicio:** AWS KMS. La clave maestra no sale de KMS y la base nunca la ve.
 - **Esquema:** cifrado de sobre. El backend pide a KMS una clave de datos, cifra el
   valor con ella (AES-256-GCM) y guarda el texto cifrado junto con la clave de datos
-  cifrada. Cada uso de la clave queda registrado en CloudTrail.
+  cifrada. CloudTrail registra las llamadas a KMS; los usos locales de claves de datos requieren auditoría aplicativa.
 - **Alcance: todo dato personal.** Lo que V7 ya cifra (documento, nombre, secreto
   MFA, beneficiario final, datos bancarios) más email, teléfono, fecha de
   nacimiento, nombres de contacto de `leads` y datos del representante legal.
@@ -69,21 +69,23 @@ personales en claro**; se cifran con un servicio externo de claves.
 
 **Pendiente de decidir al integrar:**
 
-- **Supabase Auth.** Si la autenticación usa Supabase Auth, `auth.users` guarda el
-  email y el teléfono en claro, fuera del control de este esquema. Hay que elegir
-  entre aceptar esa excepción, usar un identificador sin datos personales en
-  Supabase Auth o gestionar la autenticación en el propio backend.
+- **Compatibilidad con Supabase obligatoria**, confirmada por Diego el 2026-09-30.
+  Antes de implementar, definir el alcance de Supabase Auth y el inventario de
+  datos personales, incluidos documentos, logs y exportaciones. La excepción
+  para email/teléfono en `auth.users` sigue pendiente: exigir compatibilidad no
+  autoriza esa excepción ni ratifica reemplazar Auth con autenticación propia.
 - **Rotación** de la clave maestra y de la clave HMAC, y cómo se recifran los datos.
 - **Reportería:** qué vistas seudonimizadas necesita `libox_read`.
 - **Coste y latencia:** caché de claves de datos en el backend, con su tiempo de vida.
 
+El [alcance de compatibilidad](compatibilidad-supabase-kms.md) separa lo aprobado de la excepción Auth pendiente.
 El canon V8 debe recoger estos puntos en §1 y §7.3. Las columnas `*_enc` nuevas
 se añaden al SQL V8, no al overlay de V7.
 
 ## B2. Logins y propiedad
 
 - **(a)** `libox_migrate` (NOLOGIN) es dueño del esquema de dominio. Logins por
-  componente, cada uno miembro de un solo rol de grupo: `libox_api` → `libox_app`;
+  componente, con membresías explícitas por función: `libox_api` → `libox_app`;
   `libox_worker` → `libox_app` y `libox_append`; `libox_reporting` → `libox_read`;
   `libox_deployer` → `libox_migrate`, usado solo en CI de migraciones. Secretos en
   el gestor de Vercel y Trigger.dev, con rotación cada 90 días.

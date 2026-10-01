@@ -76,6 +76,15 @@ puede preparar una plantilla con las claves que ya menciona el PRD V9 §7 para q
 el abogado la corrija, pero no inventar la lista. [LEGAL→ABOGADO].
 **Decisión:** P-C **entra en el MVP**, con la lista del abogado (a). Se prepara la plantilla; P-C sigue bloqueado hasta recibirla. Diego, 2026-09-30.
 
+**Seguimiento aprobado por Diego, 2026-09-30:** Diego coordina la entrega de la
+lista con el abogado; la fecha objetivo sigue pendiente. Revisar su estado en
+cada revisión de avance de C1 y antes del cierre del alcance P-C del MVP. La
+entrega debe incluir claves, descripción y obligatoriedad por etapa, con
+validación del abogado. Hasta recibirla, conservar visible el bloqueo de P-C.
+La [plantilla y registro](plantilla-documentos-pc.md) permiten revisar la entrega.
+Este seguimiento se registra en el proyecto; no crea avisos automáticos ni envía
+mensajes externos.
+
 ## A9. Atestación sin `second_signer_id` (CC-08)
 
 **Conflicto.** §11.5 define la atestación con `second_signer_id` en el cuerpo. El

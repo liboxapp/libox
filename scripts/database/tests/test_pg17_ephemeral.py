@@ -64,7 +64,42 @@ class Pg17Ephemeral(unittest.TestCase):
             run.manifest = altered
             run.check_acl_matrix()
             self.assertEqual(last(run, "ACL-MATRIZ")["resultado"], "falla", "manifiesto más estricto")
+            for table, cls in (("users", "operativa"), ("spending_limits", "operativa"),
+                               ("alarm_resolutions", "operativa")):
+                with self.subTest(manifiesto=table + "->" + cls):
+                    altered = copy.deepcopy(self.manifest)
+                    altered["tablas"][table] = cls
+                    run.manifest = altered
+                    run.check_acl_matrix()
+                    self.assertEqual(last(run, "ACL-MATRIZ")["resultado"], "falla")
             run.manifest = self.manifest
+
+            run.check_b1_behaviour(("42501", "permission denied"))
+            b1 = [c for c in run.checks if c["id"].startswith("ACL-B1-")]
+            self.assertTrue(b1 and all(c["resultado"] == "pasa" for c in b1), "control limpio B1")
+            self.assertEqual(run.admin("GRANT SELECT ON public.users TO libox_read;\n"
+                                       "GRANT UPDATE ON public.identity_verifications TO libox_app;").rc, 0)
+            run.check_b1_behaviour(("42501", "permission denied"))
+            for cid in ("ACL-B1-SENSIBLE-READ-NO-LEE", "ACL-B1-SENSIBLE-INMUTABLE-APP-NO-ACTUALIZA"):
+                self.assertEqual(last(run, cid)["resultado"], "falla", cid)
+            self.assertEqual(run.admin("REVOKE SELECT ON public.users FROM libox_read;\n"
+                                       "REVOKE UPDATE ON public.identity_verifications FROM libox_app;").rc, 0)
+
+            run.check_component_logins()
+            self.assertEqual(last(run, "B2-LOGINS-SIMULADOS")["resultado"], "pasa", "control limpio logins")
+            self.assertEqual(run.admin("GRANT SELECT ON public.spending_limits TO libox_append;").rc, 0)
+            run.check_component_logins()
+            self.assertEqual(last(run, "B2-LOGINS-SIMULADOS")["resultado"], "falla", "worker hereda reservado")
+            self.assertEqual(run.admin("REVOKE SELECT ON public.spending_limits FROM libox_append;").rc, 0)
+            run.check_component_logins()
+            self.assertEqual(last(run, "B2-LOGINS-SIMULADOS")["resultado"], "pasa", "tras revertir logins")
+
+            run.check_ownership_pending()
+            self.assertEqual(last(run, "B2-PROPIEDAD-V7-SIN-CAMBIO")["resultado"], "pasa", "control limpio propiedad")
+            self.assertEqual(run.admin("ALTER TABLE public.leads OWNER TO libox_migrate;").rc, 0)
+            run.check_ownership_pending()
+            self.assertEqual(last(run, "B2-PROPIEDAD-V7-SIN-CAMBIO")["resultado"], "falla", "cesión simulada")
+            self.assertEqual(run.admin("ALTER TABLE public.leads OWNER TO " + run.installer + ";").rc, 0)
 
             mutations = [
                 ("GRANT UPDATE ON public.journal_lines TO libox_app;",
@@ -77,6 +112,17 @@ class Pg17Ephemeral(unittest.TestCase):
                 ("GRANT EXECUTE ON FUNCTION libox_ops.partition_status(timestamptz) TO libox_app;",
                  "REVOKE EXECUTE ON FUNCTION libox_ops.partition_status(timestamptz) FROM libox_app;",
                  "ACL-FUNCIONES"),
+                # B1: privilegios fuera de la clase aprobada.
+                ("GRANT UPDATE ON public.alarm_resolutions TO libox_app;",
+                 "REVOKE UPDATE ON public.alarm_resolutions FROM libox_app;", "ACL-MATRIZ"),
+                ("GRANT SELECT ON public.users TO libox_read;", "REVOKE SELECT ON public.users FROM libox_read;",
+                 "ACL-MATRIZ"),
+                ("GRANT DELETE ON public.clients TO libox_app;", "REVOKE DELETE ON public.clients FROM libox_app;",
+                 "ACL-MATRIZ"),
+                ("GRANT SELECT ON public.spending_limits TO libox_app;",
+                 "REVOKE SELECT ON public.spending_limits FROM libox_app;", "ACL-MATRIZ"),
+                ("GRANT UPDATE ON public.aml_thresholds TO libox_app;",
+                 "REVOKE UPDATE ON public.aml_thresholds FROM libox_app;", "ACL-MATRIZ"),
             ]
             for grant, revoke, cid in mutations:
                 with self.subTest(mutacion=grant):

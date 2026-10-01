@@ -2,7 +2,8 @@
 title: Libox — Índice del wiki
 status: vigente
 tags: [libox, wiki, indice, linea-base]
-updated: 2026-08-30
+updated: 2026-10-01
+description: Índice del canon del repo, trabajo C1/R0 y reconciliación de documentación recibida en Cowork.
 ---
 
 # Libox — Wiki del proyecto
@@ -13,7 +14,9 @@ Marketplace de sorteos donde terceros verificados publican oportunidades. LIBOX 
 
 > **Si un documento no figura en el §1 del Registro Maestro, no rige.**
 
-Empieza por [`linea-base/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V6.md`](linea-base/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V6.md). Toda versión distinta a las de la línea base está derogada, aunque siga circulando.
+Empieza por [`linea-base/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V6.md`](linea-base/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V6.md).
+Los borradores y archivos recibidos en Cowork no adquieren vigencia automáticamente.
+Su integración se sigue en [C1](superpowers/specs/c1-l3-v8/estado-c1.md).
 
 ## Mapa
 
@@ -26,6 +29,7 @@ Empieza por [`linea-base/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V6.md`](linea-base/LI
 | [`archive/`](archive/) | **Histórico nulo o superseded** — no se consulta ni se cita (Registro §2) | Solo para trazabilidad |
 | [`equipo/`](equipo/) | Cómo trabaja el equipo: [sistema operativo de IA](equipo/sistema-operativo-ia.md) (capas, guards, skills, agentes, orquestación) · [estilo de documentación](equipo/estilo-documentacion.md) · [onboarding](equipo/onboarding.md) | Al incorporarte y cada vez que extiendas la configuración de Claude |
 | [`glosario.md`](glosario.md) · [`flujos/`](flujos/) · [`superpowers/`](superpowers/) | Documentos de trabajo, no normativos (glosario, flujos, specs y planes aprobados) | Consulta |
+| [Estado C1](superpowers/specs/c1-l3-v8/estado-c1.md) · [reconciliación Cowork](superpowers/specs/c1-l3-v8/reconciliacion-linea-base.md) · [plan](superpowers/plans/2026-09-30-r0-c1.md) | Acuerdos conservados, candidato L3/API y nuevos pendientes de viabilidad/fianza, contratos y backlog | Trabajo activo antes de C2 |
 
 ## Precedencia ante conflicto
 
@@ -44,12 +48,12 @@ V1 → V2 → V3, sin subversiones. Toda emisión: `verify_corpus.py` con cero f
 
 La colección **Libox — Negocio** (liboxapp.getoutline.com) contiene el espejo navegable del corpus ("LIBOX — Línea Base documental"), la capa operativa de negocio (00–21) y el registro vivo de asunciones y cambios (doc 20: ASS-\*/CHANGE-\*). **Para el corpus, la fuente canónica es este repo**; se edita aquí vía PR y se republica el espejo.
 
-## Pendientes críticos (ninguno documental)
+## Pendientes de trabajo y operación
 
 1. **Dictamen legal L-01** — el Dossier está listo; falta encargarlo. Bloquea operar.
 2. **F0: veinte conversaciones con organizadores** — cero a la fecha. Valida la hipótesis central.
-3. `openapi.yaml` completo (~14 rutas, 8 SP) — bloquea sprint 4.
+3. **C1/C2 documental:** integrar acuerdos C1 y deltas Cowork; resolver identidad de emisión, controles críticos humanos, contrato comprador y backlog. OpenAPI C1 tiene 93 operaciones en borrador; el conteo no acredita el flujo real.
 4. Diseño de 41/62 superficies — bloquea frontend.
 5. Arte maestro de marca (VIES Anexo A).
 6. Manual de operación (13 SP).
-7. **ASS-001** (custodia) y **ASS-002** (stack) — ratificación de socios pendiente; ver doc 20 en Outline.
+7. **ASS-001** (custodia) sigue abierta antes de dinero real. **ASS-002**: backend TypeScript ratificado por los socios el 2026-09-29; emisión del canon y levantamiento del freeze pendientes, según [programa R0](superpowers/specs/2026-09-25-habilitar-r0-design.md).

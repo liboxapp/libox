@@ -46,6 +46,7 @@ DECISION_OPS = {
     ('post', '/valuations/{id}/decisions'): 'decideValuation',
     ('post', '/raffles/{raffle_ref}/legal-gate/decisions'): 'decideLegalGate',
     ('post', '/raffles/{raffle_ref}/moderation/decisions'): 'decideModeration',
+    ('post', '/clients/{id}/kyb/decisions'): 'decideKyb',
 }
 SIGNATURE_OPS = {
     ('get', '/signature-requests'): 'listSignatureRequests',
@@ -58,7 +59,7 @@ for group in (VERSIONED_READS, AUTH_OPS, UPLOAD_OPS, DECISION_OPS, SIGNATURE_OPS
     AUXILIARY.update(group)
 
 SENSITIVE = ('enrollMfaFactor', 'revokeMfaFactor', 'requestInternalMfaReset', 'decideValuation',
-             'decideLegalGate', 'decideModeration', 'signSignatureRequest')
+             'decideLegalGate', 'decideModeration', 'decideKyb', 'signSignatureRequest')
 UPLOAD_PURPOSES = ['ROOM_EVIDENCE', 'DISPUTE_EVIDENCE', 'KYB_DOCUMENT', 'VALUATION_EVIDENCE',
                    'MARKET_REFERENCE_CAPTURE', 'PC_STAGE_DOCUMENT', 'LEGAL_GATE_DOCUMENT']
 ACTION_CODES = ['VALUATION_V2_COSIGN', 'VALUATION_V4', 'VALUATION_EXCEPTION', 'PC_STAGE_E3',
@@ -233,17 +234,21 @@ class AuxiliaryContracts(unittest.TestCase):
                 props = set(self.resolve(self.request(op)['schema']).get('properties', {}))
                 self.assertFalse(forbidden & props, operation_id)
         valuation = self.schemas['ValuationDecisionCreate']
-        self.assertEqual(valuation['properties']['outcome']['enum'], ['APPROVED', 'OBSERVED'])
+        # Rechazos manuales de A6 y REJECT de A11: detalle en test_c1_decisions.
+        self.assertEqual(valuation['properties']['outcome']['enum'], ['APPROVED', 'OBSERVED', 'REJECTED'])
         approved = self.request(self.by_id('decideValuation'))['example']
         self.assertTrue(self.valid(valuation, approved))
         without_value = dict(approved)
         without_value.pop('approved_value')
         self.assertFalse(self.valid(valuation, without_value))
         self.assertFalse(self.valid(valuation, dict(approved, outcome='OBSERVED')))
+        self.assertFalse(self.valid(valuation, dict(approved, outcome='REJECTED')))
         self.assertFalse(self.valid(valuation, dict(approved, deviation_bp=100)))
-        self.assertEqual(self.schemas['LegalGateDecisionCreate']['properties']['outcome']['enum'], ['PASSED'])
+        self.assertEqual(self.schemas['LegalGateDecisionCreate']['properties']['outcome']['enum'],
+                         ['PASSED', 'OBSERVED', 'REJECTED'])
         self.assertEqual(self.schemas['ModerationDecisionCreate']['properties']['outcome']['enum'],
-                         ['APPROVE_SCHEDULED', 'APPROVE_IMMEDIATE'])
+                         ['APPROVE_SCHEDULED', 'APPROVE_IMMEDIATE', 'REJECT'])
+        self.assertEqual(self.by_id('decideKyb')['x-allowed-roles'], ['ADMIN_COMPLIANCE'])
         self.assertEqual(set(self.by_id('decideValuation')['x-allowed-roles']),
                          {'SUPPORT_VALUATOR', 'ADMIN_LEGAL_COMPLIANCE'})
         self.assertEqual(self.by_id('decideLegalGate')['x-allowed-roles'], ['ADMIN_LEGAL_COMPLIANCE'])
