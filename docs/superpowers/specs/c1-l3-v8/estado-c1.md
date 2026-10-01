@@ -22,7 +22,7 @@ continúa suspendida; las pruebas y la revisión automatizada siguen activas.
 | Proveedores | Supabase Pro + Trigger.dev + Vercel Pro; techo de infraestructura US$250. Mercado Pago elegido. Truora priorizado para evaluar KYC/KYB, sin contratación |
 | L3 | [Candidato completo](LIBOX_ESPECIFICACION_TECNICA_L3_V8_DRAFT.md), con TypeScript, sesiones, HMAC, recuperación, F1–F7 y registros de pendientes |
 | Preservación | 32 bloques de código protegido de V7 conservados, salvo líneas vacías/espacios finales; prueba automática. No demuestra corrección del código heredado |
-| API | OpenAPI 3.1 `2.0.0-draft.3`: 61 operaciones inventariadas +32 auxiliares; 47 pruebas, 93 intercambios HTTP de fixtures y 13 del cliente TypeScript |
+| API | OpenAPI 3.1 `2.0.0-draft.3`: 61 operaciones inventariadas +32 auxiliares; 50 pruebas, 93 intercambios HTTP de fixtures y 13 del cliente TypeScript |
 | Mercado Pago | Payload `payment` y entradas de firma concretados. Sandbox, firma real, conciliación y efectos patrimoniales no probados |
 | PostgreSQL | V7 instala en PG17.11 con 135 tablas. Overlay añade particiones UTC/DEFAULT para 11 padres (ledger pendiente), ACL B1 para 78 tablas (57 reservadas), logins B2 simulados y PE; tres escenarios pasan 100/100/104 comprobaciones |
 | Herramientas DB | 27 pruebas, incluidas mutaciones que detectan permisos indebidos y limpieza tras fallo de arranque. CI ejecuta Docker en Python 3.12 |

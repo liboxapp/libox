@@ -104,3 +104,13 @@ bloqueado hasta recibir la lista de documentos.
 | `market_references[]` tipadas en la presentación de valoración | Misma dependencia que el punto anterior | Diego |
 | Apagado global de capacidad con firma | A1 lo desbloquea; falta diseñar la operación | Diego |
 | `second_signer_id` en `adjudicateDispute` | No figura entre los 11 códigos ni en A9 | Diego |
+
+## Precisiones tras revisión de integración
+
+- En P-C, `attestDelivery` restringe el solicitante a `ADMIN_LEGAL_COMPLIANCE`,
+  según A1. La lista general de roles no amplía esa política.
+- `updatePayout` ya exigía reautenticación: ahora fija los 300 segundos aprobados
+  y el error de reautenticación correspondiente.
+- `submitRaffle` y `decideModeration` declaran rechazo para T1 (y T8 con base T1)
+  mientras mínimo y condiciones del premio estén pendientes. Un draft válido no
+  habilita publicar. Son requisitos del contrato, no autorización ejecutada.
