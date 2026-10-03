@@ -7,7 +7,7 @@ revisor Codex y `docs/equipo/ai-audit-harness.md`. No simules revisiones de Clau
 
 ## Stack y controles para Codex
 
-Backend TypeScript ratificado: monolito modular con Next.js y PostgreSQL.
+Backend Go (D-10): monolito modular sobre PostgreSQL; frontend Next.js + TypeScript. Ver [adaptación a Go](docs/superpowers/specs/2026-10-02-r0-backend-go-design.md).
 Supabase Pro + Trigger.dev + Vercel Pro confirmados en C1; PostgreSQL 17 sujeto
 a validar migraciones. Canon L3 V8 y levantamiento del freeze pendientes.
 Detalle: [decisión C1](docs/superpowers/specs/2026-09-30-r0-c1-design.md).

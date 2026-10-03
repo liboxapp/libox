@@ -103,7 +103,7 @@ Si algo valioso aparece en la memoria personal, se promueve a `docs/` por PR.
 
 ## Capa `dev` pendiente (C2/D1)
 
-TypeScript ya está ratificado. Tras emitir L3 V8, el PR de D1 retira
+El backend es Go (D-10) y el frontend TypeScript. Tras emitir L3 V8, el PR de D1 retira
 `.claude/rules/src-congelado.md` y las constantes `FROZEN_*` de `guard_edit.py`, actualiza
 `src/CLAUDE.md` y añade agentes `ejecutor-feature`, `tester` y `depurador` más una rule de
 desarrollo para `src/`. Este trabajo del harness no levanta el freeze.

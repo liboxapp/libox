@@ -56,7 +56,7 @@ Conforme a la política de control documental de LIBOX, no existen subversiones:
 | ------- | ------- | ---------- | ------- | --------------------- |
 | V8 | §0, pie | Identidad de borrador; PRD MVP V9 en encabezado, §0.1 y pie; se elimina el índice vacío | H-19: el encabezado citaba PRD V8 y el pie PRD V4 | Corrige encabezado y pie de V7 |
 | V8 | §0.2, §0.2.1 | OpenAPI `2.0.0-draft.3`; migración C1 completa pendiente. V7 en PG17.11 confirmó H-05, H-06 y semillas vacías; SQL V8 de Cowork es otra entrada | Regla de emisión de §0.2.1 | Deroga la validación de V7 en PG16 como evidencia de la consolidación |
-| V8 | §0.3, §0.4 | Pila TypeScript y Next.js en monolito modular; Supabase Pro, Trigger.dev, Vercel Pro y Upstash; Scalar; Mercado Pago como PSP; Truora en evaluación para KYC y KYB; techo de US$250/mes | H-18; ASS-002 ratificada el 2026-09-29; proveedores y PSP elegidos el 2026-09-30 | Deroga .NET 8 LTS, Next.js 14 y Redis como pieza de la pila |
+| V8 | §0.3, §0.4 | Backend Go en monolito modular (D-10) y frontend Next.js + TypeScript; Supabase Pro, Vercel Pro para el frontend y Upstash; workflows y hosting del backend en reevaluación; Scalar; Mercado Pago como PSP; Truora en evaluación para KYC y KYB; techo de US$250/mes | H-18; ASS-002 ratificada el 2026-09-29; proveedores y PSP elegidos el 2026-09-30; backend Go decidido el 2026-10-02 (D-10) | Deroga .NET 8 LTS, Next.js 14 y Redis como pieza de la pila |
 | V8 | §0.5–§0.7, Anexo C | Mapa de zonas sin IA (ZC), decisiones por fase (DP), mapa H-01–H-19 y criterios de cierre de C1, C2 y D1/R1 | Trazabilidad CD-07; implementación humana de Backlog MVP V3 §1.3; decisión D-05 del programa R0 | Amplía |
 | V8 | §1.1 | C-13: HMAC versionado para identificadores de documento | H-14: SHA-256 directo de un DNI se revierte por fuerza bruta | Deroga el SHA-256 directo de V7 §2.2 |
 | V8 | §1.3 | Doce tablas particionadas y particiones iniciales obligatorias | H-05: sin particiones creadas, todo `INSERT` falla | Corrige la lista de ocho tablas y la regla de alarma |
@@ -228,17 +228,17 @@ El criterio de cierre del PRD exige que toda tabla declarada tenga columnas real
 
 ### 0.3 Pila tecnológica
 
-ASS-002 fue ratificada por los socios el 2026-09-29: backend TypeScript en un monolito modular. Diego confirmó los proveedores el 2026-09-30. La elección fija la arquitectura, pero no contrata servicios, no acredita capacidad y no garantiza una factura fija.
+ASS-002 fue ratificada por los socios el 2026-09-29 con backend TypeScript. **Diego decidió el 2026-10-02 implementar el backend en Go (D-10)**, como monolito modular; el frontend sigue en Next.js y TypeScript. Diego confirmó los proveedores el 2026-09-30. Las herramientas de Go, el hosting del backend y el ejecutor de trabajos son propuestas pendientes de confirmar ([adaptación a Go](../2026-10-02-r0-backend-go-design.md)). La elección fija la arquitectura, pero no contrata servicios, no acredita capacidad y no garantiza una factura fija.
 
 | Capa | Decisión | Nota |
 | ---- | -------- | ---- |
-| Lenguaje y runtime | TypeScript estricto sobre Node.js | La versión de Node se fija en D1 contra la versión de Next.js instalada y soportada |
-| Aplicación | Monolito modular. Next.js 16 con App Router para la interfaz y los adaptadores HTTP; módulos de dominio (órdenes, pagos, boletos, sorteo y liquidaciones) que invocan los endpoints y los workflows | Las reglas no se duplican en endpoints, trabajos ni cliente. La versión exacta se fija en D1 |
+| Lenguaje y runtime | Backend: Go (versión fijada en D1). Frontend: TypeScript estricto sobre Node.js | Node se fija en D1 contra la versión de Next.js instalada y soportada |
+| Aplicación | Monolito modular en Go: una imagen con modo API HTTP y modo worker, y módulos de dominio (órdenes, pagos, boletos, sorteo y liquidaciones) que invocan los endpoints y los trabajos. Next.js 16 con App Router solo para la interfaz, que consume la API REST | Las reglas no se duplican en endpoints, trabajos ni cliente. Propuesta: `net/http` + oapi-codegen, pgx + sqlc, sin ORM. Versiones en D1 |
 | Base de datos | PostgreSQL gestionado en Supabase Pro; cómputo Small y PITR de 7 días para R1 | Autoridad sobre dinero e inventario. Major 17: el esquema V7 corre en 17.11 local; falta el esquema V8 y probar en Supabase (DP-09) |
-| Conexiones | Migraciones por conexión directa con el rol migrador; tráfico serverless por el pooler en modo transacción | En ese modo no hay estado de sesión ni sentencias preparadas |
-| Workflows | Trigger.dev (Hobby) para 28 trabajos programados, la vigilancia de particiones y la ejecución asíncrona. `create-next-partitions` corre en `pg_cron` dentro de la base (B3) | Concurrencia provisional de 25; se confirma el valor contratado |
-| Ticker del outbox | Supabase Cron cada 10 s contra un endpoint privado de despacho | El cron de Vercel no alcanza 10 s: su intervalo mínimo es un minuto |
-| Hosting | Vercel Pro | — |
+| Conexiones | Migraciones por conexión directa con el rol migrador. El backend Go es un proceso persistente con pool acotado; si el ejecutor usa LISTEN/NOTIFY, necesita conexión directa o pooler en modo sesión | Presupuesto de conexiones (API, worker, servicios de Supabase, migraciones y despliegues) frente al límite de Small, por fijar en D1 |
+| Workflows | **En reevaluación por D-10.** Propuesta: River (cola sobre PostgreSQL) en el worker Go, con encolado en la misma transacción que el dato de negocio. Alternativa: Trigger.dev con tareas TypeScript. `create-next-partitions` corre en `pg_cron` dentro de la base (B3) | Encolar una vez no garantiza un efecto patrimonial único: la idempotencia y la ejecución única siguen siendo zona crítica |
+| Ticker del outbox | Propuesta: el worker Go despacha cada 10 s. Alternativa: Supabase Cron cada 10 s contra un endpoint privado | El cron de Vercel no alcanza 10 s: su intervalo mínimo es un minuto |
+| Hosting | Frontend: Vercel Pro. Backend Go: pendiente; propuesta Fly.io con federación OIDC hacia AWS para KMS, o Render con credencial exclusiva y rotada | Vercel no aloja un proceso Go persistente. La región del backend coincide con la de Supabase |
 | Identidad | Supabase Auth con TOTP. Roles, permisos por recurso, incompatibilidades y sesión aplicativa los gestiona LIBOX | §7.3 |
 | Objetos | Supabase Storage privado, más una copia independiente | Destino de la copia en DP-10 |
 | Límites de frecuencia | Upstash (pago por uso) | **Nunca autoritativo sobre dinero ni inventario** (§12.1) |
@@ -246,14 +246,14 @@ ASS-002 fue ratificada por los socios el 2026-09-29: backend TypeScript en un mo
 | Proveedor de pagos | Mercado Pago, elegido por Diego el 2026-09-30, detrás de un adaptador por mercado | Checkout Pro es la modalidad propuesta, sin confirmar. Acceso a sandbox sin confirmar. No se han creado cuentas ni usado credenciales ([nota](mercado-pago.md)) |
 | Verificación KYC y KYB | Truora priorizado para evaluación | No contratado. La referencia de Checks estándar lista `company` como N/A para Perú: KYB peruano sin confirmar. Sumsub y Veriff siguen como alternativas ([evaluación](truora-evaluacion.md)). Costo fuera del techo de infraestructura |
 | Documentación de API | Scalar sobre el mismo artefacto OpenAPI | Decisión D-07 del programa R0 |
-| Importes en código | `bigint` en TypeScript, `BIGINT` en PostgreSQL y cadena decimal en JSON | Nunca `number` ni punto flotante (C-06, §11.1) |
+| Importes en código | `int64` en Go, `bigint` en el frontend TypeScript, `BIGINT` en PostgreSQL y cadena decimal en JSON | Nunca `number` ni punto flotante (C-06, §11.1) |
 | Desarrollo local | PostgreSQL efímero para migraciones y pruebas | La herramienta se fija en D1 |
 
-Neon queda como alternativa si falla la validación del proveedor elegido. Drizzle y las demás herramientas de código no quedan ratificadas por esta elección. `src/` sigue congelado hasta D1.
+Neon queda como alternativa si falla la validación del proveedor elegido. Ninguna herramienta de código queda ratificada por esta elección; Drizzle deja de aplicar al backend. `src/` y el futuro directorio del backend siguen congelados hasta D1.
 
 ### 0.4 Presupuesto de infraestructura
 
-Techo indicado por Diego: US$250 al mes. Objetivo operativo: US$215 antes de impuestos, con alertas proyectadas a US$175, US$200 y US$215. El escenario R1 ilustrativo suma US$208,39 (Supabase Small con PITR US$130, Vercel US$20, Trigger US$23,39 con 1 s de media por trabajo, correo US$20, límites US$5 y reserva de copias US$10). Con 5 s de media, Trigger sube a US$77,18 y el total **supera el techo**. El despacho añade 259.200 llamadas HTTP al mes, cuyo consumo no se ha medido. No se activa un corte ciego de consumo que deje pagos aceptados sin conciliar. Si el gasto proyectado supera el techo, se frenan las ventas nuevas de forma operativa y se conserva la recuperación. Pagos, KYC, SMS y asesoría legal se presupuestan aparte.
+Techo indicado por Diego: US$250 al mes. Objetivo operativo: US$215 antes de impuestos, con alertas proyectadas a US$175, US$200 y US$215. El escenario R1 ilustrativo suma US$208,39 (Supabase Small con PITR US$130, Vercel US$20, Trigger US$23,39 con 1 s de media por trabajo, correo US$20, límites US$5 y reserva de copias US$10). Con 5 s de media, Trigger sube a US$77,18 y el total **supera el techo**. El despacho añade 259.200 llamadas HTTP al mes, cuyo consumo no se ha medido. **Con D-10:** sin Trigger.dev (−23,39) y con hosting Go (+25 a +50) y KMS (+2 a +5), el escenario R1 queda en unos US$212–240: bajo el techo, pero desde unos US$215 por encima del objetivo. Se elige hosting cerca del extremo inferior y no se recorta PITR ni la copia independiente ([adaptación a Go](../2026-10-02-r0-backend-go-design.md)). No se activa un corte ciego de consumo que deje pagos aceptados sin conciliar. Si el gasto proyectado supera el techo, se frenan las ventas nuevas de forma operativa y se conserva la recuperación. Pagos, KYC, SMS y asesoría legal se presupuestan aparte.
 
 ### 0.5 Mapa de zonas sin IA (ZC)
 
@@ -356,7 +356,7 @@ Origen: [hallazgos técnicos de L3](../2026-09-25-revision-sistema-hallazgos-l3.
 | H-15 | §13.5 | Objetivos propuestos (P-04) | Nada más que la norma | Ensayo integral cronometrado y conciliado |
 | H-16 | §12.9 | Política propuesta (P-02) | Nada más que la norma | F7 en el sandbox; asiento de devolución sujeto a DP-03 |
 | H-17 | §7.6 | Norma incorporada (P-06) | Nada más que la norma | Pruebas de abuso con umbrales medidos |
-| H-18 | §0.3 | Incorporado. DP-09 | Esquema V8 en PostgreSQL 17 | Supabase y CI TypeScript en D1 |
+| H-18 | §0.3 | Incorporado. DP-09 | Esquema V8 en PostgreSQL 17 | Supabase y CI Go y TypeScript en D1 |
 | H-19 | §0, pie, §0.8 | Identidad de borrador conservada; recepción pendiente de reconciliar (C1-V13) | Registrar procedencia y alcance | Confirmar emisión, identidad, BASELINE y Registro en C2 |
 
 La propuesta de cada hallazgo está en las notas de [operación](operacion.md), [seguridad](seguridad.md), [contratos](contratos.md), [notas contractuales](notas-contractuales.md), [cierre de contratos](cierre-contratos.md), [Mercado Pago](mercado-pago.md) y [evaluación de Truora](truora-evaluacion.md). Este documento incorpora lo normativo de esas notas y no depende de ellas para completarse. La evidencia de proveedores sigue en las notas.
@@ -419,7 +419,7 @@ Los comentarios `-- V8` dentro del SQL señalan las líneas que cambian respecto
 | C-03 | Toda tabla mutable lleva `created_at TIMESTAMPTZ NOT NULL DEFAULT now()` y `updated_at TIMESTAMPTZ NOT NULL DEFAULT now()`    |
 | C-04 | Toda tabla cuya mutación proviene de una operación trazable lleva `trace_id UUID NOT NULL`                                    |
 | C-05 | Los estados son `VARCHAR(40)` con `CHECK` explícito, nunca tipos enumerados nativos: un `ALTER TYPE` bloquea en producción    |
-| C-06 | Todo importe es `BIGINT` en unidad mínima de la moneda, acompañado de `currency CHAR(3)`. **Nunca punto flotante**. En TypeScript se maneja como `bigint` y en JSON como cadena decimal (§11.1) |
+| C-06 | Todo importe es `BIGINT` en unidad mínima de la moneda, acompañado de `currency CHAR(3)`. **Nunca punto flotante**. En Go se maneja como `int64`, en el frontend TypeScript como `bigint` y en JSON como cadena decimal (§11.1) |
 | C-07 | Toda tabla con datos de un mercado lleva `market_code CHAR(2)`                                                                |
 | C-08 | Las tablas de solo agregación llevan `CHECK` de inmutabilidad por disparador y revocación de `UPDATE`/`DELETE` a nivel de rol, con `GRANT` explícitos (§1.4) |
 | C-09 | Toda clave foránea declara `ON DELETE RESTRICT`. No hay borrado en cascada en dominio financiero                              |
@@ -3368,7 +3368,7 @@ Especificación normativa al byte. Cualquier desviación produce un `pool_hash` 
     def pool_hash(raffle_id: str, numbers: list[int]) -> str:
         return hashlib.sha256(canonical_pool_string(raffle_id, numbers).encode("utf-8")).hexdigest()
 
-El pseudocódigo es de referencia y está en Python, como en la versión anterior. No indica el lenguaje de la implementación, que en V8 es TypeScript y escribe su dueño.
+El pseudocódigo es de referencia y está en Python, como en la versión anterior. No indica el lenguaje de la implementación, que en V8 es Go (D-10) y escribe su dueño.
 
 ### 5.3 Compromiso
 
@@ -4524,6 +4524,8 @@ Se responde `200` incluso ante duplicado: un error haría reintentar indefinidam
 
 **Ejecutores (V8).** Son 30 trabajos: nueve cada minuto, dos cada 15 minutos, cuatro cada hora, catorce diarios y uno cada 10 segundos. En un mes de 30 días suman unas 657.060 activaciones. `create-next-partitions` corre en `pg_cron` con el rol dueño (B3, §1.3), para no sacar esa credencial de la base. Los otros 28 de los 29 primeros, y la tarea que vigila `partition_status`, se programan en Trigger.dev, cuyo cron no baja de un minuto; la frecuencia de esa vigilancia no está fijada. `dispatch-outbox` lo dispara un ticker de Supabase Cron cada 10 s contra un endpoint privado (§12.7). Fuera del DDL de particiones, ningún trabajo se ejecuta como función larga dentro de Supabase Cron, que admite como máximo 8 trabajos concurrentes y 10 minutos por trabajo. Un cron de un minuto no acredita la cadencia de 10 s. La ejecución única de los trabajos que tocan dinero, inventario o sorteo es zona crítica, y su código lo escribe a mano su dueño.
 
+**Con D-10** el ejecutor se reevalúa. La propuesta es River en el worker Go, que también despacharía el outbox cada 10 s sin ticker externo. Hasta confirmarla rige el reparto anterior.
+
 ### 12.7 Outbox y despacho
 
 Contrato del despachador. No incluye la implementación de concurrencia:
@@ -4635,7 +4637,7 @@ Ninguna prueba de esta sección está ejecutada contra el sistema V8, porque el 
 | Carga             | Presupuesto de rendimiento                    | —                                | Semanal          |
 | Ensayo real       | Ciclo completo con dinero real                | Gate de fase                     | Una vez por fase |
 
-El CI de código TypeScript (build, lint, typecheck, pruebas, migraciones sobre PostgreSQL efímero con el esquema V8 y contrato OpenAPI) entra en D1.
+El CI de código entra en D1: backend Go (build, `go vet`, linter, pruebas, migraciones sobre PostgreSQL efímero con el esquema V8 y conformidad con OpenAPI) y frontend TypeScript (build, lint, typecheck, pruebas y cliente generado).
 
 ### 14.2 Pruebas de propiedad
 
@@ -4846,6 +4848,6 @@ C1 **no** exige: confirmación contable ni T-03 (H-01–H-03, pendientes por D-0
 
 **C2 — emisión.** Un solo acto con: identidad en los cuatro lugares; changelog con "decisión que invalida"; autonomía comprobada; ratificación en bloque de las propuestas P-01 a P-09; V7 archivada sin editar; ningún bloque marcado **legado preservado, no listo para emisión en C2** sin resolver por el SQL V8 o el aporte humano; alta de V8 en BASELINE y en el Registro §1; `verify_corpus.py` con cero fallos; y correlación con el doc 20 (DP-19). Los hallazgos contables se emiten con su estado pendiente explícito (§6), no corregidos.
 
-**D1/R1 — pruebas de dominio y operación.** D1 levanta el freeze y añade el CI de código TypeScript. En D1/R1 se ejecutan: §14.3, §14.4 y §14.9 contra el backend; F1–F7 contra PostgreSQL y el sandbox de Mercado Pago; KYC y KYB con el proveedor que resulte de DP-20; el esquema en Supabase (DP-09); y el ensayo de restauración (§13.5). Antes de mover dinero real deben estar resueltos DP-01, DP-02, DP-03, DP-08, DP-10 y DP-12.
+**D1/R1 — pruebas de dominio y operación.** D1 levanta el freeze y añade el CI de código Go y TypeScript. En D1/R1 se ejecutan: §14.3, §14.4 y §14.9 contra el backend; F1–F7 contra PostgreSQL y el sandbox de Mercado Pago; KYC y KYB con el proveedor que resulte de DP-20; el esquema en Supabase (DP-09); y el ensayo de restauración (§13.5). Antes de mover dinero real deben estar resueltos DP-01, DP-02, DP-03, DP-08, DP-10 y DP-12.
 
 *LIBOX Especificación Técnica L3 V8, borrador DRAFT-8, no emitido. Implementa LIBOX PRD BLUEPRINT MVP V9 (nivel L2), gobernado por LBPF V3 (nivel L0). Este documento no crea reglas de negocio: las implementa.*

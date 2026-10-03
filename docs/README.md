@@ -56,4 +56,4 @@ La colección **Libox — Negocio** (liboxapp.getoutline.com) contiene el espejo
 4. Diseño de 41/62 superficies — bloquea frontend.
 5. Arte maestro de marca (VIES Anexo A).
 6. Manual de operación (13 SP).
-7. **ASS-001** (custodia) sigue abierta antes de dinero real. **ASS-002**: backend TypeScript ratificado por los socios el 2026-09-29; emisión del canon y levantamiento del freeze pendientes, según [programa R0](superpowers/specs/2026-09-25-habilitar-r0-design.md).
+7. **ASS-001** (custodia) sigue abierta antes de dinero real. **ASS-002**: backend TypeScript ratificado el 2026-09-29 y sustituido por Go (D-10, [adaptación a Go](superpowers/specs/2026-10-02-r0-backend-go-design.md)) el 2026-10-02; emisión del canon y levantamiento del freeze pendientes, según [programa R0](superpowers/specs/2026-09-25-habilitar-r0-design.md).

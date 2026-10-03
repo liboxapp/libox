@@ -95,8 +95,9 @@ El CI de producto (build, lint, tipos, tests, migraciones y contrato API) entra 
 ## Stack y reglas de ingeniería
 
 El [programa de R0](docs/superpowers/specs/2026-09-25-habilitar-r0-design.md)
-registra la ratificación de **TypeScript**, monolito modular con Next.js App Router,
-PostgreSQL gestionado y workflows administrados. Los endpoints invocan módulos
+registra el backend en **Go** (D-10, que sustituye la ratificación de TypeScript para el
+backend), monolito modular sobre PostgreSQL gestionado; el frontend usa Next.js App Router
+y TypeScript. Workflows y hosting del backend se reevalúan en la [adaptación a Go](docs/superpowers/specs/2026-10-02-r0-backend-go-design.md). Los endpoints invocan módulos
 separados de dominio. Scalar documentará la API.
 
 L3 V7 sigue siendo el canon registrado; su runtime .NET es la discrepancia que C2
