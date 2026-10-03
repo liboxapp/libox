@@ -8,8 +8,9 @@ Guía para Claude Code en este repositorio. Es un puntero: la verdad vive en `do
 peruana. El repo contiene (1) el **corpus canónico** en `docs/linea-base/`, gobernado por el
 Registro Maestro V6 (si un documento no figura en su §1, no rige) y verificado por
 `verify_corpus.py` (CD-10: cero fallos), y (2) un scaffold Next.js en `src/` que está
-**congelado** hasta completar L3 V8 y la transición de D1. El backend TypeScript
-ya fue ratificado el 2026-09-29; ver el
+**congelado** hasta completar L3 V8 y la transición de D1. El backend es **Go**
+(D-10, 2026-10-02), monolito modular; el frontend sigue en Next.js y TypeScript.
+Ver la [adaptación a Go](docs/superpowers/specs/2026-10-02-r0-backend-go-design.md) y el
 [programa de R0](docs/superpowers/specs/2026-09-25-habilitar-r0-design.md).
 
 ## Empieza por
@@ -30,7 +31,7 @@ ya fue ratificado el 2026-09-29; ver el
   se emite versión nueva con `/libox-versionar-doc` o el hallazgo va a
   `/libox-registrar-hallazgo`. Ver `.claude/rules/linea-base.md`.
 - **`src/` congelado** hasta D1: no crear ni extender código. El texto antiguo de
-  `.claude/rules/src-congelado.md` no reabre la decisión de TypeScript; su bloqueo
+  `.claude/rules/src-congelado.md` no reabre la decisión de lenguaje; su bloqueo
   sigue activo y el CI consulta la regla de la rama base.
 - **Zonas sin generación asistida:** aplicar `.claude/rules/zonas-sin-ia.md`.
   La revisión humana obligatoria está suspendida hasta reactivación explícita
@@ -48,12 +49,14 @@ algo por hecho. Detalle en `docs/equipo/sistema-operativo-ia.md#orquestación-fa
 
 ## Decisiones abiertas
 
-**ASS-001** (custodia del dinero) sigue abierta. **ASS-002** ya tiene ratificación
-a TypeScript, registrada en el programa de R0 a partir del doc 20 de Outline
-(revisión 23). Falta trasladarla al canon L3 V8 y completar D1. Supabase Pro, Trigger.dev y Vercel Pro fueron confirmados el 2026-09-30;
+**ASS-001** (custodia del dinero) sigue abierta. **ASS-002** se ratificó
+a TypeScript (doc 20 de Outline, revisión 23); **D-10 la sustituye para el backend
+por Go** (2026-10-02), pendiente de registrar en el doc 20. Falta trasladarla al canon
+L3 V8 y completar D1. Supabase Pro y Vercel Pro (frontend) fueron confirmados el 2026-09-30;
+Trigger.dev, hosting del backend y herramientas Go se reevalúan ([adaptación a Go](docs/superpowers/specs/2026-10-02-r0-backend-go-design.md));
 PostgreSQL 17 queda sujeto a validar migraciones. Ver la
 [decisión C1](docs/superpowers/specs/2026-09-30-r0-c1-design.md).
-Drizzle y las demás herramientas no quedan ratificadas por esta elección.
+Ninguna herramienta de código queda ratificada por esta elección.
 La línea de ADRs Z.1–Z.8 es histórica (`docs/archive/decisions/`).
 
 ## Configuración compartida

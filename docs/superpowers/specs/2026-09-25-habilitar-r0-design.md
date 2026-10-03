@@ -2,8 +2,8 @@
 title: Programa para habilitar R0 — diseño
 status: borrador
 tags: [libox, r0, harness, programa, spec]
-updated: 2026-10-01
-description: Programa aprobado por Diego para resolver la auditoría del harness (SY-01 a SY-16) y los defectos del canon, y dejar R0 listo para arrancar sobre el backend TypeScript ratificado. Streams, decisiones, secuencia y criterio de éxito.
+updated: 2026-10-02
+description: Programa aprobado por Diego para resolver la auditoría del harness (SY-01 a SY-16) y los defectos del canon, y dejar R0 listo para arrancar sobre el backend Go decidido en D-10. Streams, decisiones, secuencia y criterio de éxito.
 ---
 
 # Programa para habilitar R0
@@ -19,7 +19,7 @@ El programa no decide ASS-001 (custodia) ni edita el canon en su lugar: el canon
 
 | ID | Decisión | Fecha y alcance |
 |---|---|---|
-| D-01 | **ASS-002 ratificada por los socios: backend TypeScript** en un monolito modular. Next.js (App Router) y TypeScript para interfaz y endpoints; módulos de dominio separados (órdenes, pagos, boletos, sorteos, liquidaciones) que los endpoints solo invocan; PostgreSQL gestionado; un servicio de workflows administrado para lo asíncrono. Registrada en el doc 20 (ASS-002 invalidada, revisión 23) | 2026-09-29 · pendiente de alta como DEC-\* |
+| D-01 | **ASS-002 ratificada por los socios: backend TypeScript** en un monolito modular. Next.js (App Router) y TypeScript para interfaz y endpoints; módulos de dominio separados (órdenes, pagos, boletos, sorteos, liquidaciones) que los endpoints solo invocan; PostgreSQL gestionado; un servicio de workflows administrado para lo asíncrono. Registrada en el doc 20 (ASS-002 invalidada, revisión 23). **La parte de backend queda sustituida por D-10** | 2026-09-29 · pendiente de alta como DEC-\* |
 | D-02 | Revisores: Arom B. y Martin G. Diego los invita desde GitHub; revisión humana suspendida hasta reactivación explícita de Diego | 2026-09-25 · ruleset y CODEOWNERS |
 | D-03 | Escrituras por shell: el CI es la garantía y el hook añade una heurística | 2026-09-25 · guards y CI |
 | D-04 | Un guard que falla sigue permitiendo, pero con aviso visible | 2026-09-25 · guards |
@@ -28,6 +28,7 @@ El programa no decide ASS-001 (custodia) ni edita el canon en su lugar: el canon
 | D-07 | Scalar como documentación de la API del backend | 2026-09-25 · canon §0.3 y backend |
 | D-08 | Sin spike: sus fallos deliberados pasan a ser pruebas de aceptación obligatorias (tabla de abajo), y la consola interna de operación entra como épica | 2026-09-29 · R1 y E14 |
 | D-09 | Proveedores abiertos (base de datos, workflows, auth, almacenamiento, rate limiting): se cierran con comparativa en C1, antes de emitir L3 V8 | 2026-09-29 · canon §0.3 |
+| D-10 | **Backend en Go**, monolito modular, decidido por Diego. Frontend Next.js + TypeScript en Vercel; REST + OpenAPI + Scalar como contrato. Herramientas, hosting y workflows: propuestas pendientes de confirmar. Ver [adaptación a Go](2026-10-02-r0-backend-go-design.md) | 2026-10-02 · sustituye el backend de D-01; falta registrar en el doc 20 |
 
 ## Criterio de éxito
 
@@ -35,7 +36,7 @@ R0 queda habilitado cuando se cumplen las cinco condiciones:
 
 1. La auditoría del harness, re-ejecutada, da `sin bloqueos en el alcance revisado`.
 2. ~~Los socios ratifican ASS-002~~: **cumplido el 2026-09-29** (D-01).
-3. El conjunto L3/artefactos reconciliado está emitido con identidad resuelta, stack TypeScript y proveedores cerrados, y `verify_corpus.py` en cero fallos. La [reconciliación Cowork](c1-l3-v8/reconciliacion-linea-base.md) no está cerrada por un check lexical verde.
+3. El conjunto L3/artefactos reconciliado está emitido con identidad resuelta, stack de D-10 (backend Go) y proveedores cerrados, y `verify_corpus.py` en cero fallos. La [reconciliación Cowork](c1-l3-v8/reconciliacion-linea-base.md) no está cerrada por un check lexical verde.
 4. El freeze se levanta en el PR de cierre de ASS-002, con CI de código obligatorio.
 5. **Suspendida por instrucción explícita de Diego (2026-09-29):** la revisión
    humana no bloquea R0 hasta que él la reactive explícitamente. La incorporación
@@ -101,7 +102,7 @@ D-05 sigue vigente; ASS-001 y contabilidad se cierran antes de operar sus flujos
 **D1.** Es el PR de cierre de ASS-002, y hace cinco cosas:
 
 - Borra la regla del freeze, las constantes `FROZEN_*` y sus tests.
-- Añade el CI de código TypeScript: build, lint, typecheck, test, migraciones sobre PostgreSQL efímero con el esquema V8 y contrato OpenAPI.
+- Añade el CI de código: backend Go (build, `go vet`, linter, `go test`, migraciones sobre PostgreSQL efímero con el esquema V8 y conformidad con OpenAPI) y frontend TypeScript (build, lint, typecheck, test y cliente generado del contrato).
 - Añade la capa `dev`: agentes `ejecutor`, `tester` y `depurador`, y una regla de backend con los proveedores de L3 V8.
 - Suma las rutas de código a CODEOWNERS.
 - Registra la consola interna de operación como épica.
