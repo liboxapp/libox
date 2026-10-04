@@ -2,7 +2,7 @@
 title: C1 — compatibilidad de Supabase y cifrado KMS
 status: borrador
 tags: [r0, c1, seguridad, supabase]
-updated: 2026-10-01
+updated: 2026-10-04
 description: Alcance aprobado, excepción Auth aún pendiente y verificaciones necesarias para integrar cifrado de dominio con Supabase.
 ---
 
@@ -10,9 +10,17 @@ description: Alcance aprobado, excepción Auth aún pendiente y verificaciones n
 
 Diego aprobó AWS KMS y exigió compatibilidad con Supabase en
 [B1-bis](decisiones-c1-datos.md#b1-bis-cifrado-de-datos-personales).
-No aprobó una excepción de datos personales para Auth ni autenticación propia.
-Esta ficha concreta la decisión pendiente; no cambia esa autorización ni acredita
-una integración ejecutada en un proyecto gestionado.
+El 2026-10-02 Diego aclaró que pide fundamentos de la recomendación de evitar
+autenticación propia en Go. Su descarte no queda ratificado por ese intercambio.
+Supabase Auth conserva su elección previa como proveedor administrado; el diseño
+propuesto deja en Go la validación de identidad y los permisos del dominio Libox.
+El 2026-10-04 ratificó Auth administrada en el punto 4 de las
+[decisiones posteriores](decisiones-2026-10-04.md). El inventario de atributos
+y la excepción concreta no quedaron enumerados; no se infiere una excepción
+general para datos personales. Ver la [decisión de stack](../2026-10-02-stack-go-frontend-ts.md).
+La excepción de datos personales para Auth sigue sin aprobarse. Esta ficha
+concreta la frontera pendiente; no acredita una integración ejecutada en un
+proyecto gestionado.
 
 ## Separación propuesta para ratificar
 
@@ -31,12 +39,13 @@ cifrar sus campos con las claves de Libox.
 [Usuarios](https://supabase.com/docs/guides/auth/users),
 [gestión de datos](https://supabase.com/docs/guides/auth/managing-user-data).
 
-**Recomendación para decidir:** evaluar Supabase Auth con excepción mínima
-inventariada para sus atributos de identidad, conservando KMS para el dominio.
+**Dirección ratificada:** Supabase Auth administrada y KMS para el dominio.
+Concretar una excepción mínima inventariada para los atributos de identidad;
+el punto 4 no suministra por sí solo una lista de campos autorizados.
 No cifrar ni reemplazar columnas administradas de Auth como si fueran propias.
 La alternativa «cero datos personales legibles en toda la base» requiere otro
 análisis de identidad; no se promete que un identificador opaco la resuelva.
-Hasta ratificar la frontera, no implementar la autenticación definitiva ni
+Hasta concretar la frontera, no implementar la autenticación definitiva ni
 anunciar que toda la base cumple la política de cifrado.
 
 ## Auditoría de claves
