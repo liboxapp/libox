@@ -16,7 +16,9 @@ despliegue, workflows y validación Go sigue pendiente antes de C2.
 **Ratificaciones del 2026-10-04:** Vercel para backend, conservar Trigger.dev,
 Auth administrada, mínimo 1,45, auditabilidad general con más detalle sensible
 y techo de infraestructura US$250/mes. Ver [registro y límites](decisiones-2026-10-04.md).
-Garantía sigue pendiente de revisar [escenarios](escenarios-t1-garantia.md).
+Después, Diego eligió la **garantía del sorteo desde la primera entrega (B)** y
+**subió el suelo del rango a 1,45×**; ambos con parámetros y aportes humanos
+pendientes ([escenarios](escenarios-t1-garantia.md)).
 
 **C1 sigue abierto.** Hay un candidato completo de L3 V8, un contrato ampliado y
 un overlay SQL no crítico verificable. El candidato incorpora ahora el alcance de
@@ -53,8 +55,9 @@ financieras del producto. SQL y artefactos mantienen estado de borrador.
   tablas operativas a reportería: resolver antes de usar datos reales.
 - T1: mínimo, premio y condiciones fijados antes de publicar, sin cambios tras la
   primera compra. Múltiplo de mínimo 1,45 aprobado el 04/10; fórmula completa,
-  costes/caja y premio siguen pendientes. Bajo mínimo rige cancelación hasta
-  ratificar la alternativa de garantía.
+  costes/caja y premio siguen pendientes. Bajo mínimo, el organizador puede
+  cubrir la brecha con la garantía del sorteo (B); sin cobertura, se cancela.
+  Suelo del rango en 1,45×: hallazgo para PRD §1.3.2 / INV-40.
 - [P-C](plantilla-documentos-pc.md): plantilla preparada, Diego coordina con el
   abogado; lista y fecha pendientes. Revisar en cada avance de C1.
 - Segundas firmas: falta incorporar otra persona real antes de operar esas acciones.
