@@ -2,7 +2,7 @@
 title: LIBOX Especificación Técnica L3 V8 — borrador DRAFT-8 (no emitido)
 status: borrador
 tags: [r0, c1, l3-v8, linea-base, borrador]
-updated: 2026-10-01
+updated: 2026-10-04
 description: Candidato L3 no emitido sobre V7, con alcance de reconciliación Cowork en §0.8 y aportes pendientes para C1, C2 y D1/R1.
 ---
 
@@ -27,7 +27,15 @@ description: Candidato L3 no emitido sobre V7, con alcance de reconciliación Co
 > heredado preservado contradice una de ellas, la sección lo marca como **legado
 > preservado, no listo para emisión en C2**: la regla vigente es la de la prosa y
 > el código lo corrige el SQL V8 o el aporte humano. Las propuestas de Cowork no
-> ratificadas (fianza, múltiplo 1,25, ventana de 48 h) no se convierten en norma.
+> ratificadas (fianza, ventana de 48 h) no se convierten en norma.
+>
+> **Ratificaciones del 04/10:** [registro](decisiones-2026-10-04.md) con Vercel
+> para Go, Trigger.dev, Auth administrada, mínimo 1,45 y auditoría general.
+> La prosa/contratos y el SQL completo aún deben integrar ese alcance. El CHECK
+> protegido heredado conserva 1,25: su adaptación al mínimo nuevo es aporte humano,
+> no se modifica en esta actualización. Garantía adicional sigue pendiente de decisión.
+> Diego corrigió el término a garantía el 04/10; la terminología de fianza en la
+> recepción Cowork se conserva como origen, sin fijar la forma de la garantía.
 
 ## 0\. Propósito, alcance y control documental
 

@@ -2,11 +2,19 @@
 title: R0 — adaptación del backend a Go
 status: aprobado
 tags: [libox, r0, backend, go, decision]
-updated: 2026-10-02
+updated: 2026-10-04
 description: Decisión de Diego de implementar el backend en Go (D-10), qué cambia frente a D-01, herramientas propuestas, presupuesto e impacto en L3, planes y harness.
 ---
 
 # Adaptación del backend a Go
+
+**Ratificaciones del 04/10:** Diego eligió Vercel para el backend, conservar
+Trigger.dev y Auth administrada; mantuvo el techo de US$250/mes. Las propuestas
+de hosting alternativo y reemplazo de workflows de esta ficha quedan sustituidas
+por el [registro posterior](c1-l3-v8/decisiones-2026-10-04.md). Despliegue,
+frontera Go/Trigger.dev y excepción Auth/KMS aún requieren validación y detalle.
+La respuesta sobre herramientas no enumera una selección concreta; ver
+[alcance de stack](2026-10-02-stack-go-frontend-ts.md).
 
 ## Decisión
 

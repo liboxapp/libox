@@ -2,7 +2,7 @@
 title: Libox — Índice del wiki
 status: vigente
 tags: [libox, wiki, indice, linea-base]
-updated: 2026-10-01
+updated: 2026-10-04
 description: Índice del canon del repo, trabajo C1/R0 y reconciliación de documentación recibida en Cowork.
 ---
 
@@ -17,6 +17,10 @@ Marketplace de sorteos donde terceros verificados publican oportunidades. LIBOX 
 Empieza por [`linea-base/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V6.md`](linea-base/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V6.md).
 Los borradores y archivos recibidos en Cowork no adquieren vigencia automáticamente.
 Su integración se sigue en [C1](superpowers/specs/c1-l3-v8/estado-c1.md).
+Las [decisiones del 04/10](superpowers/specs/c1-l3-v8/decisiones-2026-10-04.md)
+registran Vercel para Go, conservación de Trigger.dev, Auth administrada, mínimo
+1,45, auditoría general y presupuesto. La garantía se revisa mediante
+[escenarios](superpowers/specs/c1-l3-v8/escenarios-t1-garantia.md).
 
 ## Mapa
 
@@ -29,7 +33,7 @@ Su integración se sigue en [C1](superpowers/specs/c1-l3-v8/estado-c1.md).
 | [`archive/`](archive/) | **Histórico nulo o superseded** — no se consulta ni se cita (Registro §2) | Solo para trazabilidad |
 | [`equipo/`](equipo/) | Cómo trabaja el equipo: [sistema operativo de IA](equipo/sistema-operativo-ia.md) (capas, guards, skills, agentes, orquestación) · [estilo de documentación](equipo/estilo-documentacion.md) · [onboarding](equipo/onboarding.md) | Al incorporarte y cada vez que extiendas la configuración de Claude |
 | [`glosario.md`](glosario.md) · [`flujos/`](flujos/) · [`superpowers/`](superpowers/) | Documentos de trabajo, no normativos (glosario, flujos, specs y planes aprobados) | Consulta |
-| [Estado C1](superpowers/specs/c1-l3-v8/estado-c1.md) · [reconciliación Cowork](superpowers/specs/c1-l3-v8/reconciliacion-linea-base.md) · [plan](superpowers/plans/2026-09-30-r0-c1.md) | Acuerdos conservados, candidato L3/API y nuevos pendientes de viabilidad/fianza, contratos y backlog | Trabajo activo antes de C2 |
+| [Estado C1](superpowers/specs/c1-l3-v8/estado-c1.md) · [reconciliación Cowork](superpowers/specs/c1-l3-v8/reconciliacion-linea-base.md) · [plan](superpowers/plans/2026-09-30-r0-c1.md) | Acuerdos conservados, candidato L3/API y nuevos pendientes de viabilidad/garantía, contratos y backlog | Trabajo activo antes de C2 |
 
 ## Precedencia ante conflicto
 
@@ -56,4 +60,4 @@ La colección **Libox — Negocio** (liboxapp.getoutline.com) contiene el espejo
 4. Diseño de 41/62 superficies — bloquea frontend.
 5. Arte maestro de marca (VIES Anexo A).
 6. Manual de operación (13 SP).
-7. **ASS-001** (custodia) sigue abierta antes de dinero real. **ASS-002**: backend TypeScript ratificado el 2026-09-29 y sustituido por Go (D-10, [adaptación a Go](superpowers/specs/2026-10-02-r0-backend-go-design.md)) el 2026-10-02; emisión del canon y levantamiento del freeze pendientes, según [programa R0](superpowers/specs/2026-09-25-habilitar-r0-design.md).
+7. **ASS-001** (custodia) sigue abierta antes de dinero real. Backend Go y frontend TypeScript/Next.js por D-10 y la [decisión posterior del 02/10](superpowers/specs/2026-10-02-stack-go-frontend-ts.md); adaptación, emisión y levantamiento del freeze pendientes según [programa R0](superpowers/specs/2026-09-25-habilitar-r0-design.md).
