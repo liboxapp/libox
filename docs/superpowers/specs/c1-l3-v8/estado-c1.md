@@ -2,11 +2,21 @@
 title: C1 — estado de entrega y dependencias
 status: borrador
 tags: [r0, c1, seguimiento]
-updated: 2026-10-01
+updated: 2026-10-04
 description: Entregas C1, reconciliación Cowork y aportes pendientes, distinguiendo integración documental, emisión y operación real.
 ---
 
 # Estado de C1
+
+**Cambio aprobado el 2026-10-02:** backend Go y frontend TypeScript/Next.js.
+La [decisión final de stack](../2026-10-02-stack-go-frontend-ts.md) sustituye el backend
+TypeScript mencionado en este documento. La adaptación del candidato L3,
+despliegue, workflows y validación Go sigue pendiente antes de C2.
+
+**Ratificaciones del 2026-10-04:** Vercel para backend, conservar Trigger.dev,
+Auth administrada, mínimo 1,45, auditabilidad general con más detalle sensible
+y techo de infraestructura US$250/mes. Ver [registro y límites](decisiones-2026-10-04.md).
+Garantía sigue pendiente de revisar [escenarios](escenarios-t1-garantia.md).
 
 **C1 sigue abierto.** Hay un candidato completo de L3 V8, un contrato ampliado y
 un overlay SQL no crítico verificable. El candidato incorpora ahora el alcance de
@@ -34,16 +44,24 @@ financieras del producto. SQL y artefactos mantienen estado de borrador.
 
 ## Seguimiento de decisiones integradas
 
+- Auth administrada con Supabase Auth ratificada por Diego el 2026-10-04.
+  Go valida identidad del proveedor y aplica autorización; integración,
+  sesiones, MFA, revocación y frontera de datos siguen pendientes.
 - [Supabase/KMS](compatibilidad-supabase-kms.md): compatibilidad obligatoria; falta
   ratificar el alcance Auth, inventario, rotación y coste. El presupuesto anterior
   no incluye KMS. La [matriz B1](cierre-sql-riesgos-acl.md) aún expone datos de
   tablas operativas a reportería: resolver antes de usar datos reales.
 - T1: mínimo, premio y condiciones fijados antes de publicar, sin cambios tras la
-  primera compra. Umbral y premio siguen pendientes; bajo mínimo rige cancelación.
+  primera compra. Múltiplo de mínimo 1,45 aprobado el 04/10; fórmula completa,
+  costes/caja y premio siguen pendientes. Bajo mínimo rige cancelación hasta
+  ratificar la alternativa de garantía.
 - [P-C](plantilla-documentos-pc.md): plantilla preparada, Diego coordina con el
   abogado; lista y fecha pendientes. Revisar en cada avance de C1.
 - Segundas firmas: falta incorporar otra persona real antes de operar esas acciones.
   La revisión humana de desarrollo permanece suspendida.
+- Toda operación debe ser auditable; las sensibles requieren mayor detalle.
+  Integrar catálogo/correlación, integridad, acceso, retención y pruebas según el
+  [registro del 04/10](decisiones-2026-10-04.md#auditabilidad-aprobada-y-aceptación-por-concretar).
 
 ## Aportes necesarios para cerrar C1
 
@@ -60,7 +78,7 @@ están en [decisiones Cowork](reconciliacion-decisiones-planificacion.md).
 | H-10/H-11/H-12 | drand quicknet ratificada; codificación, verificador, valores independientes y almacenamiento de semilla cifrada pendientes | Diego, dueño humano del motor; [entrega delimitada](baliza-propuesta.md) |
 | SQL restante | Matriz completa de roles, semillas pendientes y composición del SQL V8; ejecutar el conjunto, no solo overlay | Diego; ver [pendientes SQL](cierre-sql-pendientes.md) |
 | Contratos auxiliares pendientes | Políticas A/C reflejadas; faltan lista P-C, valores T1, configuración completa, catálogos, apagado global, alcance sensible A10 y entrada del simulador. I-10/I-11 resueltos | Ver [cierre contractual](cierre-contratos.md); no generar reglas patrimoniales para llenar huecos |
-| C1-V01–V11 | Política T1/fianza, mínimo/caja, relojes y FSM; controles humanos, contrato comprador y pruebas negativas | Diego; contabilidad/abogado según [aceptación](reconciliacion-aceptacion.md). Registrar no cierra el gate |
+| C1-V01–V11 | Política T1/garantía, mínimo/caja, relojes y FSM; controles humanos, contrato comprador y pruebas negativas | Diego; contabilidad/abogado según [aceptación](reconciliacion-aceptacion.md). Registrar no cierra el gate |
 | C1-V12–V14 | Cuadrar backlog, identidad/Registro e integración de acuerdos C1 | Diego; [planificación](reconciliacion-decisiones-planificacion.md), antes de la emisión correspondiente |
 
 Las sondas locales reproducen dos fallos del SQL heredado: permite revocar al

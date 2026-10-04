@@ -13,6 +13,13 @@ Registro Maestro V6 (si un documento no figura en su §1, no rige) y verificado 
 Ver la [adaptación a Go](docs/superpowers/specs/2026-10-02-r0-backend-go-design.md) y el
 [programa de R0](docs/superpowers/specs/2026-09-25-habilitar-r0-design.md).
 
+## Decisiones posteriores — 2026-10-04
+
+Diego ratificó Vercel para Go, conservar Trigger.dev, Auth administrada, mínimo
+1,45, auditabilidad general con mayor detalle sensible y US$250/mes. La garantía
+requiere revisar escenarios. Aplicar el [registro y sus pendientes](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-04.md)
+y la [decisión de stack](docs/superpowers/specs/2026-10-02-stack-go-frontend-ts.md).
+
 ## Empieza por
 
 1. `docs/README.md` — índice del wiki.
@@ -53,7 +60,8 @@ algo por hecho. Detalle en `docs/equipo/sistema-operativo-ia.md#orquestación-fa
 a TypeScript (doc 20 de Outline, revisión 23); **D-10 la sustituye para el backend
 por Go** (2026-10-02), pendiente de registrar en el doc 20. Falta trasladarla al canon
 L3 V8 y completar D1. Supabase Pro y Vercel Pro (frontend) fueron confirmados el 2026-09-30;
-Trigger.dev, hosting del backend y herramientas Go se reevalúan ([adaptación a Go](docs/superpowers/specs/2026-10-02-r0-backend-go-design.md));
+Vercel para el backend y conservar Trigger.dev quedaron ratificados el 2026-10-04;
+su integración y las herramientas Go requieren definición y validación ([adaptación a Go](docs/superpowers/specs/2026-10-02-r0-backend-go-design.md));
 PostgreSQL 17 queda sujeto a validar migraciones. Ver la
 [decisión C1](docs/superpowers/specs/2026-09-30-r0-c1-design.md).
 Ninguna herramienta de código queda ratificada por esta elección.

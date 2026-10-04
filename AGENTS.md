@@ -7,7 +7,17 @@ revisor Codex y `docs/equipo/ai-audit-harness.md`. No simules revisiones de Clau
 
 ## Stack y controles para Codex
 
-Backend Go (D-10): monolito modular sobre PostgreSQL; frontend Next.js + TypeScript. Ver [adaptación a Go](docs/superpowers/specs/2026-10-02-r0-backend-go-design.md).
+Backend **Go** y frontend **TypeScript/Next.js**, por decisión final de Diego
+el 2026-10-02; monolito modular y PostgreSQL. Ver
+[decisión de stack](docs/superpowers/specs/2026-10-02-stack-go-frontend-ts.md)
+y [adaptación D-10](docs/superpowers/specs/2026-10-02-r0-backend-go-design.md).
+La elección anterior de backend TypeScript queda sustituida. Diego ratificó
+Vercel para el backend, conservar Trigger.dev y Auth administrada el 2026-10-04;
+ver [decisiones del 04/10](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-04.md).
+Adaptación L3/Go, validación del despliegue y frontera de workflows pendientes.
+El inventario/excepción Auth/KMS y la integración de identidad/autorización
+siguen en diseño. Mínimo económico 1,45 aprobado; garantía aún por decidir.
+Toda operación debe ser auditable, con mayor detalle en las sensibles.
 Supabase Pro + Trigger.dev + Vercel Pro confirmados en C1; PostgreSQL 17 sujeto
 a validar migraciones. Canon L3 V8 y levantamiento del freeze pendientes.
 Detalle: [decisión C1](docs/superpowers/specs/2026-09-30-r0-c1-design.md).
