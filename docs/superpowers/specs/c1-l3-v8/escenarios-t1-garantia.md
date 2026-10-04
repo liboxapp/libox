@@ -82,14 +82,15 @@ con Mercado Pago. No se da una tarifa hipotética por vigente.
 
 **Recomendación para Diego: C.** La cobertura tiene valor, pero requiere un ciclo
 financiero adicional y no asegura la comisión mínima buscada con el múltiplo.
-Esta recomendación no queda aprobada por elaborar los escenarios.
+Esta recomendación no se adoptó: Diego eligió **B** el 04/10.
 
 ## Cierre de la decisión
 
-Diego elige A/B/C. Si elige B, debe fijar ventana, aportante, fórmula de cobertura,
-custodia, devolución, ejecución, cancelación y comunicación previa al comprador.
-Si elige C, decidir alcance y orden de las historias, sin inventar fechas ni
-declarar operativo un depósito cuyo cierre no esté implementado.
+**Decidido: B** (Diego, 2026-10-04), con el nombre **garantía del sorteo**. Falta
+fijar ventana, aportante, fórmula de cobertura, custodia, devolución, ejecución,
+cancelación y comunicación previa al comprador. No se declara operativo un
+depósito cuyo ciclo completo no esté implementado y probado; ASS-001 bloquea su
+uso con dinero real. Ver el [registro](decisiones-2026-10-04.md).
 Controles de dinero/concurrencia y sus efectos son implementación humana.
 Ver [aceptación de garantía](reconciliacion-aceptacion.md) y
 [dependencias del backlog](reconciliacion-decisiones-planificacion.md).

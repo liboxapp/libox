@@ -19,11 +19,11 @@ Donde alimentan código de las [zonas sin IA](../../../../.claude/rules/zonas-si
 solo fijan la regla; el código sigue siendo implementación humana de Diego.
 Lo marcado [LEGAL→ABOGADO] es provisional hasta su ratificación.
 
-**Tras Cowork.** Esta aprobación conserva su alcance del 30/09. El nuevo flujo
-de fianza y sus parámetros se registran aparte en la
-[reconciliación](reconciliacion-linea-base.md); no heredan el estado `aprobado`
-de esta ficha. La extensión de T1 bajo mínimo requiere resolver el cambio de
-cancelación a cobertura antes de integrarlo en las bases.
+**Tras Cowork.** Esta aprobación conserva su alcance del 30/09. El flujo de
+**garantía del sorteo** (antes "fianza") se aprobó el 04/10 como opción B, con
+parámetros pendientes; ver el [registro del 04/10](decisiones-2026-10-04.md) y la
+[reconciliación](reconciliacion-linea-base.md). Esos parámetros no heredan el
+estado `aprobado` de esta ficha.
 
 | Nota | Fichas |
 |---|---|

@@ -3,7 +3,7 @@ title: C1 — decisiones de Diego del 4 de octubre
 status: aprobado
 tags: [r0, c1, decisiones, go, auditoria, viabilidad]
 updated: 2026-10-04
-description: Ratificaciones de Vercel, Trigger.dev, Auth administrada, mínimo 1,45, auditoría y presupuesto, con límites y pendientes explícitos.
+description: Ratificaciones de Vercel, Trigger.dev, Auth administrada, mínimo y suelo de 1,45, garantía del sorteo (B), auditoría y presupuesto, con límites y pendientes explícitos.
 ---
 
 # Decisiones del 4 de octubre de 2026
@@ -16,10 +16,10 @@ emitido el canon ni implementados los controles. Conserva el alcance de las
 
 ## Terminología corregida
 
-Diego precisó: «no seria fianza, seria garantia». El término de trabajo es
-**garantía adicional del organizador**. Los ejemplos de depósito se presentan
-como una garantía en dinero, sin dar por elegida su forma concreta. La corrección
-no habilita todavía la alternativa ni cierra sus condiciones. El material recibido
+Diego precisó: «no seria fianza, seria garantia», y fijó el nombre: **garantía
+del sorteo**. Sustituye a "fianza" y a "garantía adicional del organizador".
+Los ejemplos de depósito la presentan como dinero aportado por el organizador,
+sin dar por elegida su forma concreta. El material recibido
 de Cowork conserva su terminología de origen como evidencia histórica.
 
 ## Registro por punto
@@ -30,7 +30,7 @@ de Cowork conserva su terminología de origen como evidencia histórica.
 | 2 | «Conservaremos trigger dev pero vamos a seguir analizandolo para los primeros meses del startup y su funcionalidad» | Conservar Trigger.dev y evaluar su utilidad durante los primeros meses | Definir frontera con Go y revisar funcionalidades, fiabilidad, carga de mantenimiento y coste con evidencia de uso |
 | 3 | «Todo queda» | Conservar dirección Go y contratos existentes | La lista no elegía un servidor HTTP, driver/ORM o migrador concreto; no se inventa esa elección |
 | 4 | «Si, todo correcto» | Ratificar autenticación administrada con Supabase Auth y cifrado de dominio con KMS; Go valida identidad y aplica permisos | Inventario de atributos de Auth, excepción precisa, rotación, sesiones, MFA y revocación |
-| 5 | «Necesito escenarios para entender mas esto» | Decisión sobre garantía pendiente de revisar escenarios | Mantener cancelación/reembolso de C1 mientras no se ratifique la ampliación |
+| 5 | «Necesito escenarios para entender mas esto»; tras revisarlos, **opción B** | Garantía del sorteo habilitada desde la primera entrega (ver abajo) | Parámetros, custodia y ciclo completo antes de operar; ASS-001 bloquea su uso con dinero real |
 | 6 | «El multiplo sera x1.45 para que asi Libox tenga mas comision» | Múltiplo de mínimo económico de 1,45 sobre el valor aprobado del premio, para el mercado inicial PE | Fórmula completa, costes, caja, redondeo, coherencia con el rango de recaudación y contrato comprador; no cambia por sí mismo la tasa de comisión |
 | 7 | «Queda todo» | Conservar acuerdos de plazos y cierre existentes | Completar máximos por mercado, excepción Flash, precedencia, suspensión y pagos tardíos; ninguna duración nueva figuraba en la lista |
 | 8 | «Queda» | Conservar el frente de reputación | Umbrales, duración, recuperación y apelación no tenían valores u opciones concretas para ratificar |
@@ -43,6 +43,41 @@ Los «queda» conservan el alcance existente. No crean números, nombres o regla
 que la lista no especificaba. No contratan proveedores ni autorizan por sí solos
 una habilitación con dinero real. Las validaciones legales siguen
 [LEGAL→ABOGADO].
+
+## Garantía del sorteo: opción B
+
+Tras revisar los [escenarios](escenarios-t1-garantia.md), Diego eligió el 04/10
+la **opción B**: la garantía del sorteo se habilita desde la primera entrega. La
+recomendación C del análisis no se adopta. Bajo el mínimo, el organizador puede
+cubrir la brecha con una garantía acreditada y el sorteo continúa; sin cobertura
+válida al vencer el plazo, se cancela y reembolsa.
+
+La garantía no es venta, recaudación ni comisión. Antes de operar falta definir:
+plazo de cobertura (48 h es propuesta de origen), aportante, fórmula del importe,
+custodia, devolución, ejecución por incumplimiento, sobrante, cancelación y aviso
+al comprador antes de pagar. Depósito, custodia, devolución y ejecución son
+ledger y concurrencia: implementación humana de Diego (US-144, US-145).
+**ASS-001 sigue abierta y bloquea su uso con dinero real.** [LEGAL→ABOGADO]
+
+## Suelo del rango de recaudación: 1,45×
+
+El PRD V9 §1.3.2 (INV-40) bloquea publicar bajo **1,25×** el valor aprobado del
+premio. Con el mínimo de venta en 1,45×, un sorteo publicado entre 1,25× y 1,45×
+no alcanzaría el mínimo ni vendiéndose entero. Diego decidió el 04/10 **subir el
+suelo del rango a 1,45×**, igual al mínimo de venta, en el mercado PE.
+
+| Múltiplo | Neto del organizador (tasa base 20 %) | Tratamiento |
+|---|---|---|
+| Bajo 1,45× | — | Bloqueado |
+| 1,45× a 2,5× | 1,16× a 2,00× del premio | Habitual, sin fricción |
+| 2,5× a 4,0× y sobre 4,0× | Sin cambios | Sin cambios |
+
+Un sorteo de 1,45× exacto debe venderse entero para alcanzar el mínimo; uno de
+2,0× necesita el 72,5 % de sus boletos. Es **hallazgo para la próxima versión del
+PRD** (§1.3.2, INV-40) y del valor de suelo de `market_config`; no se edita el
+canon en su lugar (CD-07). El CHECK protegido del SQL y la validación del rango
+son zona crítica: los adapta Diego. [LEGAL→ABOGADO]: relación entre recaudación
+y valor del premio ante la autoridad de consumo.
 
 ## Relación entre múltiplo y comisión
 

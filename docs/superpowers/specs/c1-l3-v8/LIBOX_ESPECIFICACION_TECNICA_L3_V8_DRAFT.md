@@ -33,9 +33,10 @@ description: Candidato L3 no emitido sobre V7, con alcance de reconciliación Co
 > para Go, Trigger.dev, Auth administrada, mínimo 1,45 y auditoría general.
 > La prosa/contratos y el SQL completo aún deben integrar ese alcance. El CHECK
 > protegido heredado conserva 1,25: su adaptación al mínimo nuevo es aporte humano,
-> no se modifica en esta actualización. Garantía adicional sigue pendiente de decisión.
-> Diego corrigió el término a garantía el 04/10; la terminología de fianza en la
-> recepción Cowork se conserva como origen, sin fijar la forma de la garantía.
+> no se modifica en esta actualización. Diego eligió el 04/10 la **garantía del
+> sorteo** (antes "fianza") desde la primera entrega y subió el suelo del rango a
+> 1,45×; parámetros y adaptación del SQL protegido siguen pendientes. La
+> terminología de fianza en la recepción Cowork se conserva como origen.
 
 ## 0\. Propósito, alcance y control documental
 
@@ -383,9 +384,9 @@ heredados ya cumplan las reglas. Sigue pendiente la consolidación por sección.
    con importe, tickets, precio y versión aprobada fijada antes de publicar.
    Contar pagos válidos, excluir impagados/gratuitos/anulados y demostrar caja
    disponible. BR-09/KPI deben admitir respaldo por fianza sin llamarlo ingreso.
-3. **Fianza.** `VIABILITY_FAILED` y `VIABILITY_GAP` son ampliación propuesta:
-   el acuerdo T1 vigente del borrador cancela/reembolsa bajo mínimo hasta ratificar
-   esta alternativa. Para adoptarla, declarar plazo, fondos acreditados, actor,
+3. **Garantía del sorteo** (antes "fianza"). Aprobada el 04/10 desde la primera
+   entrega (B); `VIABILITY_FAILED` y `VIABILITY_GAP` dejan de ser solo propuesta.
+   Antes de operarla, declarar plazo, fondos acreditados, actor,
    custodia, T-19/20/21, devolución, incumplimiento, cancelación y sobrantes.
    Un UUID no nulo no demuestra garantía suficiente y vigente.
 4. **FSM e inventario.** Comprobación y freeze/compromiso deben ser coherentes
