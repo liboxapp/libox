@@ -2,7 +2,7 @@
 title: C1 — pendientes y precondiciones del cierre SQL
 status: borrador
 tags: [r0, c1, l3-v8, sql, pendientes]
-updated: 2026-10-01
+updated: 2026-10-12
 description: Trabajo humano en zonas críticas, precondiciones bloqueantes para Supabase, decisiones abiertas y verificaciones no realizadas.
 ---
 
@@ -75,8 +75,9 @@ Estado tras integrar las [fichas B](decisiones-c1-datos.md) el 2026-10-01:
   teléfono en `auth.users` sigue sin decidir y no se infiere.
 - **B2, logins y propiedad. Simulada en local.** Los cuatro logins se crean con
   el instalador del escenario dentro de una transacción revertida, sin
-  contraseña. Falta crearlos en Supabase, guardar sus secretos en Vercel y
-  Trigger.dev y rotarlos cada 90 días. La cesión de propiedad a `libox_migrate`
+  contraseña. Falta crearlos en Supabase, guardar sus secretos y rotarlos cada
+  90 días. B2 nombraba Vercel y Trigger.dev; con el backend en Render desde el
+  [12/10](decisiones-2026-10-12.md), la ubicación de cada secreto está por confirmar. La cesión de propiedad a `libox_migrate`
   cambiaría la huella del esquema V7 protegido: es **requisito del SQL V8** y no
   se da por cerrada. Sin esa cesión, `libox_deployer` no puede migrar.
   B2 ya precisa membresías explícitas por componente: el worker hereda ambos

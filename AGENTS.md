@@ -12,14 +12,17 @@ el 2026-10-02; monolito modular y PostgreSQL. Ver
 [decisión de stack](docs/superpowers/specs/2026-10-02-stack-go-frontend-ts.md)
 y [adaptación D-10](docs/superpowers/specs/2026-10-02-r0-backend-go-design.md).
 La elección anterior de backend TypeScript queda sustituida. Diego ratificó
-Vercel para el backend, conservar Trigger.dev y Auth administrada el 2026-10-04;
-ver [decisiones del 04/10](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-04.md).
+conservar Trigger.dev y Auth administrada el 2026-10-04. El 2026-10-12 eligió
+Render para el backend, en lugar de Vercel, y PostgreSQL 17; ver
+[decisiones del 04/10](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-04.md) y
+[del 12/10](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-12.md).
 Adaptación L3/Go, validación del despliegue y frontera de workflows pendientes.
 El inventario/excepción Auth/KMS y la integración de identidad/autorización
 siguen en diseño. Mínimo económico 1,45 aprobado; garantía aún por decidir.
 Toda operación debe ser auditable, con mayor detalle en las sensibles.
-Supabase Pro + Trigger.dev + Vercel Pro confirmados en C1; PostgreSQL 17 sujeto
-a validar migraciones. Canon L3 V8 y levantamiento del freeze pendientes.
+Supabase Pro + Trigger.dev + Vercel Pro (frontend) confirmados en C1; la
+migración completa en PostgreSQL 17 sigue por validar. Canon L3 V8 y
+levantamiento del freeze pendientes.
 Detalle: [decisión C1](docs/superpowers/specs/2026-09-30-r0-c1-design.md).
 Lee el [programa de R0](docs/superpowers/specs/2026-09-25-habilitar-r0-design.md).
 La mención de ASS-002 abierto en la regla antigua no revoca la ratificación.

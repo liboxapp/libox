@@ -2,7 +2,7 @@
 title: Decisión de stack — Go y frontend TypeScript
 status: aprobado
 tags: [r0, c1, stack, decisiones]
-updated: 2026-10-04
+updated: 2026-10-12
 description: Decisión final de Diego sobre los lenguajes y alcance pendiente de adaptación de C1.
 ---
 
@@ -38,8 +38,9 @@ las ratificaciones del 04/10 se registran aquí y en su registro C1 enlazado aba
 1. Actualizar el candidato L3, programa R0 y plan C1: el dominio y la API pasan
    a Go; los supuestos anteriores sobre endpoints Next.js dejan de ser objetivo.
 2. Elegir y validar runtime, despliegue y conectividad de Go con PostgreSQL y
-   Supabase Auth. Vercel queda elegido también para el backend el 04/10;
-   modalidad, conectividad y límites requieren validación, sin contratación implícita.
+   Supabase Auth. Render aloja el backend desde el 12/10, en lugar de Vercel,
+   elegido el 04/10, y PostgreSQL 17 queda elegido ([registro](c1-l3-v8/decisiones-2026-10-12.md));
+   región, conectividad, worker y límites requieren validación, sin contratación implícita.
 3. Conservar Trigger.dev y evaluar su funcionalidad durante los primeros meses,
    según Diego el 04/10. Cerrar su frontera con Go, coste y evidencia de uso;
    no implica mover reglas de negocio a TypeScript ni elegir un reemplazo.

@@ -2,7 +2,7 @@
 title: Libox — Índice del wiki
 status: vigente
 tags: [libox, wiki, indice, linea-base]
-updated: 2026-10-04
+updated: 2026-10-12
 description: Índice del canon del repo, trabajo C1/R0 y reconciliación de documentación recibida en Cowork.
 ---
 
@@ -18,9 +18,11 @@ Empieza por [`linea-base/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V6.md`](linea-base/LI
 Los borradores y archivos recibidos en Cowork no adquieren vigencia automáticamente.
 Su integración se sigue en [C1](superpowers/specs/c1-l3-v8/estado-c1.md).
 Las [decisiones del 04/10](superpowers/specs/c1-l3-v8/decisiones-2026-10-04.md)
-registran Vercel para Go, conservación de Trigger.dev, Auth administrada, mínimo
-1,45, auditoría general y presupuesto. La garantía se revisa mediante
-[escenarios](superpowers/specs/c1-l3-v8/escenarios-t1-garantia.md).
+registran conservación de Trigger.dev, Auth administrada, mínimo 1,45, auditoría
+general y presupuesto. La garantía se revisa mediante
+[escenarios](superpowers/specs/c1-l3-v8/escenarios-t1-garantia.md). Las
+[decisiones del 12/10](superpowers/specs/c1-l3-v8/decisiones-2026-10-12.md) eligen
+Render para el backend Go, en lugar de Vercel, y PostgreSQL 17.
 
 ## Mapa
 
