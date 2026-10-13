@@ -25,3 +25,12 @@ mediante una nueva instrucción explícita.
 CODEOWNERS y CI no identifican por sí solos toda la semántica de un cambio.
 Mantener CI, pruebas y revisión automatizada. La falta de segundo revisor no
 bloquea el cierre durante la suspensión; la implementación sigue siendo humana.
+
+## Excepción acotada · instrucción de Diego del 2026-10-13
+
+Claude puede redactar el código que cierra INV-01, INV-36, RN-45, RN-96, RN-147
+e INV-25 (refutaciones R-14, R-15, R-16, R-10, R-04 y R-12 de la batería V18).
+Diego confirma cada cambio antes de integrarlo. Cada regla se cierra cuando su
+refutación imprime NO REPRODUCIDO y la batería sigue en verde en PostgreSQL 16
+y 17. No se extiende a otras reglas ni zonas, ni levanta los congelamientos de
+src/ y docs/linea-base/.
