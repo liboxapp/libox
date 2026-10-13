@@ -44,6 +44,7 @@ continúa suspendida; las pruebas y la revisión automatizada siguen activas.
 | Herramientas DB | 27 pruebas, incluidas mutaciones que detectan permisos indebidos y limpieza tras fallo de arranque. CI ejecuta Docker en Python 3.12 |
 | Truora | [Cobertura y brechas](truora-evaluacion.md), consulta preparada sin enviar y plan de aceptación. KYB Perú y precio por confirmar |
 | Cowork | 27 diferencias comparadas con Claude Opus, 14 deltas C1-V, aceptación y US-137–145 incorporadas al plan. [Evidencia y límites](revision-cowork-evidencia.md); no es una emisión ni corrección ejecutada del gate |
+| Decisiones técnicas 04/10 | [D-14, D-16 y D-17](decisiones-tecnicas-2026-10-04.md) integradas en el candidato (§0.9) y el plan; [aceptación técnica Go](aceptacion-tecnica-go.md) definida, sin ejecutar |
 
 Los conteos describen evidencia estructural/local. No prueban seguridad ni reglas
 financieras del producto. SQL y artefactos mantienen estado de borrador.
@@ -79,10 +80,10 @@ están en [decisiones Cowork](reconciliacion-decisiones-planificacion.md).
 
 | Pendiente | Entrega concreta | Responsable |
 |---|---|---|
-| H-04 | Integridad del ledger en DB: cuenta/moneda, cuadre y líneas tardías; pruebas negativas | Diego, implementación humana |
-| H-07/H-09 | INV-38 conserva dos administradores; revocación/suspensión concurrente y reactivación no eluden controles | Diego, implementación humana |
+| H-04 | Cierre técnico (D-17), separado del contable: cuenta/moneda, cuadre, líneas tardías y períodos cerrados; pruebas negativas y concurrentes en PG real | Diego, implementación humana; el contador valida el modelo aparte |
+| H-07/H-09 | Servicio Go + invariantes PostgreSQL (D-16): mínimo dos administradores ante revocación/suspensión/borrado concurrentes; reactivación como nuevo otorgamiento | Diego, implementación humana |
 | H-08 | Incompatibilidades, punto único de transición, semilla FSM y bootstrap coherente de dos administradores | Diego, implementación humana en los controles críticos |
-| H-10/H-11/H-12 | drand quicknet ratificada; codificación, verificador, valores independientes y almacenamiento de semilla cifrada pendientes | Diego, dueño humano del motor; [entrega delimitada](baliza-propuesta.md) |
+| H-10/H-11/H-12 | drand quicknet ratificada; codificación, verificador, valores independientes y almacenamiento de semilla cifrada según D-14 pendientes | Diego, dueño humano del motor; [entrega delimitada](baliza-propuesta.md) |
 | SQL restante | Matriz completa de roles, semillas pendientes y composición del SQL V8; ejecutar el conjunto, no solo overlay | Diego; ver [pendientes SQL](cierre-sql-pendientes.md) |
 | Contratos auxiliares pendientes | Políticas A/C reflejadas; faltan lista P-C, valores T1, configuración completa, catálogos, apagado global, alcance sensible A10 y entrada del simulador. I-10/I-11 resueltos | Ver [cierre contractual](cierre-contratos.md); no generar reglas patrimoniales para llenar huecos |
 | C1-V01–V11 | Política T1/garantía, mínimo/caja, relojes y FSM; controles humanos, contrato comprador y pruebas negativas | Diego; contabilidad/abogado según [aceptación](reconciliacion-aceptacion.md). Registrar no cierra el gate |
@@ -104,6 +105,8 @@ No se exige un segundo revisor ni reescribir bloques heredados sin defecto conoc
 - **D-05 permite** conservar H-01–H-03 registrados sin confirmación contable al
   preparar C1 y emitir C2. ASS-001 sigue abierto; no afirmar preparación para
   dinero real mientras custodia y contabilidad no estén resueltas.
+  D-17 exige cierre técnico del ledger y aprobación contable separados antes de
+  dinero real; no elimina la excepción documental D-05.
 - **C2:** emisión del conjunto reconciliado con identidad resuelta, Registro/BASELINE
   y archivo de versiones anteriores intactas. V9 solo si se acredita emisión formal
   de la V8 recibida. Requiere aportes C1 y ratificación documental del candidato.

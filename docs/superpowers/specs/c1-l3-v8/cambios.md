@@ -2,7 +2,7 @@
 title: C1 — registro local CD-07 y cambios propuestos
 status: borrador
 tags: [r0, c1, l3-v8]
-updated: 2026-10-01
+updated: 2026-10-12
 description: Trazabilidad H-01 a H-19 y deltas C1-V de Cowork sin asignar números del doc20 ni editar el canon.
 ---
 
@@ -18,20 +18,26 @@ La [ampliación Cowork](reconciliacion-linea-base.md) añade C1-V01–V14 para l
 de H-01–H-19 y de las decisiones D-01–D-09 del programa R0. Los valores nuevos
 permanecen candidatos; ver [decisiones pendientes](reconciliacion-decisiones-planificacion.md).
 
+Las [decisiones técnicas del 04/10](decisiones-tecnicas-2026-10-04.md) actualizan
+H-04, H-07, H-09 y H-12 (D-17, D-16 y D-14). Sus IDs son del documento de ciclo de
+vida de Cowork y no sustituyen la numeración del programa. La
+[aceptación técnica Go](aceptacion-tecnica-go.md) está definida y pendiente de
+ejecutar; el traslado documental no cierra hallazgos.
+
 | ID local | Cambio para el borrador | Evidencia necesaria para cerrar |
 |---|---|---|
 | C1-H01 | No dar por válido L-04 con purchase_liability ya consumida; evaluar momento de T-04/05/06 | Dictamen contable y casos de saldo suficiente antes/después de entrega/reembolso |
 | C1-H02 | Especificar T-03, devolución al medio original y movimiento de cash_clearing | Matriz de asientos y prueba PSP aprobadas por dueño contable |
 | C1-H03 | Separar cobro de reconocimiento de comisión/impuesto; decisión no tomada | Confirmación contable/tributaria [LEGAL→ABOGADO] |
-| C1-H04 | Cuadre sobre asiento completo y moneda consistente; catálogo de cuentas referencial | Implementación humana que rechaza asiento desbalanceado/cuenta inexistente/moneda distinta |
+| C1-H04 | Cierre técnico (D-17): cuadre sobre asiento completo, cuenta/moneda consistentes y períodos cerrados; aprobación contable aparte | Implementación humana y PG real: rechazar desbalance/cuenta inexistente/moneda distinta/escritura en período cerrado, con carrera contra el cierre y rollback |
 | C1-H05 | Crear particiones iniciales y siguientes; mantener índices/restricciones | SQL completo aplicado a DB vacía, inserciones y rollover mensual en 12 tablas |
 | C1-H06 | GRANT explícito por rol/tabla; login técnico separado de roles de grupo | Pruebas como libox_app/append/read/migrate, no solo como propietario |
-| C1-H07 | Restituir mínimo 2 ADMIN_SUPER de PRD INV-38 | Rechazo de revocar/suspender al penúltimo, incluyendo concurrencia y bootstrap |
+| C1-H07 | Restituir mínimo 2 ADMIN_SUPER de PRD INV-38; servicio Go e invariantes PG (D-16) | Rechazo de revocar/suspender/borrar al penúltimo, incluyendo concurrencia y bootstrap |
 | C1-H08 | Completar transiciones, semillas, incompatibilidades y primer administrador | Migración completa con checks de cobertura; código crítico humano |
-| C1-H09 | Cubrir reactivación por UPDATE de asignación revocada | Mismos controles que INSERT y test de privilegio/segunda firma |
+| C1-H09 | Cubrir reactivación por UPDATE de asignación revocada como nuevo otorgamiento (D-16) | Mismos controles que INSERT y test de privilegio/segunda firma |
 | C1-H10 | Añadir resultados esperados de los 5 vectores, sin derivarlos del código bajo prueba | Valores producidos y verificados independientemente por implementador humano |
 | C1-H11 | Diferenciar ronda y aleatoriedad; fijar algoritmo/formato del verificador | Especificación inequívoca y prueba pública independiente |
-| C1-H12 | Persistir seed cifrada; elegir baliza y espera/alarma/reanudación | Modelo de claves y restore; baliza tardía/caída y compromiso preservado |
+| C1-H12 | Semilla cifrada en PG con clave en secreto del hosting, solo worker, recuperable (D-14); drand y espera/reanudación | DDL humano y restore conservan semilla/compromiso/pool/ronda; clave ausente pausa y alerta; baliza tardía/caída y compromiso preservado |
 | C1-H13 | Reconciliar 61 operaciones candidatas con YAML de 16 operaciones; adoptar JSON Schema 3.1 | OpenAPI completo validado, métodos ambiguos resueltos, ejemplos/tipos/contratos |
 | C1-H14 | Sustituir hash directo de DNI por HMAC versionado | Vectores de normalización/rotación y ausencia de DNI/claves en logs |
 | C1-H15 | Definir RPO/RTO, PITR, copia de objetos y restauración | Ensayo integral cronometrado y reconciliado; no basta activar backup |
@@ -61,8 +67,9 @@ este registro especifica aceptación y **no entrega implementación generada**.
 ## Estado de cierre
 
 Las notas de proveedores/operación/seguridad constituyen propuesta escrita para
-estos hallazgos. Ninguno se marca resuelto solo por existir prosa. H-01–H-04 requieren
-confirmación contable y código humano; H-10–H-12 requieren especificación cerrada e
+estos hallazgos. Ninguno se marca resuelto solo por existir prosa. H-01–H-03 requieren
+confirmación contable; H-04 requiere código humano y un cierre técnico separado del
+contable (D-17). Ambos cierres preceden dinero real. H-10–H-12 requieren especificación cerrada e
 implementación independiente. El resto exige artefactos o pruebas descritos arriba.
 
 La siguiente versión debe ser autónoma: consolidar secciones no modificadas y

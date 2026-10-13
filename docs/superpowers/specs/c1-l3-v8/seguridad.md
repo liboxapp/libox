@@ -2,7 +2,7 @@
 title: C1 — borrador de seguridad, sesiones y evidencias
 status: borrador
 tags: [r0, c1, l3-v8]
-updated: 2026-10-01
+updated: 2026-10-12
 description: Cambios explícitos del contrato de auth y propuestas de protección de datos y sorteo.
 ---
 
@@ -37,8 +37,11 @@ para acciones sensibles. Tokens nunca en logs ni URLs. Backend valida issuer,
 audience, firma, expiración y sesión; no confía en claims de rol obsoletos.
 No exponer tablas de dominio al cliente con service-role ni acceso directo amplio.
 
-INV-38 se conserva: mínimo dos ADMIN_SUPER activos, prohibida revocación del
-penúltimo. La excepción de revisión humana del repositorio no permite debilitar
+INV-38 se conserva: mínimo dos ADMIN_SUPER activos, protegidos frente a revocación,
+suspensión y borrado, también concurrentes. Un servicio Go gestiona permisos, firmas y
+auditoría; PostgreSQL impone los invariantes en la transacción. Reactivar equivale
+a nuevo otorgamiento, con los controles y segundas firmas exigidos (D-16).
+La excepción de revisión humana del repositorio no permite debilitar
 este control del producto. R0 puede usar identidades sintéticas en pruebas; antes
 de operar hay que resolver el bootstrap conforme al PRD, sin cuentas ficticias reales.
 
@@ -79,11 +82,18 @@ no acepta únicamente retrieved_at suministrado por Libox. Fuente, suite de firm
 serialización y codificación quedan como parámetros de una especificación cerrada
 por el dueño del motor antes de generar resultados esperados.
 
-Seed: cifrado autenticado mediante gestión de claves separada; ciphertext,
+Seed (D-14): cifrado autenticado en PostgreSQL; ciphertext,
 identificador/versión de clave y referencia al sorteo persistidos antes de publicar
-compromiso. Restringir descifrado al ejecutor autorizado; el plaintext no llega a
-logs/backups sin cifrado. Probar restore de clave+datos. No implementar aquí motor,
-serialización ni verificación, que siguen siendo zonas sin generación asistida.
+compromiso. Clave en secreto del hosting (Render, para el worker), separada de DB y
+accesible solo al worker, con recuperación segura. El plaintext no llega a
+logs/backups sin cifrado. Probar restore de clave+datos conservando semilla,
+compromiso, pool y ronda; clave ausente o incorrecta pausa y alerta. B1-bis de
+datos personales mantiene AWS KMS; la semilla no lo requiere inicialmente. No
+implementar aquí motor, serialización ni verificación, que siguen siendo zonas sin
+generación asistida.
+
+Las [decisiones técnicas](decisiones-tecnicas-2026-10-04.md) y la
+[aceptación pendiente](aceptacion-tecnica-go.md) delimitan permisos y recuperación.
 
 Propuesta de baliza tardía: alarma a 5 min y espera operativa máxima de 30 min antes de
 escalar a incidente; el vencimiento **no** autoriza otra ronda, seed ni sorteo
