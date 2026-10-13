@@ -2,8 +2,8 @@
 title: C1 — baliza ratificada y aceptación del verificador
 status: borrador
 tags: [r0, c1, sorteo, baliza]
-updated: 2026-10-01
-description: drand quicknet ratificado como fuente (D1) y requisitos para el aporte humano de H-10 a H-12, sin implementar el motor ni calcular vectores.
+updated: 2026-10-12
+description: drand quicknet ratificado como fuente (D1), custodia de la semilla (D-14) y requisitos para el aporte humano de H-10 a H-12, sin implementar el motor ni calcular vectores.
 ---
 
 # Baliza ratificada y entrega humana
@@ -72,8 +72,11 @@ Diego es el dueño actual. Debe entregar:
    serialización exacta, versión de algoritmo y parámetros de cadena fijados.
 2. Valores esperados independientes de los cinco vectores del corpus: compromiso,
    pool, derivación y ganadores donde corresponda; procedencia del cálculo.
-3. Esquema y acceso a semilla cifrada que permitan restaurar el compromiso sin
-   revelarla antes de tiempo. Un backup de DB sin la clave no acredita recuperación.
+3. Esquema de semilla cifrada en PostgreSQL; clave separada en secreto del hosting,
+   solo accesible al worker, con recuperación segura según D-14 de las
+   [decisiones técnicas](decisiones-tecnicas-2026-10-04.md). Restore conserva la
+   misma semilla/compromiso/pool/ronda; clave ausente o incorrecta pausa y alerta.
+   Un backup de DB sin la clave no acredita recuperación.
 4. Casos negativos: firma falsa, cadena/ronda distintas, ronda no futura, pool
    alterado, semilla incorrecta y resultado distinto. Casos de caída y reanudación.
 

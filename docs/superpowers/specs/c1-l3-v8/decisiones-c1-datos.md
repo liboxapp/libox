@@ -2,13 +2,19 @@
 title: C1 — decisiones de base de datos y cifrado
 status: aprobado
 tags: [r0, c1, l3-v8, decisiones, sql]
-updated: 2026-09-30
+updated: 2026-10-12
 description: Privilegios de las 67 tablas, cifrado de datos personales con AWS KMS, logins, particiones y retención (B1–B6).
 ---
 
 # Base de datos y cifrado
 
 Parte del [paquete de decisiones de C1](decisiones-c1.md). Decidido por Diego el 2026-09-30.
+
+**Semilla del sorteo (D-14, 04/10):** se guarda cifrada en PostgreSQL con la clave
+en un secreto del hosting del worker (Render desde el 12/10), separado de la base
+y accesible solo al worker; no requiere AWS KMS en la etapa inicial
+([decisiones técnicas](decisiones-tecnicas-2026-10-04.md)). B1-bis conserva AWS KMS
+para datos personales.
 
 Fuente: [cierre SQL](cierre-sql.md), [pendientes SQL](cierre-sql-pendientes.md) y
 [manifiesto de ACL](database/acl-manifest.json).
@@ -96,6 +102,9 @@ componente. Pendiente de comprobar en Supabase: que `postgres` puede crear los
 logins y ceder la propiedad (precondición 5 de
 [pendientes SQL](cierre-sql-pendientes.md#precondiciones-bloqueantes-antes-de-aplicar-en-supabase)).
 **Decisión:** **(a)**, un login por componente. Diego, 2026-09-30.
+
+La clave de la semilla (D-14) solo se concede al worker; las demás claves
+mantienen su política específica.
 
 ## B3. Planificador de particiones
 

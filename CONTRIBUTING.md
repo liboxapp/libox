@@ -140,6 +140,11 @@ a Supavisor, Upstash o Vercel WAF no constituyen una selección vigente.
 - [ ] Definir permisos, secretos, almacenamiento de evidencias y política de rate limiting.
 - [ ] Correlacionar trazas y alertas; documentar diagnóstico y recuperación.
 
+Los casos de aceptación del backend Go (trabajos, alojamiento, semilla, privilegios,
+cierre técnico del ledger y revisión) están en la
+[aceptación técnica Go](docs/superpowers/specs/c1-l3-v8/aceptacion-tecnica-go.md),
+definidos y pendientes de ejecutar.
+
 Las cinco zonas de Backlog MVP V3 §1.3 mantienen implementación humana y propiedad
 fija. Diego es el responsable actual. La segunda revisión humana está suspendida
 por su instrucción posterior; no constituye un bloqueo mientras no la reactive

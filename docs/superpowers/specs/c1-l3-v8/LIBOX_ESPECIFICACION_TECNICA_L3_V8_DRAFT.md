@@ -3,7 +3,7 @@ title: LIBOX Especificación Técnica L3 V8 — borrador DRAFT-8 (no emitido)
 status: borrador
 tags: [r0, c1, l3-v8, linea-base, borrador]
 updated: 2026-10-12
-description: Candidato L3 no emitido sobre V7, con alcance de reconciliación Cowork en §0.8 y aportes pendientes para C1, C2 y D1/R1.
+description: Candidato L3 no emitido sobre V7, con alcance de reconciliación Cowork en §0.8, decisiones técnicas de semilla, privilegios y ledger en §0.9 y aportes pendientes para C1, C2 y D1/R1.
 ---
 
 # LIBOX_ESPECIFICACION_TECNICA_L3_V8_DRAFT
@@ -41,6 +41,11 @@ description: Candidato L3 no emitido sobre V7, con alcance de reconciliación Co
 > **Decisiones del 12/10:** [registro](decisiones-2026-10-12.md) con Render para
 > el backend Go, que sustituye a Vercel del 04/10, y PostgreSQL 17 elegido. La
 > migración V8 completa en 17 y la prueba en Supabase siguen pendientes (DP-09).
+>
+> **Decisiones técnicas del 04/10:** [registro](decisiones-tecnicas-2026-10-04.md)
+> de la semilla (D-14), los privilegios administrativos (D-16) y los cierres del
+> ledger (D-17). §0.9 delimita su alcance y la [aceptación técnica Go](aceptacion-tecnica-go.md)
+> sus casos; la implementación humana y sus pruebas siguen pendientes.
 
 ## 0\. Propósito, alcance y control documental
 
@@ -90,6 +95,7 @@ Conforme a la política de control documental de LIBOX, no existen subversiones:
 | C1 | §4.1, §7.1–§7.3, §11.5 | Firmas por `action_code`, cofirma V2, actor de observación, aprobadores por etapa P-C, decisión KYB, rechazos manuales en la tabla FSM, motivos de moderación, INC-07/INC-11 en ejecución, reautenticación de 5 min y atestación con `SignatureRequest` | Decisiones A1–A11 de Diego, 2026-09-30 | Deroga la fila única "Etapas P-C", el actor "Verificador", `second_signer_id` en el cuerpo de la atestación e INC-11 en asignación |
 | C1 | §1.1, §1.3, §1.4, §7.3, §7.4 | Clases de privilegios y seis tablas `reservado_humano`; logins por componente; `pg_cron`; DEFAULT en los doce padres y procedimiento manual; retención B6; cifrado AWS KMS con compatibilidad Supabase obligatoria | Decisiones B1–B6 y B1-bis | Amplía; el código de `journal_lines` y de las seis tablas sigue siendo humano |
 | C1 | §2.1, §2.4, §3.1, §3.3, §5, §10 | Plazo de T1 con mínimo pendiente, duración propia de T7 sin solape, `ticket_price` fijado por el organizador, MVP solo `PAID`, `cost_kind` inicial, retirada de `LIVE`, categorías P-C y drand quicknet | Decisiones C1–C4 y D1 | Deroga `LIVE` como capacidad y `FREE_ENTRY`/`PROMOTIONAL` en el MVP |
+| C1 | §0.3, §0.5–§0.7, §0.9, §1.1, §3.10, §3.16.1, §5.8, §14.2, §14.9, Anexo C | Semilla cifrada en PostgreSQL con clave del hosting solo para el worker (D-14); servicio Go de privilegios e INV-38 ante borrado concurrente (D-16); cierre técnico del ledger separado del contable (D-17); control de overflow de importes en Go; aceptación técnica Go | Decisiones técnicas de Diego del 2026-10-04 sobre el documento de ciclo de vida de Cowork | Resuelve la custodia de la semilla abierta en DP-06; conserva D-05, el freeze y la propiedad humana |
 
 #### Cambios de la versión V7
 
@@ -259,7 +265,7 @@ ASS-002 fue ratificada por los socios el 2026-09-29 con backend TypeScript. **Di
 | Proveedor de pagos | Mercado Pago, elegido por Diego el 2026-09-30, detrás de un adaptador por mercado | Checkout Pro es la modalidad propuesta, sin confirmar. Acceso a sandbox sin confirmar. No se han creado cuentas ni usado credenciales ([nota](mercado-pago.md)) |
 | Verificación KYC y KYB | Truora priorizado para evaluación | No contratado. La referencia de Checks estándar lista `company` como N/A para Perú: KYB peruano sin confirmar. Sumsub y Veriff siguen como alternativas ([evaluación](truora-evaluacion.md)). Costo fuera del techo de infraestructura |
 | Documentación de API | Scalar sobre el mismo artefacto OpenAPI | Decisión D-07 del programa R0 |
-| Importes en código | `int64` en Go, `bigint` en el frontend TypeScript, `BIGINT` en PostgreSQL y cadena decimal en JSON | Nunca `number` ni punto flotante (C-06, §11.1) |
+| Importes en código | `int64` con control de overflow en Go, `bigint` en el frontend TypeScript, `BIGINT` en PostgreSQL y cadena decimal en JSON | Nunca `number` ni punto flotante (C-06, §11.1) |
 | Desarrollo local | PostgreSQL efímero para migraciones y pruebas | La herramienta se fija en D1 |
 
 Neon queda como alternativa si falla la validación del proveedor elegido. Ninguna herramienta de código queda ratificada por esta elección; Drizzle deja de aplicar al backend. `src/` y el futuro directorio del backend siguen congelados hasta D1.
@@ -290,9 +296,9 @@ Estados:
 | ZC-06 | §3.6 campañas, planes promocionales, garantías | Cupo atómico y régimen económico | Preservado | Cupo bajo concurrencia en D1/R1 |
 | ZC-07 | §3.6 compromisos, ejecuciones, ganadores, pruebas, re-sorteos | Motor y ejecución única | **Aporte C1** por H-12 | DDL humano para persistir la semilla cifrada (§5.8); F6 en D1/R1 |
 | ZC-08 | §3.9 `settlements` | Dinero | Preservado; depende de D-05 | Casos de liquidación antes de dinero real en R1 |
-| ZC-09 | §3.10 contabilidad | Asientos contables | **Aporte C1** por H-04 | Rechazo de asiento desbalanceado, cuenta inexistente y moneda distinta |
+| ZC-09 | §3.10 contabilidad | Asientos contables | **Aporte C1** por H-04 | Rechazo de asiento desbalanceado, cuenta inexistente, moneda distinta y escritura en período cerrado (D-17) |
 | ZC-10 | §3.11 saldo de reembolso | Bloqueo de saldo | Preservado | `conc_refund_credit`, L-02 y L-03 en D1/R1 |
-| ZC-11 | §3.16.1 disparadores de otorgamiento | Privilegio y concurrencia de titulares | **Aporte C1** por H-07, H-08 y H-09 | INV-38 con dos titulares, reactivación con los controles del `INSERT`, disparador de incompatibilidades en asignación y arranque (DP-16) |
+| ZC-11 | §3.16.1 disparadores de otorgamiento | Privilegio y concurrencia de titulares | **Aporte C1** por H-07, H-08 y H-09 | INV-38 con dos titulares ante revocación, suspensión y borrado (D-16), reactivación con los controles del `INSERT`, disparador de incompatibilidades en asignación y arranque (DP-16) |
 | ZC-12 | §4.2 punto único de transición | Concurrencia; incompatibilidades en ejecución | **Aporte C1** por H-08 | Procedimiento humano y prueba de que no hay otra ruta de `UPDATE` |
 | ZC-13 | §5.2–§5.7 motor, serialización, verificación | Motor de sorteo | **Aporte C1** por H-10, H-11 y H-12 | Especificación cerrada (DP-04), verificador sin ambigüedad y salidas de los vectores calculadas por dos implementaciones humanas independientes |
 | ZC-14 | §6 plan de cuentas y transacciones | Asientos, comisión e impuesto | **Pendiente D-05** por H-01, H-02 y H-03 | Confirmación contable y T-03 [LEGAL→ABOGADO], antes de dinero real en R1 |
@@ -314,7 +320,7 @@ La columna "Bloquea" indica la primera fase que no puede cerrarse sin esa decisi
 | DP-03 | Asiento T-03: devolución al medio de pago original y movimiento de `cash_clearing` y `psp_clearing` | R1, por D-05 | Dueño contable; implementación de Diego |
 | DP-04 | drand quicknet ratificada; faltan suite/codificación de ronda y valor, formato del verificador y valores esperados | C1 (H-10/H-11) | Dueño del motor (Diego) |
 | DP-05 | Baliza tardía: qué pasa tras el incidente de los 30 minutos, reanudar o cancelar | C1 (programa R0: timeout de baliza) | Dueño del motor |
-| DP-06 | AWS KMS con cifrado de sobre está elegido para datos personales (B1-bis, §7.4). Falta decidir el servicio de la semilla cifrada, la rotación de la clave maestra y de la clave HMAC, el recifrado y la restauración | C1 para la semilla (H-12); R1 para la rotación | Diego |
+| DP-06 | AWS KMS con cifrado de sobre está elegido para datos personales (B1-bis, §7.4). Semilla: cifrada en PostgreSQL con la clave en un secreto del hosting del worker, separado de la base y accesible solo al worker, elegido en D-14 (§0.9). Faltan el DDL y el procedimiento de recuperación y rotación de la semilla, la rotación de la clave maestra y de la clave HMAC, y el recifrado | C1 para el DDL de la semilla (H-12); R1 para ensayo y rotación | Diego |
 | DP-08 | Mercado Pago: confirmar la modalidad (Checkout Pro propuesta), el acceso a sandbox y la aceptación comercial del caso de uso | R1 | Diego |
 | DP-09 | Major de PostgreSQL: **17, elegida por Diego el 2026-10-12** ([registro](decisiones-2026-10-12.md)); faltan la migración V8 completa en 17 y la prueba en Supabase | C1 para el esquema local; R1 para Supabase | Diego |
 | DP-10 | Copia independiente de objetos (R2 o S3), versionado, Object Lock y retención por clase de documento [LEGAL→ABOGADO] | R1, antes de documentos reales | Diego y abogado |
@@ -355,15 +361,15 @@ Origen: [hallazgos técnicos de L3](../2026-09-25-revision-sistema-hallazgos-l3.
 | H-01 | §6.3, §6.4, §12.3 | Registrado, pendiente por D-05. ZC-14, DP-02 | Nada más que dejarlo registrado | Dictamen contable antes de dinero real |
 | H-02 | §6.2 | Registrado, pendiente por D-05. ZC-14, DP-03 | Nada más que dejarlo registrado | T-03 y prueba en el sandbox del PSP |
 | H-03 | §6.3 | Registrado, pendiente por D-05 [LEGAL→ABOGADO] | Nada más que dejarlo registrado | Confirmación contable y tributaria |
-| H-04 | §3.10 | Aporte C1. ZC-09 | Código humano que rechace asiento desbalanceado, cuenta inexistente y moneda distinta | Propiedad del ledger en D1 |
+| H-04 | §3.10, §0.9 | Aporte C1. ZC-09; cierre técnico separado del contable (D-17) | Código humano que rechace asiento desbalanceado, cuenta inexistente, moneda distinta y escritura en período cerrado, incluida la carrera con el cierre; PostgreSQL real | Propiedad del ledger en D1; aprobación contable aparte antes de dinero real |
 | H-05 | §1.3, Anexo A | Norma incorporada; overlay no crítico probado en 11/12 padres; ledger pendiente | SQL aplicado a base vacía, inserción y paso de mes en las doce tablas | Rotación y retención en R1 |
 | H-06 | §1.4 | Norma incorporada con las clases de B1 y logins de B2; ACL no crítica probada; seis tablas reclasificadas y ledger pendientes de aporte humano (ZC-17, ZC-18) | `GRANT` por clase y pruebas negativas con cada credencial | Roles reales del proveedor en R1 |
-| H-07 | §3.16.1, §14.3 | Norma y casos corregidos. Aporte C1 (ZC-11) | Código humano de INV-38 con dos titulares, suspensiones y concurrencia | — |
+| H-07 | §3.16.1, §14.3, §0.9 | Norma y casos corregidos. Aporte C1 (ZC-11) | Código humano de INV-38 con dos titulares ante revocación, suspensión y borrado, también concurrentes | Servicio Go e invariantes en PostgreSQL según D-16 |
 | H-08 | §4.2, §3.16.1, Anexo A | Aporte C1 (ZC-11, ZC-12); semillas no críticas en la capa SQL | Procedimiento de transición, disparador de incompatibilidades y semillas con comprobación de cobertura | — |
-| H-09 | §3.16.1 | Norma incorporada. Aporte C1 (ZC-11) | Reactivación con los mismos controles que `INSERT` | — |
+| H-09 | §3.16.1 | Norma incorporada. Aporte C1 (ZC-11) | Reactivación con los mismos controles que `INSERT`, como nuevo otorgamiento (D-16) | — |
 | H-10 | §5.7 | Aporte C1 (ZC-13) | Salidas de cada vector calculadas por dos implementaciones humanas independientes | Ejecución en cada integración |
 | H-11 | §5.6, §5.8 | Aporte C1 (ZC-13), DP-04 | Especificación cerrada y verificador sin ambigüedad | Prueba pública independiente |
-| H-12 | §5.3, §5.8, §12.10 | Requisitos y P-03 incorporados. Aporte C1 (ZC-07), DP-05, DP-06 | DDL humano de semilla cifrada y resolución tras la espera | Restauración de clave y datos; F6 |
+| H-12 | §5.3, §5.8, §12.10, §0.9 | Requisitos y P-03 incorporados; custodia de la semilla elegida (D-14). Aporte C1 (ZC-07), DP-05, DP-06 | DDL humano de semilla cifrada y resolución tras la espera | Restauración de clave y datos; F6 |
 | H-13 | §11 y OpenAPI | 61 operaciones del inventario más auxiliares documentadas; `Money` en cadena; `/api/v2` | Versión `2.0.0-draft.3` con pruebas estructurales. Alcanzar el conteo no lo cierra | Comportamiento contra backend y proveedor reales |
 | H-14 | §1.1 C-13, §2.2, §7.4 | Norma y DDL propuesto (P-05), sin ejecutar | Ejecución del DDL no crítico | Vectores de normalización y rotación; ausencia de DNI en registros |
 | H-15 | §13.5 | Objetivos propuestos (P-04) | Nada más que la norma | Ensayo integral cronometrado y conciliado |
@@ -419,6 +425,36 @@ US-137–145 y dependencias. Dinero, contabilidad, concurrencia, incompatibilida
 y motor siguen siendo código humano de Diego. Esta ampliación no levanta el
 freeze, no modifica el canon y no presenta servicios reales como probados.
 
+### 0.9 Decisiones técnicas del 2026-10-04
+
+Diego aprobó estos enfoques tras analizar el documento de ciclo de vida de
+Cowork. Los IDs D-14, D-16 y D-17 son de esa fuente, distintos de los IDs del
+programa R0. El [registro](decisiones-tecnicas-2026-10-04.md) conserva su
+procedencia y la [aceptación técnica Go](aceptacion-tecnica-go.md) detalla los
+casos, definidos y pendientes de ejecutar.
+
+1. **D-14 — semilla.** Cifrado autenticado en PostgreSQL antes del compromiso;
+   clave en un secreto del hosting del worker (Render desde el 12/10), separado
+   de la base, accesible solo al worker y recuperable de forma segura. Reanudar
+   conserva semilla, compromiso, pool y ronda. Clave ausente o incorrecta pausa
+   y alerta; no autoriza sustitución. No exige KMS para la semilla inicial ni
+   modifica B1-bis de datos personales.
+2. **D-16 — administración.** Un servicio Go concentra permisos, firmas y
+   auditoría. PostgreSQL impone los invariantes transaccionales: mínimo dos
+   `ADMIN_SUPER` activos ante revocación, suspensión o borrado concurrentes;
+   reactivación como nuevo otorgamiento, con matriz, incompatibilidades y
+   segundas firmas exigidas. Los controles críticos son implementación humana.
+3. **D-17 — ledger.** Cierre técnico separado de la aprobación del contador.
+   Probar cuenta/moneda, cuadre, atomicidad y rechazo de asientos o líneas en
+   períodos cerrados, incluida la carrera con el cierre, en PostgreSQL real. El
+   contador valida el modelo y H-01–H-03 aparte. Ambos cierres preceden dinero
+   real; D-05 permite los pendientes contables en C1/C2 y ASS-001 sigue abierta.
+
+D-18 de la misma fuente coincide con D-10 (§0.3). D-19 queda sustituida por las
+[decisiones del 12/10](decisiones-2026-10-12.md), y Trigger.dev sigue en
+evaluación. D-22 coincide con la suspensión vigente de la revisión humana, que
+no levanta el freeze ni la implementación humana de las zonas críticas.
+
 ## 1\. Convenciones de esquema
 
 Los comentarios `-- V8` dentro del SQL señalan las líneas que cambian respecto de la versión anterior. Todo el DDL de este borrador está **sin ejecutar** (§0.2.1).
@@ -432,7 +468,7 @@ Los comentarios `-- V8` dentro del SQL señalan las líneas que cambian respecto
 | C-03 | Toda tabla mutable lleva `created_at TIMESTAMPTZ NOT NULL DEFAULT now()` y `updated_at TIMESTAMPTZ NOT NULL DEFAULT now()`    |
 | C-04 | Toda tabla cuya mutación proviene de una operación trazable lleva `trace_id UUID NOT NULL`                                    |
 | C-05 | Los estados son `VARCHAR(40)` con `CHECK` explícito, nunca tipos enumerados nativos: un `ALTER TYPE` bloquea en producción    |
-| C-06 | Todo importe es `BIGINT` en unidad mínima de la moneda, acompañado de `currency CHAR(3)`. **Nunca punto flotante**. En Go se maneja como `int64`, en el frontend TypeScript como `bigint` y en JSON como cadena decimal (§11.1) |
+| C-06 | Todo importe es `BIGINT` en unidad mínima de la moneda, acompañado de `currency CHAR(3)`. **Nunca punto flotante**. En Go se maneja como `int64` con control de overflow, en el frontend TypeScript como `bigint` y en JSON como cadena decimal (§11.1) |
 | C-07 | Toda tabla con datos de un mercado lleva `market_code CHAR(2)`                                                                |
 | C-08 | Las tablas de solo agregación llevan `CHECK` de inmutabilidad por disparador y revocación de `UPDATE`/`DELETE` a nivel de rol, con `GRANT` explícitos (§1.4) |
 | C-09 | Toda clave foránea declara `ON DELETE RESTRICT`. No hay borrado en cascada en dominio financiero                              |
@@ -2403,6 +2439,8 @@ El bloque de V7 se divide en dos partes para que cada una lleve su marca. El ord
 
 Un asiento que no cuadra aborta la transacción completa. La operación falla; no se persiste un desbalance. **Límite conocido (H-04):** esta garantía solo cubre las líneas presentes al confirmar la inserción de la cabecera. Líneas añadidas después a un asiento ya confirmado no se vuelven a comprobar. Tampoco se comprueba que la cuenta exista ni que la moneda de las líneas coincida con la del asiento.
 
+**Aceptación técnica D-17 (§0.9).** El aporte humano debe cubrir cuenta/moneda, cuadre y atomicidad y rechazar asientos o líneas en períodos cerrados, incluida la carrera entre cierre e inserción. Se verifica contra PostgreSQL real; el código heredado anterior no acredita estos controles. El contador valida el modelo por separado antes de dinero real; H-01–H-03 conservan D-05.
+
 ### 3.11 Saldo de reembolso
 
 > **[ZC-10 · zona sin IA · preservado]** Saldos, movimientos y retiros conservan el código de V7. Es zona crítica (bloqueo de saldo) sin hallazgo registrado. El retiro con dinero real depende de la custodia (DP-01).
@@ -3116,7 +3154,7 @@ Los `REVOKE` de este bloque solo protegen si existen los `GRANT` explícitos de 
 
 **Norma V8.** Estas reglas son obligatorias con independencia del código que las implemente:
 
-1. **INV-38.** Existen al menos dos `ADMIN_SUPER` activos en todo momento. Se rechaza cualquier revocación o suspensión que deje menos de dos, también cuando dos operaciones concurrentes actúan sobre titulares distintos. Si el número baja a uno por cualquier vía, salta una alarma de severidad alta.
+1. **INV-38.** Existen al menos dos `ADMIN_SUPER` activos en todo momento. Se rechaza cualquier revocación, suspensión o borrado que deje menos de dos, también cuando dos operaciones concurrentes actúan sobre titulares distintos. Si el número baja a uno por cualquier vía, salta una alarma de severidad alta. Un servicio Go concentra permisos, firmas y auditoría; PostgreSQL impone el invariante en la transacción (D-16, §0.9).
 2. **Techo y firma en toda activación (H-09).** Reactivar una asignación revocada, es decir, hacer un `UPDATE` que vuelve `revoked_at` a nulo o cambia el subrol, pasa los mismos controles que un `INSERT`: nadie se otorga a sí mismo, techo de privilegio y segunda firma cuando corresponda.
 3. **Incompatibilidades en asignación (H-08).** INC-01 a INC-05 se rechazan al asignar, tanto por `INSERT` como por reactivación. INC-11 **no** se comprueba en asignación: depende de la acción concreta y se comprueba en ejecución (A11, §7.2).
 4. **Arranque.** El primer y el segundo titular se crean conforme al PRD (DP-16), sin cuentas ficticias en producción. Las pruebas pueden usar identidades sintéticas.
@@ -3568,7 +3606,7 @@ Comprueba la exclusión del ganador original y el compromiso nuevo.
 Estos requisitos proceden de la nota de seguridad de C1. Especifican la aceptación sin dar el código.
 
 1. **Tres datos separados.** La especificación distingue el identificador de red o ronda, el instante programado y los bytes de aleatoriedad. El verificador consulta la ronda comprometida y valida la autenticidad de la baliza con la suite de firmas de la fuente. No acepta el `retrieved_at` que da LIBOX. **La fuente está ratificada (D1):** drand quicknet, red principal no encadenada con período de 3 s, cadena `52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971`. Identidad de cadena y clave pública de confianza se fijan en la configuración versionada; no basta el nombre `quicknet` ni HTTPS, y `latest` no es una selección de ronda válida. Un relay alternativo solo puede servir la misma cadena y la misma ronda. Siguen pendientes en DP-04, como aporte humano, la biblioteca compatible con el esquema de firma, la serialización y codificación de cada campo, la interfaz de `verify_draw` y los resultados esperados de los cinco vectores; ninguno se produce en este borrador ([propuesta de baliza](baliza-propuesta.md)).
-2. **Semilla cifrada (H-12).** Antes de publicar el compromiso se persisten el texto cifrado de `server_seed` con cifrado autenticado, el identificador y la versión de la clave y la referencia al sorteo. La clave se gestiona aparte (DP-06). Solo el ejecutor autorizado puede descifrar, y el texto en claro no llega a registros ni a copias sin cifrar. La restauración de clave y datos se ensaya (§13.5).
+2. **Semilla cifrada (H-12, D-14).** Antes de publicar el compromiso se persisten en PostgreSQL el texto cifrado de `server_seed` con cifrado autenticado, el identificador y la versión de la clave y la referencia al sorteo. La clave vive en un secreto del hosting separado de la base, accesible solo al worker, con recuperación segura (DP-06). El texto en claro no llega a registros ni a copias sin cifrar. Reiniciar o restaurar conserva semilla, compromiso, pool y ronda; una clave ausente o incorrecta pausa y alerta, sin sustituirlos. La restauración de clave y datos se ensaya (§13.5).
 3. **Baliza tardía.** Si la ronda no está disponible en `earliest_execution_at`, se aplica §12.10. El vencimiento no autoriza otra ronda, otra semilla ni un sorteo manual.
 4. **Vectores completos.** Cada vector de §5.7 lleva sus salidas, obtenidas y verificadas por dos implementaciones humanas independientes (§14.5).
 5. **Prueba pública independiente.** Una persona distinta de la que escribe el motor escribe el verificador, sin compartir código con la ejecución.
@@ -4669,7 +4707,7 @@ Ejecutan secuencias aleatorias de N operaciones y verifican que los invariantes 
 | `prop_fee_frozen_at_publish`     | Un cambio de nivel de comisión no altera la tasa de sorteos ya publicados ni el desglose de órdenes ya emitidas (RN-01-bis) |
 | `prop_client_net_invariant`      | `client_net_amount` es siempre el 80 % del bruto, sea cual sea el régimen tributario (TX-01)                                |
 | `prop_beacon_future`             | Ningún compromiso admite una ronda de baliza anterior o igual a su publicación (INV-18)                                     |
-| **V8.** `prop_min_super_admins`  | Ninguna secuencia de revocaciones y suspensiones deja menos de dos `ADMIN_SUPER` activos (INV-38)                           |
+| **V8.** `prop_min_super_admins`  | Ninguna secuencia de revocaciones, suspensiones o borrados, incluida la concurrencia, deja menos de dos `ADMIN_SUPER` activos (INV-38) |
 
 `prop_refund_solvency` fallará con la secuencia contable heredada mientras siga abierto H-01. Es el comportamiento esperado de la prueba, no un defecto de la prueba.
 
@@ -4794,7 +4832,7 @@ Son criterios de prueba, **no pruebas pasadas**.
 | ------ | ----------------- |
 | Permisos por login (§1.4) | `UPDATE` y `DELETE` sobre tablas de solo agregación y financieras fallan con la credencial real de la aplicación; `anon` y `authenticated` no leen el dominio |
 | Particiones (§1.3) | Inserción en las doce tablas; paso de mes; alarma si falta la partición siguiente |
-| Ledger (H-04) | Se rechazan el asiento desbalanceado, la cuenta inexistente, la moneda distinta y las líneas añadidas después del cuadre. Código humano (ZC-09) |
+| Ledger (H-04, D-17) | Se rechazan el asiento desbalanceado, la cuenta inexistente, la moneda distinta, las líneas añadidas después del cuadre y los asientos o líneas en períodos cerrados, incluida la carrera entre cierre e inserción, con rollback íntegro. PostgreSQL real, código humano (ZC-09); el modelo contable se aprueba aparte |
 | HMAC de documento (§7.4) | Vectores de normalización y rotación; unicidad entre versiones de clave; sin DNI en registros |
 | Sesión (§7.3) | La renovación y el sondeo no cuentan como actividad; revocación y cambio de rol efectivos en el siguiente acceso |
 | Límites de frecuencia (§7.6) | 429 con `Retry-After`; la caída del limitador no afecta a inventario ni saldo |
@@ -4861,6 +4899,6 @@ C1 **no** exige: confirmación contable ni T-03 (H-01–H-03, pendientes por D-0
 
 **C2 — emisión.** Un solo acto con: identidad en los cuatro lugares; changelog con "decisión que invalida"; autonomía comprobada; ratificación en bloque de las propuestas P-01 a P-09; V7 archivada sin editar; ningún bloque marcado **legado preservado, no listo para emisión en C2** sin resolver por el SQL V8 o el aporte humano; alta de V8 en BASELINE y en el Registro §1; `verify_corpus.py` con cero fallos; y correlación con el doc 20 (DP-19). Los hallazgos contables se emiten con su estado pendiente explícito (§6), no corregidos.
 
-**D1/R1 — pruebas de dominio y operación.** D1 levanta el freeze y añade el CI de código Go y TypeScript. En D1/R1 se ejecutan: §14.3, §14.4 y §14.9 contra el backend; F1–F7 contra PostgreSQL y el sandbox de Mercado Pago; KYC y KYB con el proveedor que resulte de DP-20; el esquema en Supabase (DP-09); y el ensayo de restauración (§13.5). Antes de mover dinero real deben estar resueltos DP-01, DP-02, DP-03, DP-08, DP-10 y DP-12.
+**D1/R1 — pruebas de dominio y operación.** D1 levanta el freeze y añade el CI de código Go y TypeScript. En D1/R1 se ejecutan: §14.3, §14.4 y §14.9 contra el backend; F1–F7 contra PostgreSQL y el sandbox de Mercado Pago; KYC y KYB con el proveedor que resulte de DP-20; el esquema en Supabase (DP-09); el ensayo de restauración (§13.5); y la [aceptación técnica Go](aceptacion-tecnica-go.md), respetando los casos SQL ya exigidos en C1. Antes de mover dinero real deben estar cerrados por separado la integridad técnica del ledger y su modelo contable (D-17), y resueltos DP-01, DP-02, DP-03, DP-08, DP-10 y DP-12.
 
 *LIBOX Especificación Técnica L3 V8, borrador DRAFT-8, no emitido. Implementa LIBOX PRD BLUEPRINT MVP V9 (nivel L2), gobernado por LBPF V3 (nivel L0). Este documento no crea reglas de negocio: las implementa.*

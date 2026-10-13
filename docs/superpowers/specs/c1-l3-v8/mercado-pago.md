@@ -2,7 +2,7 @@
 title: C1 — Mercado Pago como PSP elegido
 status: borrador
 tags: [r0, c1, psp, mercado-pago]
-updated: 2026-09-30
+updated: 2026-10-12
 description: Elección ratificada, contrato de notificación payment y evidencia pendiente del adaptador.
 ---
 
@@ -36,7 +36,7 @@ El contrato modela el header como `apiKey` solo por OpenAPI: no es una clave est
 1. Comprobar firma con las entradas exactas de Mercado Pago y normalización oficial;
    exigir coherencia del identificador del query y del cuerpo. No usar `body.id`
    como sustituto de `data.id`. No aceptar parámetros duplicados ambiguos.
-2. Preservar precisión de IDs numéricos externos al parsear TypeScript; no aplicar
+2. Preservar precisión de IDs numéricos externos al parsear en Go o TypeScript; no aplicar
    aritmética monetaria binaria a importes devueltos por el PSP. La API de Libox
    conserva `Money.amount` como cadena en unidad mínima.
 3. Confirmar cuenta/aplicación receptora y separación test/live; consultar por un
