@@ -8,6 +8,11 @@ description: Ratificaciones de Vercel, Trigger.dev, Auth administrada, mínimo y
 
 # Decisiones del 4 de octubre de 2026
 
+> **Sustitución parcial (2026-10-12):** la fila 1, alojamiento del backend Go
+> en Vercel, queda sustituida por las [decisiones del 12/10](decisiones-2026-10-12.md):
+> el backend Go se aloja en Render. Vercel Pro conserva el frontend. Las citas y
+> el resto de este registro se conservan sin cambios.
+
 Origen: respuestas de Diego a la lista de doce pendientes de C1 en Codex.
 Este registro aprueba las decisiones expresas; no declara completado C1,
 emitido el canon ni implementados los controles. Conserva el alcance de las
@@ -38,6 +43,8 @@ de Cowork conserva su terminología de origen como evidencia histórica.
 | 10 | «Queda todo» | Mantener coordinación de las validaciones externas | No acredita dictamen, lista P-C, custodia, confirmación contable ni condiciones comerciales recibidas |
 | 11 | «Si» | Confirmar la necesidad de otra persona real para las segundas firmas | Identificar persona, subroles, disponibilidad y acceso; no se asigna un nombre por inferencia |
 | 12 | «250$ mensuales quedan bien» | Mantener techo de infraestructura US$250/mes | Recalcular configuración Go, Trigger.dev, Supabase, KMS, copias y observabilidad; no es un coste ejecutado |
+
+Fila 1 sustituida el 2026-10-12: ver el [registro del 12/10](decisiones-2026-10-12.md).
 
 Los «queda» conservan el alcance existente. No crean números, nombres o reglas
 que la lista no especificaba. No contratan proveedores ni autorizan por sí solos
