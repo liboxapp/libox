@@ -2,7 +2,7 @@
 title: LIBOX Especificación Técnica L3 V8 — borrador DRAFT-8 (no emitido)
 status: borrador
 tags: [r0, c1, l3-v8, linea-base, borrador]
-updated: 2026-10-04
+updated: 2026-10-12
 description: Candidato L3 no emitido sobre V7, con alcance de reconciliación Cowork en §0.8 y aportes pendientes para C1, C2 y D1/R1.
 ---
 
@@ -37,6 +37,10 @@ description: Candidato L3 no emitido sobre V7, con alcance de reconciliación Co
 > sorteo** (antes "fianza") desde la primera entrega y subió el suelo del rango a
 > 1,45×; parámetros y adaptación del SQL protegido siguen pendientes. La
 > terminología de fianza en la recepción Cowork se conserva como origen.
+>
+> **Decisiones del 12/10:** [registro](decisiones-2026-10-12.md) con Render para
+> el backend Go, que sustituye a Vercel del 04/10, y PostgreSQL 17 elegido. La
+> migración V8 completa en 17 y la prueba en Supabase siguen pendientes (DP-09).
 
 ## 0\. Propósito, alcance y control documental
 
@@ -65,7 +69,7 @@ Conforme a la política de control documental de LIBOX, no existen subversiones:
 | ------- | ------- | ---------- | ------- | --------------------- |
 | V8 | §0, pie | Identidad de borrador; PRD MVP V9 en encabezado, §0.1 y pie; se elimina el índice vacío | H-19: el encabezado citaba PRD V8 y el pie PRD V4 | Corrige encabezado y pie de V7 |
 | V8 | §0.2, §0.2.1 | OpenAPI `2.0.0-draft.3`; migración C1 completa pendiente. V7 en PG17.11 confirmó H-05, H-06 y semillas vacías; SQL V8 de Cowork es otra entrada | Regla de emisión de §0.2.1 | Deroga la validación de V7 en PG16 como evidencia de la consolidación |
-| V8 | §0.3, §0.4 | Backend Go en monolito modular (D-10) y frontend Next.js + TypeScript; Supabase Pro, Vercel Pro para el frontend y Upstash; workflows y hosting del backend en reevaluación; Scalar; Mercado Pago como PSP; Truora en evaluación para KYC y KYB; techo de US$250/mes | H-18; ASS-002 ratificada el 2026-09-29; proveedores y PSP elegidos el 2026-09-30; backend Go decidido el 2026-10-02 (D-10) | Deroga .NET 8 LTS, Next.js 14 y Redis como pieza de la pila |
+| V8 | §0.3, §0.4 | Backend Go en monolito modular (D-10) y frontend Next.js + TypeScript; Supabase Pro, Vercel Pro para el frontend y Upstash; backend Go en Render y PostgreSQL 17; workflows en evaluación; Scalar; Mercado Pago como PSP; Truora en evaluación para KYC y KYB; techo de US$250/mes | H-18; ASS-002 ratificada el 2026-09-29; proveedores y PSP elegidos el 2026-09-30; backend Go decidido el 2026-10-02 (D-10); Render y PostgreSQL 17 elegidos el 2026-10-12 | Deroga .NET 8 LTS, Next.js 14 y Redis como pieza de la pila |
 | V8 | §0.5–§0.7, Anexo C | Mapa de zonas sin IA (ZC), decisiones por fase (DP), mapa H-01–H-19 y criterios de cierre de C1, C2 y D1/R1 | Trazabilidad CD-07; implementación humana de Backlog MVP V3 §1.3; decisión D-05 del programa R0 | Amplía |
 | V8 | §1.1 | C-13: HMAC versionado para identificadores de documento | H-14: SHA-256 directo de un DNI se revierte por fuerza bruta | Deroga el SHA-256 directo de V7 §2.2 |
 | V8 | §1.3 | Doce tablas particionadas y particiones iniciales obligatorias | H-05: sin particiones creadas, todo `INSERT` falla | Corrige la lista de ocho tablas y la regla de alarma |
@@ -237,17 +241,17 @@ El criterio de cierre del PRD exige que toda tabla declarada tenga columnas real
 
 ### 0.3 Pila tecnológica
 
-ASS-002 fue ratificada por los socios el 2026-09-29 con backend TypeScript. **Diego decidió el 2026-10-02 implementar el backend en Go (D-10)**, como monolito modular; el frontend sigue en Next.js y TypeScript. Diego confirmó los proveedores el 2026-09-30. Las herramientas de Go, el hosting del backend y el ejecutor de trabajos son propuestas pendientes de confirmar ([adaptación a Go](../2026-10-02-r0-backend-go-design.md)). La elección fija la arquitectura, pero no contrata servicios, no acredita capacidad y no garantiza una factura fija.
+ASS-002 fue ratificada por los socios el 2026-09-29 con backend TypeScript. **Diego decidió el 2026-10-02 implementar el backend en Go (D-10)**, como monolito modular; el frontend sigue en Next.js y TypeScript. Diego confirmó los proveedores el 2026-09-30. Las herramientas de Go y el ejecutor de trabajos son propuestas pendientes de confirmar ([adaptación a Go](../2026-10-02-r0-backend-go-design.md)). Desde el 2026-10-12 el backend se aloja en Render y la base usa PostgreSQL 17 ([registro](decisiones-2026-10-12.md)). La elección fija la arquitectura, pero no contrata servicios, no acredita capacidad y no garantiza una factura fija.
 
 | Capa | Decisión | Nota |
 | ---- | -------- | ---- |
 | Lenguaje y runtime | Backend: Go (versión fijada en D1). Frontend: TypeScript estricto sobre Node.js | Node se fija en D1 contra la versión de Next.js instalada y soportada |
 | Aplicación | Monolito modular en Go: una imagen con modo API HTTP y modo worker, y módulos de dominio (órdenes, pagos, boletos, sorteo y liquidaciones) que invocan los endpoints y los trabajos. Next.js 16 con App Router solo para la interfaz, que consume la API REST | Las reglas no se duplican en endpoints, trabajos ni cliente. Propuesta: `net/http` + oapi-codegen, pgx + sqlc, sin ORM. Versiones en D1 |
-| Base de datos | PostgreSQL gestionado en Supabase Pro; cómputo Small y PITR de 7 días para R1 | Autoridad sobre dinero e inventario. Major 17: el esquema V7 corre en 17.11 local; falta el esquema V8 y probar en Supabase (DP-09) |
+| Base de datos | PostgreSQL gestionado en Supabase Pro; cómputo Small y PITR de 7 días para R1 | Autoridad sobre dinero e inventario. Major 17, elegida el 2026-10-12: el esquema V7 corre en 17.11 local; falta el esquema V8 y probar en Supabase (DP-09) |
 | Conexiones | Migraciones por conexión directa con el rol migrador. El backend Go es un proceso persistente con pool acotado; si el ejecutor usa LISTEN/NOTIFY, necesita conexión directa o pooler en modo sesión | Presupuesto de conexiones (API, worker, servicios de Supabase, migraciones y despliegues) frente al límite de Small, por fijar en D1 |
 | Workflows | **En reevaluación por D-10.** Propuesta: River (cola sobre PostgreSQL) en el worker Go, con encolado en la misma transacción que el dato de negocio. Alternativa: Trigger.dev con tareas TypeScript. `create-next-partitions` corre en `pg_cron` dentro de la base (B3) | Encolar una vez no garantiza un efecto patrimonial único: la idempotencia y la ejecución única siguen siendo zona crítica |
 | Ticker del outbox | Propuesta: el worker Go despacha cada 10 s. Alternativa: Supabase Cron cada 10 s contra un endpoint privado | El cron de Vercel no alcanza 10 s: su intervalo mínimo es un minuto |
-| Hosting | Frontend: Vercel Pro. Backend Go: pendiente; propuesta Fly.io con federación OIDC hacia AWS para KMS, o Render con credencial exclusiva y rotada | Vercel no aloja un proceso Go persistente. La región del backend coincide con la de Supabase |
+| Hosting | Frontend: Vercel Pro. Backend Go: Render para API y worker, elegido el 2026-10-12 | Vercel no aloja un proceso Go persistente. Credencial AWS exclusiva y rotada para KMS, conexiones, despliegue y coste por validar ([registro](decisiones-2026-10-12.md)). La región del backend coincide con la de Supabase |
 | Identidad | Supabase Auth con TOTP. Roles, permisos por recurso, incompatibilidades y sesión aplicativa los gestiona LIBOX | §7.3 |
 | Objetos | Supabase Storage privado, más una copia independiente | Destino de la copia en DP-10 |
 | Límites de frecuencia | Upstash (pago por uso) | **Nunca autoritativo sobre dinero ni inventario** (§12.1) |
@@ -312,7 +316,7 @@ La columna "Bloquea" indica la primera fase que no puede cerrarse sin esa decisi
 | DP-05 | Baliza tardía: qué pasa tras el incidente de los 30 minutos, reanudar o cancelar | C1 (programa R0: timeout de baliza) | Dueño del motor |
 | DP-06 | AWS KMS con cifrado de sobre está elegido para datos personales (B1-bis, §7.4). Falta decidir el servicio de la semilla cifrada, la rotación de la clave maestra y de la clave HMAC, el recifrado y la restauración | C1 para la semilla (H-12); R1 para la rotación | Diego |
 | DP-08 | Mercado Pago: confirmar la modalidad (Checkout Pro propuesta), el acceso a sandbox y la aceptación comercial del caso de uso | R1 | Diego |
-| DP-09 | Major de PostgreSQL: 17 si el esquema V8 completo pasa en 17 y en Supabase; si no, la versión soportada por el proveedor o Neon | C1 para el esquema local; R1 para Supabase | Diego |
+| DP-09 | Major de PostgreSQL: **17, elegida por Diego el 2026-10-12** ([registro](decisiones-2026-10-12.md)); faltan la migración V8 completa en 17 y la prueba en Supabase | C1 para el esquema local; R1 para Supabase | Diego |
 | DP-10 | Copia independiente de objetos (R2 o S3), versionado, Object Lock y retención por clase de documento [LEGAL→ABOGADO] | R1, antes de documentos reales | Diego y abogado |
 | DP-11 | Proveedor de correo transaccional | R1 | Diego |
 | DP-12 | B6 integrada en §1.3: `risk_events` y `audit_access_events` indefinidas. Falta el plazo de `psp_events` y `operation_register`; nada se borra hasta aprobarlo [LEGAL→ABOGADO] | R1 | Diego y abogado |

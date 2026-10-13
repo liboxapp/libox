@@ -2,7 +2,7 @@
 title: R0 — adaptación del backend a Go
 status: aprobado
 tags: [libox, r0, backend, go, decision]
-updated: 2026-10-04
+updated: 2026-10-12
 description: Decisión de Diego de implementar el backend en Go (D-10), qué cambia frente a D-01, herramientas propuestas, presupuesto e impacto en L3, planes y harness.
 ---
 
@@ -15,6 +15,12 @@ por el [registro posterior](c1-l3-v8/decisiones-2026-10-04.md). Despliegue,
 frontera Go/Trigger.dev y excepción Auth/KMS aún requieren validación y detalle.
 La respuesta sobre herramientas no enumera una selección concreta; ver
 [alcance de stack](2026-10-02-stack-go-frontend-ts.md).
+
+**Cambio del 12/10:** Diego eligió Render para alojar el backend Go (API y
+worker) y PostgreSQL 17. Sustituye la elección de Vercel del 04/10 y coincide
+con la alternativa Render de la tabla de herramientas. Región, conexiones,
+worker separado, despliegue, credencial AWS para KMS y coste siguen por validar;
+ver el [registro del 12/10](c1-l3-v8/decisiones-2026-10-12.md).
 
 ## Decisión
 
@@ -125,6 +131,8 @@ de ampliar. No se recorta PITR ni la copia independiente para pagar cómputo.
 ## Pendientes de Diego
 
 1. Confirmar las herramientas propuestas, en especial River frente a Trigger.dev.
-2. Hosting: verificar la federación de Fly.io o aceptar Render con credencial rotada.
+2. ~~Hosting: verificar la federación de Fly.io o aceptar Render con credencial rotada.~~
+   **Render elegido el 2026-10-12** ([registro](c1-l3-v8/decisiones-2026-10-12.md));
+   la credencial AWS exclusiva y rotada para KMS sigue por definir.
 3. Excepción de Supabase Auth en B1-bis.
 4. Registrar D-10 en el doc 20 de Outline.

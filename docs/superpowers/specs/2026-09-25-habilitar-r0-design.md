@@ -2,7 +2,7 @@
 title: Programa para habilitar R0 — diseño
 status: borrador
 tags: [libox, r0, harness, programa, spec]
-updated: 2026-10-04
+updated: 2026-10-12
 description: Programa aprobado por Diego para resolver la auditoría del harness (SY-01 a SY-16) y los defectos del canon, y dejar R0 listo para arrancar sobre el backend Go decidido en D-10. Streams, decisiones, secuencia y criterio de éxito.
 ---
 
@@ -33,7 +33,7 @@ El programa no decide ASS-001 (custodia) ni edita el canon en su lugar: el canon
 | D-07 | Scalar como documentación de la API del backend | 2026-09-25 · canon §0.3 y backend |
 | D-08 | Sin spike: sus fallos deliberados pasan a ser pruebas de aceptación obligatorias (tabla de abajo), y la consola interna de operación entra como épica | 2026-09-29 · R1 y E14 |
 | D-09 | Proveedores abiertos (base de datos, workflows, auth, almacenamiento, rate limiting): se cierran con comparativa en C1, antes de emitir L3 V8 | 2026-09-29 · canon §0.3 |
-| D-10 | **Backend en Go**, monolito modular, decidido por Diego. Frontend Next.js + TypeScript en Vercel; REST + OpenAPI + Scalar como contrato. Vercel para backend y conservar Trigger.dev ratificados el 04/10; herramientas e integración pendientes. Ver [adaptación a Go](2026-10-02-r0-backend-go-design.md) y [registro posterior](c1-l3-v8/decisiones-2026-10-04.md) | 2026-10-02 · sustituye el backend de D-01; falta registrar en el doc 20 |
+| D-10 | **Backend en Go**, monolito modular, decidido por Diego. Frontend Next.js + TypeScript en Vercel; REST + OpenAPI + Scalar como contrato. Conservar Trigger.dev ratificado el 04/10; Render para el backend (sustituye a Vercel del 04/10) y PostgreSQL 17 elegidos el 12/10; herramientas, integración y validación pendientes. Ver [adaptación a Go](2026-10-02-r0-backend-go-design.md) y registros [del 04/10](c1-l3-v8/decisiones-2026-10-04.md) y [del 12/10](c1-l3-v8/decisiones-2026-10-12.md) | 2026-10-02 · sustituye el backend de D-01; falta registrar en el doc 20 |
 
 ## Criterio de éxito
 

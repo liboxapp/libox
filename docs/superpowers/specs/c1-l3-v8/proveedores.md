@@ -2,11 +2,15 @@
 title: C1 — comparación de proveedores y presupuesto
 status: borrador
 tags: [r0, c1, l3-v8]
-updated: 2026-10-01
+updated: 2026-10-12
 description: Comparativa al 2026-09-30; escenarios previos a KMS y presupuesto pendiente de ajustar dentro del techo de US$250.
 ---
 
 # Proveedores y presupuesto
+
+**Cambio del 2026-10-12:** el backend Go se aloja en Render y PostgreSQL 17 queda
+elegido ([registro](decisiones-2026-10-12.md)). Los escenarios de abajo no incluyen
+Render y deben recalcularse dentro del techo de US$250.
 
 **Elección de Diego, 2026-09-30:** Supabase Pro + Trigger.dev + Vercel Pro.
 **PSP elegido:** Mercado Pago; sandbox todavía sin confirmar. Truora priorizado para evaluar KYC/KYB;

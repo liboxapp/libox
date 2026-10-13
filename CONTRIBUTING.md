@@ -97,7 +97,9 @@ El CI de producto (build, lint, tipos, tests, migraciones y contrato API) entra 
 El [programa de R0](docs/superpowers/specs/2026-09-25-habilitar-r0-design.md)
 registra el backend en **Go** (D-10, que sustituye la ratificación de TypeScript para el
 backend), monolito modular sobre PostgreSQL gestionado; el frontend usa Next.js App Router
-y TypeScript. Workflows y hosting del backend se reevalúan en la [adaptación a Go](docs/superpowers/specs/2026-10-02-r0-backend-go-design.md). Los endpoints invocan módulos
+y TypeScript. El backend se aloja en Render y usa PostgreSQL 17 desde el
+[2026-10-12](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-12.md); Trigger.dev
+sigue en evaluación. La integración se detalla en la [adaptación a Go](docs/superpowers/specs/2026-10-02-r0-backend-go-design.md). Los endpoints invocan módulos
 separados de dominio. Scalar documentará la API.
 
 L3 V7 sigue siendo el canon registrado; su runtime .NET es la discrepancia que C2

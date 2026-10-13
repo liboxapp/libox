@@ -2,7 +2,7 @@
 title: C1 — alcance del cierre SQL frente a R1
 status: borrador
 tags: [r0, c1, l3-v8, sql, alcance]
-updated: 2026-10-01
+updated: 2026-10-12
 description: Qué exige C1 al SQL, qué queda para C2, D1 y R1, y discrepancias de alcance con sus referencias.
 ---
 
@@ -65,5 +65,6 @@ que sus restricciones se prueben contra casos que deben fallar. Eso aplica a la
 Mercado Pago como PSP y Truora como prioridad de evaluación de identidad no
 afectan a este overlay: `payments.provider` e `identity_verifications.provider`
 son `VARCHAR` sin catálogo en V7. L3 V7 §0.3 ya nombraba a Mercado Pago como
-primario en PE. Supabase Pro, PostgreSQL 17 condicionado y Trigger.dev no se
-ejercitan aquí; ver [pendientes](cierre-sql-pendientes.md).
+primario en PE. Supabase Pro con su PostgreSQL 17 gestionado, elegido el
+[12/10](decisiones-2026-10-12.md), y Trigger.dev no se ejercitan aquí; ver
+[pendientes](cierre-sql-pendientes.md).

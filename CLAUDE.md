@@ -13,11 +13,14 @@ Registro Maestro V6 (si un documento no figura en su §1, no rige) y verificado 
 Ver la [adaptación a Go](docs/superpowers/specs/2026-10-02-r0-backend-go-design.md) y el
 [programa de R0](docs/superpowers/specs/2026-09-25-habilitar-r0-design.md).
 
-## Decisiones posteriores — 2026-10-04
+## Decisiones posteriores — 2026-10-04 y 2026-10-12
 
-Diego ratificó Vercel para Go, conservar Trigger.dev, Auth administrada, mínimo
-1,45, auditabilidad general con mayor detalle sensible y US$250/mes. La garantía
-requiere revisar escenarios. Aplicar el [registro y sus pendientes](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-04.md)
+Diego ratificó el 04/10 conservar Trigger.dev, Auth administrada, mínimo 1,45,
+auditabilidad general con mayor detalle sensible y US$250/mes. La garantía
+requiere revisar escenarios. El 12/10 eligió Render para alojar el backend Go,
+en lugar de Vercel, y PostgreSQL 17. Aplicar los registros
+[del 04/10](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-04.md) y
+[del 12/10](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-12.md), con sus pendientes,
 y la [decisión de stack](docs/superpowers/specs/2026-10-02-stack-go-frontend-ts.md).
 
 ## Empieza por
@@ -60,10 +63,11 @@ algo por hecho. Detalle en `docs/equipo/sistema-operativo-ia.md#orquestación-fa
 a TypeScript (doc 20 de Outline, revisión 23); **D-10 la sustituye para el backend
 por Go** (2026-10-02), pendiente de registrar en el doc 20. Falta trasladarla al canon
 L3 V8 y completar D1. Supabase Pro y Vercel Pro (frontend) fueron confirmados el 2026-09-30;
-Vercel para el backend y conservar Trigger.dev quedaron ratificados el 2026-10-04;
-su integración y las herramientas Go requieren definición y validación ([adaptación a Go](docs/superpowers/specs/2026-10-02-r0-backend-go-design.md));
-PostgreSQL 17 queda sujeto a validar migraciones. Ver la
-[decisión C1](docs/superpowers/specs/2026-09-30-r0-c1-design.md).
+conservar Trigger.dev quedó ratificado el 2026-10-04, y Render para el backend Go y
+PostgreSQL 17, el 2026-10-12 ([registro](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-12.md)).
+Su integración, la migración completa en PostgreSQL 17 y las herramientas Go requieren
+definición y validación ([adaptación a Go](docs/superpowers/specs/2026-10-02-r0-backend-go-design.md)).
+Ver la [decisión C1](docs/superpowers/specs/2026-09-30-r0-c1-design.md).
 Ninguna herramienta de código queda ratificada por esta elección.
 La línea de ADRs Z.1–Z.8 es histórica (`docs/archive/decisions/`).
 

@@ -2,7 +2,7 @@
 title: C1 — estado de entrega y dependencias
 status: borrador
 tags: [r0, c1, seguimiento]
-updated: 2026-10-04
+updated: 2026-10-12
 description: Entregas C1, reconciliación Cowork y aportes pendientes, distinguiendo integración documental, emisión y operación real.
 ---
 
@@ -13,12 +13,16 @@ La [decisión final de stack](../2026-10-02-stack-go-frontend-ts.md) sustituye e
 TypeScript mencionado en este documento. La adaptación del candidato L3,
 despliegue, workflows y validación Go sigue pendiente antes de C2.
 
-**Ratificaciones del 2026-10-04:** Vercel para backend, conservar Trigger.dev,
-Auth administrada, mínimo 1,45, auditabilidad general con más detalle sensible
-y techo de infraestructura US$250/mes. Ver [registro y límites](decisiones-2026-10-04.md).
+**Ratificaciones del 2026-10-04:** Vercel para backend (sustituido el 12/10),
+conservar Trigger.dev, Auth administrada, mínimo 1,45, auditabilidad general
+con más detalle sensible y techo de infraestructura US$250/mes. Ver [registro y límites](decisiones-2026-10-04.md).
 Después, Diego eligió la **garantía del sorteo desde la primera entrega (B)** y
 **subió el suelo del rango a 1,45×**; ambos con parámetros y aportes humanos
 pendientes ([escenarios](escenarios-t1-garantia.md)).
+
+**Decisiones del 2026-10-12:** Render aloja el backend Go (API y worker) y
+PostgreSQL 17 pasa a elegido. Región, conexiones, worker separado, despliegue,
+secretos y coste siguen por validar. Ver [registro y límites](decisiones-2026-10-12.md).
 
 **C1 sigue abierto.** Hay un candidato completo de L3 V8, un contrato ampliado y
 un overlay SQL no crítico verificable. El candidato incorpora ahora el alcance de
@@ -31,12 +35,12 @@ continúa suspendida; las pruebas y la revisión automatizada siguen activas.
 
 | Frente | Entrega y evidencia |
 |---|---|
-| Proveedores | Supabase Pro + Trigger.dev + Vercel Pro; techo de infraestructura US$250. Mercado Pago elegido. Truora priorizado para evaluar KYC/KYB, sin contratación |
+| Proveedores | Supabase Pro + Trigger.dev + Vercel Pro (frontend); Render para el backend Go y PostgreSQL 17 (12/10); techo de infraestructura US$250, por recalcular. Mercado Pago elegido. Truora priorizado para evaluar KYC/KYB, sin contratación |
 | L3 | [Candidato completo](LIBOX_ESPECIFICACION_TECNICA_L3_V8_DRAFT.md), con TypeScript, sesiones, HMAC, recuperación, F1–F7 y registros de pendientes |
 | Preservación | 32 bloques de código protegido de V7 conservados, salvo líneas vacías/espacios finales; prueba automática. No demuestra corrección del código heredado |
 | API | OpenAPI 3.1 `2.0.0-draft.3`: 61 operaciones inventariadas +32 auxiliares; 50 pruebas, 93 intercambios HTTP de fixtures y 13 del cliente TypeScript |
 | Mercado Pago | Payload `payment` y entradas de firma concretados. Sandbox, firma real, conciliación y efectos patrimoniales no probados |
-| PostgreSQL | V7 instala en PG17.11 con 135 tablas. Overlay añade particiones UTC/DEFAULT para 11 padres (ledger pendiente), ACL B1 para 78 tablas (57 reservadas), logins B2 simulados y PE; tres escenarios pasan 100/100/104 comprobaciones |
+| PostgreSQL | V7 instala en PG17.11 con 135 tablas. Overlay añade particiones UTC/DEFAULT para 11 padres (ledger pendiente), ACL B1 para 78 tablas (57 reservadas), logins B2 simulados y PE; tres escenarios pasan 100/100/104 comprobaciones. El esquema L3 V17 del paquete Cowork rev3 (151 tablas, fuera del repo) carga sin errores en PG17.11 y 16.15 y su batería da 258 OK / 0 fallos (12/10); no acredita la migración del overlay |
 | Herramientas DB | 27 pruebas, incluidas mutaciones que detectan permisos indebidos y limpieza tras fallo de arranque. CI ejecuta Docker en Python 3.12 |
 | Truora | [Cobertura y brechas](truora-evaluacion.md), consulta preparada sin enviar y plan de aceptación. KYB Perú y precio por confirmar |
 | Cowork | 27 diferencias comparadas con Claude Opus, 14 deltas C1-V, aceptación y US-137–145 incorporadas al plan. [Evidencia y límites](revision-cowork-evidencia.md); no es una emisión ni corrección ejecutada del gate |

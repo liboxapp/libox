@@ -2,7 +2,7 @@
 title: C1 — reconciliación de la documentación recibida en Cowork
 status: borrador
 tags: [r0, c1, reconciliacion, linea-base]
-updated: 2026-10-01
+updated: 2026-10-12
 description: Incorporación al trabajo de C1 de las 27 diferencias revisadas por Codex y Claude Opus, conservando decisiones aprobadas y pendientes humanos.
 ---
 
@@ -15,6 +15,11 @@ como propuesta trazada: recibir un archivo llamado «vigente» no acredita su
 emisión ni ratifica todos sus parámetros. Véase [procedencia](revision-cowork-evidencia.md).
 
 ## Decisiones que se conservan
+
+**Decisiones posteriores:** el backend pasó a Go el 2026-10-02
+([stack](../2026-10-02-stack-go-frontend-ts.md)); el 2026-10-12 Diego eligió
+Render para alojarlo y PostgreSQL 17 ([registro](decisiones-2026-10-12.md)).
+Prevalecen sobre las menciones de esta lista.
 
 - Backend Next.js/TypeScript ratificado por los socios; Scalar. Drizzle sigue sin elección.
 - Supabase Pro + Trigger.dev + Vercel Pro, techo inicial de US$250/mes;
