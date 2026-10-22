@@ -2,7 +2,7 @@
 title: Libox — Índice del wiki
 status: vigente
 tags: [libox, wiki, indice, linea-base]
-updated: 2026-10-12
+updated: 2026-10-18
 description: Índice del canon del repo, trabajo C1/R0 y reconciliación de documentación recibida en Cowork.
 ---
 
@@ -34,6 +34,14 @@ Render para el backend Go, en lugar de Vercel, y PostgreSQL 17.
 | [`operacion/`](operacion/) | Vacío. Destino del futuro Manual de Operación (T-3, 13 SP) | Al redactarlo en R3 |
 | [`archive/`](archive/) | **Histórico nulo o superseded** — no se consulta ni se cita (Registro §2) | Solo para trazabilidad |
 | [`equipo/`](equipo/) | Cómo trabaja el equipo: [sistema operativo de IA](equipo/sistema-operativo-ia.md) (capas, guards, skills, agentes, orquestación) · [estilo de documentación](equipo/estilo-documentacion.md) · [onboarding](equipo/onboarding.md) | Al incorporarte y cada vez que extiendas la configuración de Claude |
+| [Flujo end-to-end rev6](flujos/flujo-end-to-end.md) | ACT-P08: mapa actual y seis recorridos con actores, asientos, gates, excepciones y pruebas pendientes | Antes de diseñar o implementar el flujo del MVP |
+| [Worker y privacidad R6-15](desarrollo/controles-servicio-rev6.md) | Parámetros iniciales y controles aprobados de ejecución, alertas, bloqueos y revocación | Antes de configurar o desarrollar el worker y los accesos de entrega |
+| [Delivery y evidencia R6-14](flujos/delivery-premios-rev6.md) | Recorrido y modalidades aprobados; transición para servicios/registrables y doble firma registrable | Antes de diseñar o implementar entrega y acreditación |
+| [Estados y permisos R6-12](desarrollo/r612-resorteo-estados-permisos.md) | Matriz aprobada de cuatro causas, dos estados nuevos y autorización de ADMIN_LEGAL_COMPLIANCE | Antes de implementar admisión y ejecución del re-sorteo |
+| [Catálogo y reservas R6-11](desarrollo/r611-catalogo-plazos-reservas.md) | Definición aprobada de G4, reserva y liberación; valores del PSP pendientes | Antes de configurar o desarrollar RN-103/RN-104 |
+| [Plan técnico ACT-R6-13/15/16](desarrollo/plan-correcciones-rev6.md) | Trece reglas y orden de corrección; [worker/privacidad](desarrollo/controles-servicio-rev6.md); [anexo y manifiesto](desarrollo/alcance-entrega-tecnica-rev6.md) | Antes de preparar desarrollo de los controles rev6 |
+| [Evaluación contable para Adrián](desarrollo/r608-accounting-review-adrian.md) | ACT-R6-08: problema T-05/T-19, alternativas y casos para análisis independiente de su agente IA | Antes de decidir el modelo contable y actualizar el contrato |
+| [Pruebas pendientes Rev6](desarrollo/pruebas-pendientes-rev6.md) | ACT-R6-10: importes y doble firma T-14; ACT-P08: seis recorridos completos. Todas las pruebas pendientes | Antes de implementar o verificar los controles y el flujo |
 | [`glosario.md`](glosario.md) · [`flujos/`](flujos/) · [`superpowers/`](superpowers/) | Documentos de trabajo, no normativos (glosario, flujos, specs y planes aprobados) | Consulta |
 | [Estado C1](superpowers/specs/c1-l3-v8/estado-c1.md) · [reconciliación Cowork](superpowers/specs/c1-l3-v8/reconciliacion-linea-base.md) · [plan](superpowers/plans/2026-09-30-r0-c1.md) | Acuerdos conservados, candidato L3/API y nuevos pendientes de viabilidad/garantía, contratos y backlog | Trabajo activo antes de C2 |
 

@@ -65,6 +65,9 @@ por Go** (2026-10-02), pendiente de registrar en el doc 20. Falta trasladarla al
 L3 V8 y completar D1. Supabase Pro y Vercel Pro (frontend) fueron confirmados el 2026-09-30;
 conservar Trigger.dev quedó ratificado el 2026-10-04, y Render para el backend Go y
 PostgreSQL 17, el 2026-10-12 ([registro](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-12.md)).
+ACT-R6-07, aprobado el 2026-10-18: frontend Next.js 16/TypeScript con Turbopack en
+desarrollo y producción; validaciones pendientes en el
+[OS AI](docs/equipo/sistema-operativo-ia.md#act-r6-07-nextjs-16-y-turbopack).
 Su integración, la migración completa en PostgreSQL 17 y las herramientas Go requieren
 definición y validación ([adaptación a Go](docs/superpowers/specs/2026-10-02-r0-backend-go-design.md)).
 Ver la [decisión C1](docs/superpowers/specs/2026-09-30-r0-c1-design.md).

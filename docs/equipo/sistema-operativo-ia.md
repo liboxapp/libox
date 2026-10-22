@@ -2,7 +2,7 @@
 title: Sistema operativo de IA — cómo trabaja Claude Code en Libox
 status: vigente
 tags: [equipo, claude-code, hooks, skills, agentes, memoria]
-updated: 2026-09-29
+updated: 2026-10-18
 description: Manual humano de la capa operativa de IA del repo — qué carga Claude, qué hace cumplir el harness, qué skills y agentes existen, cómo se orquesta y cómo se extiende.
 ---
 
@@ -103,10 +103,67 @@ Si algo valioso aparece en la memoria personal, se promueve a `docs/` por PR.
 
 ## Capa `dev` pendiente (C2/D1)
 
-El backend es Go (D-10) y el frontend TypeScript. Tras emitir L3 V8, el PR de D1 retira
+El backend es Go (D-10) y el frontend TypeScript con
+[ACT-R6-07](#act-r6-07-nextjs-16-y-turbopack). Tras emitir L3 V8, el PR de D1 retira
 `.claude/rules/src-congelado.md` y las constantes `FROZEN_*` de `guard_edit.py`, actualiza
 `src/CLAUDE.md` y añade agentes `ejecutor-feature`, `tester` y `depurador` más una rule de
 desarrollo para `src/`. Este trabajo del harness no levanta el freeze.
+
+## ACT-R6-07: Next.js 16 y Turbopack
+
+Diego aprobó el 2026-10-18 **Next.js 16 + TypeScript para frontend y Turbopack
+como compilador en desarrollo y producción**. Go continúa en API y worker.
+La decisión consta en el [benchmark ACT-R6-07](https://liboxapp.getoutline.com/doc/act-r6-07-benchmark-nextjs-14-vs-16-KYfjxwCbDf)
+y en [pendientes y decisiones técnicas Rev6](https://liboxapp.getoutline.com/doc/diego-pendientes-y-decisiones-tecnicas-rev6-dET6AASY9e).
+
+- **Estado instalado al 18/10:** [`package.json`](../../package.json) y
+  [`package-lock.json`](../../package-lock.json) fijan Next.js **16.3.0**. Registrar
+  esta decisión no actualiza dependencias.
+- **Candidato evaluado:** el benchmark probó **16.4.2**. Al ejecutar la actualización,
+  verificar y fijar el parche estable mantenido de Next.js 16; el benchmark no
+  acredita por sí solo la compatibilidad integral de Libox.
+- **Pendiente de ejecución:** revisar compatibilidad de dependencias y configuración,
+  actualizar y verificar el lockfile, ejecutar lint, build y tests, validar el
+  despliegue e incorporar la decisión en L3 mediante su proceso de emisión.
+- **Licencia y hosting:** Turbopack usa licencia MIT, sin coste de licencia ni
+  obligación de alojarse en Vercel. Vercel Pro conserva la elección para frontend;
+  Render aloja API y worker Go según las
+  [decisiones del 12/10](../superpowers/specs/c1-l3-v8/decisiones-2026-10-12.md).
+
+Es una decisión aprobada documentada en el OS AI; no emite el canon, completa D1
+ni levanta el [freeze del scaffold](../../.claude/rules/src-congelado.md).
+Todo agente que retome implementación debe conservar estas restricciones.
+
+## ACT-R6-10: flujo y pruebas pendientes
+
+Diego aprobó el 2026-10-18 el criterio de importes de órdenes y doble firma T-14,
+y pidió conservarlo como trabajo pendiente de pruebas unitarias. Consultar el
+[registro de pruebas Rev6](../desarrollo/pruebas-pendientes-rev6.md) antes de retomar
+H22-06/H22-07: contiene el flujo aprobado y los IDs de pruebas unitarias e integración.
+Implementación y pruebas siguen **PENDIENTES**; los unitarios no acreditan el control
+en BD. Diego es el responsable humano de las zonas protegidas; ejecutor y fecha,
+por confirmar. El registro no levanta el freeze ni emite el canon.
+
+## ACT-P08: flujo actual y recorridos
+
+El [flujo end-to-end rev6](../flujos/flujo-end-to-end.md) sustituye el diagrama del
+19/06/2026 e incorpora los ocho criterios aprobados y las confirmaciones de Diego.
+Tiene seis recorridos y casos E2E-P08-01 a E2E-P08-06 en el
+[registro de pruebas](../desarrollo/pruebas-pendientes-rev6.md#act-p08-pruebas-del-flujo-completo).
+Es una guía documental con pendientes explícitos; no acredita implementación,
+no emite el canon ni levanta el freeze. Usarlo antes de retomar Desarrollo.
+El [delivery aprobado](../flujos/delivery-premios-rev6.md), ACT-R6-14, conserva
+recorrido, modalidades, evidencia, transición de servicios/registrables y segunda
+firma registrable; diseño visual, implementación y pruebas siguen pendientes.
+
+## ACT-R6-13/15/16: definición y ejecución futura
+
+Por solicitud de Diego del 2026-10-18, consultar el [plan por regla](../desarrollo/plan-correcciones-rev6.md),
+[contrato diario y privacidad](../desarrollo/controles-servicio-rev6.md) y
+[alcance de entrega/manifiesto](../desarrollo/alcance-entrega-tecnica-rev6.md).
+R6-15 tiene operación y privacidad aprobadas; ejecutores, cobertura, configuración
+efectiva y pruebas se concretan antes de operar y durante desarrollo.
+No generar código de zonas protegidas ni interpretar este plan como emisión o fin del freeze.
 
 ## Auditoría compartida
 
