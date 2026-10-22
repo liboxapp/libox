@@ -2,14 +2,21 @@
 title: C1 — Mercado Pago como PSP elegido
 status: borrador
 tags: [r0, c1, psp, mercado-pago]
-updated: 2026-10-12
+updated: 2026-10-18
 description: Elección ratificada, contrato de notificación payment y evidencia pendiente del adaptador.
 ---
 
 # Mercado Pago
 
-**Decisión de Diego, 2026-09-30:** Mercado Pago será el PSP. Acceso a sandbox aún
-sin confirmar. No se han contratado servicios, creado cuentas ni usado credenciales.
+**Decisión de Diego, 2026-09-30:** Mercado Pago será el PSP.
+
+**ACT-P04 — Confirmación de Diego, 2026-10-18:** todavía no hay integración de
+pagos ni cuenta de pruebas. La documentación y las pruebas de contrato disponibles
+no acreditan un adaptador ejecutado. Cuenta/entorno de pruebas, implementación y
+pruebas del flujo siguen pendientes; ejecutor y fecha por confirmar. Estado
+registrado en la [ficha de Diego](https://liboxapp.getoutline.com/doc/diego-pendientes-y-decisiones-tecnicas-rev6-dET6AASY9e)
+y el [tablero de acciones](https://liboxapp.getoutline.com/doc/21-tablero-de-acciones-tasks-iCoCY5qOjR).
+
 La propuesta de producto es Checkout Pro, consistente con `preference_id` del
 corpus; elegir PSP no confirma automáticamente modalidad de cobro, tarifas ni custodia.
 [Checkout Pro](https://www.mercadopago.com.pe/developers/es/docs/checkout-pro-preferences/overview).
@@ -65,12 +72,12 @@ configurarlos aquí para generar reintentos permanentes.
 
 | Evidencia | Responsable y momento |
 |---|---|
-| Confirmar cuenta de pruebas y modalidad Checkout | Diego; antes del ensayo del adaptador |
+| Preparar cuenta y entorno de pruebas; confirmar modalidad Checkout | Diego; sin cuenta al 18/10/2026, antes del ensayo del adaptador |
 | Payloads sanitizados y firma válida/inválida; query discordante; separación test/live | Integración D1/R1, antes de habilitar recepción real |
 | Duplicados, entrega tardía y fuera de orden; caída entre persistencia y ACK | Dueño humano de concurrencia; pruebas de integración R1 |
 | Aprobado, rechazado, pendiente, devolución total/parcial y conciliación | Integración PSP/finanzas; no simular dinero real |
-| Aceptación comercial del negocio y condiciones de cuenta | Diego con proveedor; antes de producción |
-| Custodia, liberación y devolución bajo ASS-001 | Diego y asesoría `[LEGAL→ABOGADO]` |
+| Aceptación comercial del negocio y condiciones del PSP | Adrián, ACT-R6-03; pendiente para producción |
+| Titularidad de cuenta, custodia, liberación y devolución bajo ASS-001 | Diego y Adrián, ACT-R6-04; con validación `[LEGAL→ABOGADO]` |
 
 Mercado Pago publica información técnica para la industria
 [gambling](https://www.mercadopago.com.pe/developers/es/docs/checkout-api-payments/how-tos/improve-payment-approval/industry-data/gambling).

@@ -1,0 +1,499 @@
+{
+  "titulo": "Rev6 — manifiesto de artefactos técnicos",
+  "fecha": "2026-10-18",
+  "accion": "ACT-R6-16",
+  "tipo": "inventario_documental_no_emision",
+  "raiz_logica": "Cowork station del workspace Liboxapp; rutas relativas a esa raíz",
+  "alcance": "Inventario de los ejecutables y controles existentes, anexo técnico recuperado y antecedente del arnés. No lista el corpus completo ni genera un paquete.",
+  "estado_pruebas": "No se ejecutaron pruebas del producto para este manifiesto. Los resultados incluidos son históricos.",
+  "anexo_seleccionado": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6",
+  "aislamiento_reproducido_historico": "READ COMMITTED; no afirma una nueva reproducción en otros aislamientos",
+  "exclusiones": [
+    "pg-containers.json es estado efímero de ejecución, no parte de la entrega",
+    "__pycache__ y .DS_Store no son artefactos de entrega",
+    "Los seis diff_<regla>.sql no se localizaron como archivos separados; sus cambios están embebidos en el esquema",
+    "Las credenciales, secretos y estado de contenedores deben quedar fuera de la entrega"
+  ],
+  "archivos": [
+    {
+      "ruta_cowork_station": "LIBOX_LINEA_BASE_INTEGRADA_rev6/L3_Artefactos_ejecutables/libox_openapi_L3_V17.yaml",
+      "grupo": "paquete_integrado_existente",
+      "bytes": 66727,
+      "sha256": "033d8abb25d5ded5249bf7ef42074cfa715e51f2dd238b30157e8e99054cf282"
+    },
+    {
+      "ruta_cowork_station": "LIBOX_LINEA_BASE_INTEGRADA_rev6/L3_Artefactos_ejecutables/libox_schema_L3_V20.sql",
+      "grupo": "paquete_integrado_existente",
+      "bytes": 398346,
+      "sha256": "c90d55a7dbab52d90f69b7297da5e46cb7ca2e5d690eb58dc610aa33fce588ae"
+    },
+    {
+      "ruta_cowork_station": "LIBOX_LINEA_BASE_INTEGRADA_rev6/L3_Artefactos_ejecutables/refutaciones_v20.sql",
+      "grupo": "paquete_integrado_existente",
+      "bytes": 51930,
+      "sha256": "214c09eab8797060963401497585375c50cc4087720d2c7f4e4806cbabed002a"
+    },
+    {
+      "ruta_cowork_station": "LIBOX_LINEA_BASE_INTEGRADA_rev6/L3_Artefactos_ejecutables/tests_v20.sql",
+      "grupo": "paquete_integrado_existente",
+      "bytes": 274442,
+      "sha256": "d29f2104892d6b56e1612691a6d55f8026aa297537f34b3fb174c529de465d55"
+    },
+    {
+      "ruta_cowork_station": "LIBOX_LINEA_BASE_INTEGRADA_rev6/CONTROL_Registro_y_verificacion/LIBOX_ESTRUCTURA_LOGICA_DEL_CORPUS_V4.docx",
+      "grupo": "control_paquete_existente",
+      "bytes": 25138,
+      "sha256": "1b33cdac00b1d070a72a94b4e99bdec575aa685a1501458496c30d31ee5ebb31"
+    },
+    {
+      "ruta_cowork_station": "LIBOX_LINEA_BASE_INTEGRADA_rev6/CONTROL_Registro_y_verificacion/LIBOX_ESTRUCTURA_LOGICA_DEL_CORPUS_V4.md",
+      "grupo": "control_paquete_existente",
+      "bytes": 26808,
+      "sha256": "03f179c08109ab7a687f5222f386253324c835867886d76e41dfb12502ae2857"
+    },
+    {
+      "ruta_cowork_station": "LIBOX_LINEA_BASE_INTEGRADA_rev6/CONTROL_Registro_y_verificacion/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V24.docx",
+      "grupo": "control_paquete_existente",
+      "bytes": 75284,
+      "sha256": "cdeb37a5e854ac6545f0f0cc0745e5737f5f6f7fdf1f01b859609971f29660dd"
+    },
+    {
+      "ruta_cowork_station": "LIBOX_LINEA_BASE_INTEGRADA_rev6/CONTROL_Registro_y_verificacion/LIBOX_REGISTRO_MAESTRO_LINEA_BASE_V24.md",
+      "grupo": "control_paquete_existente",
+      "bytes": 129470,
+      "sha256": "65129c58c86e543aab5fe3f318f4a9bf5cb6f64b1b39f738e265634acc84a50c"
+    },
+    {
+      "ruta_cowork_station": "LIBOX_LINEA_BASE_INTEGRADA_rev6/CONTROL_Registro_y_verificacion/barrido_reglas.py",
+      "grupo": "control_paquete_existente",
+      "bytes": 6991,
+      "sha256": "21fa354197432add8bd82c6e1eefc803fd8617afa65196dfa8b4cb5b0ba98e65"
+    },
+    {
+      "ruta_cowork_station": "LIBOX_LINEA_BASE_INTEGRADA_rev6/CONTROL_Registro_y_verificacion/empaquetar_linea_base.py",
+      "grupo": "control_paquete_existente",
+      "bytes": 7281,
+      "sha256": "87c4cadcbcc2cf9873c3c102c67c52c6649152f2c1d3334f8d9f990d256a4831"
+    },
+    {
+      "ruta_cowork_station": "LIBOX_LINEA_BASE_INTEGRADA_rev6/CONTROL_Registro_y_verificacion/fases.json",
+      "grupo": "control_paquete_existente",
+      "bytes": 10467,
+      "sha256": "7caa980d2811569906e24aaf5cc5bdfc76e57ca293d474f514bc71debe878258"
+    },
+    {
+      "ruta_cowork_station": "LIBOX_LINEA_BASE_INTEGRADA_rev6/CONTROL_Registro_y_verificacion/libox_schema_L3_V20.medicion.json",
+      "grupo": "control_paquete_existente",
+      "bytes": 503,
+      "sha256": "a04df4e9d992d24bb5d6d3f2280ff1afd15938b83243af0d1e949e52fc62fe59"
+    },
+    {
+      "ruta_cowork_station": "LIBOX_LINEA_BASE_INTEGRADA_rev6/CONTROL_Registro_y_verificacion/medir_artefactos.sh",
+      "grupo": "control_paquete_existente",
+      "bytes": 9339,
+      "sha256": "c111f813d5af21890840e4b783c0e798ac1a107344d30556d06d8b141d2b023b"
+    },
+    {
+      "ruta_cowork_station": "LIBOX_LINEA_BASE_INTEGRADA_rev6/CONTROL_Registro_y_verificacion/veredictos.json",
+      "grupo": "control_paquete_existente",
+      "bytes": 167815,
+      "sha256": "36539a66437c683a13a3dd4c527acd26f2bb9904edcd28d0ad8145a0096e46f2"
+    },
+    {
+      "ruta_cowork_station": "LIBOX_LINEA_BASE_INTEGRADA_rev6/CONTROL_Registro_y_verificacion/verify_corpus.py",
+      "grupo": "control_paquete_existente",
+      "bytes": 108040,
+      "sha256": "8341dc0b7a99c70c238e97f36991622b58625f1ed23f8eacfcd18ed952135a37"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/README.md",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 2245,
+      "sha256": "6e7e02d9714b9ee615ec3cdf3ac99b9b98daff76de0b3a9fe1a450b9bb84a625"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/arnes_concurrencia_RN147.py",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 8619,
+      "sha256": "2c84e0e32a784aec88a4eb30177e4f71921c456df454ea49a74dad1d164e92be"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/16/concurrencia-detalle/A.stderr.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/16/concurrencia-detalle/A.stdout.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 3,
+      "sha256": "5a0a2b76858bf8cc147613f783d84cd22c0047d142ba0d9ce13fcedf953b57ed"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/16/concurrencia-detalle/B.stderr.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 731,
+      "sha256": "2e62ae7f6f40ba10f02f0598a7ed65f967813c13d513bb666f35a678764e60b1"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/16/concurrencia-detalle/B.stdout.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/16/concurrencia-detalle/schema.stderr.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/16/concurrencia-detalle/schema.stdout.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 3,
+      "sha256": "654ee9da442fa353f59f11beb688fc7f76c8de62a6c18b2a181fdde2a27cc3ef"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/16/concurrencia-detalle/tests.stderr.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 39346,
+      "sha256": "b694b157734391fbd613685099456dd96b8557d172bcf1cf27cc353f4a2234ed"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/16/concurrencia-detalle/tests.stdout.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 910,
+      "sha256": "5a40190b52e98ba2e91a7ff2164b6021d4c6e84f81a033295949febd103d1947"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/16/concurrencia-final.json",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 1256,
+      "sha256": "456957de8a23abd27b5e9efca7936374d44ab6f351b23b81dbf25e419e7ab15d"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/16/esquema-final.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 7157,
+      "sha256": "f7bce6f113b45aebb5a6c794831357bc1e3a344f6d3750cc9d04d8dbda02ab75"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/16/medicion.json",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 503,
+      "sha256": "e3d82f5cf20ed3fb6994f222daea94973544fbdba2aba9fb55292e139c087edf"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/16/pruebas-final.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 54204,
+      "sha256": "95f1a08cc1c39badcb5080abe25b4726fe134f326fd025d9f92c90ea6ae279a4"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/16/refutaciones-final.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 9580,
+      "sha256": "308bde21c6682d4f9da67c656febd2899c697f977d4d0648161ec1f5f2093827"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/17/concurrencia-detalle/A.stderr.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/17/concurrencia-detalle/A.stdout.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 3,
+      "sha256": "5a0a2b76858bf8cc147613f783d84cd22c0047d142ba0d9ce13fcedf953b57ed"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/17/concurrencia-detalle/B.stderr.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 731,
+      "sha256": "2e62ae7f6f40ba10f02f0598a7ed65f967813c13d513bb666f35a678764e60b1"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/17/concurrencia-detalle/B.stdout.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/17/concurrencia-detalle/schema.stderr.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/17/concurrencia-detalle/schema.stdout.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 3,
+      "sha256": "654ee9da442fa353f59f11beb688fc7f76c8de62a6c18b2a181fdde2a27cc3ef"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/17/concurrencia-detalle/tests.stderr.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 39346,
+      "sha256": "b694b157734391fbd613685099456dd96b8557d172bcf1cf27cc353f4a2234ed"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/17/concurrencia-detalle/tests.stdout.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 910,
+      "sha256": "5a40190b52e98ba2e91a7ff2164b6021d4c6e84f81a033295949febd103d1947"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/17/concurrencia-final.json",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 1256,
+      "sha256": "d4e8cdab43fc8f087a84800a49a5366910f685cb7cf090b0e748b1b9cf053bd7"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/17/esquema-final.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 7157,
+      "sha256": "f7bce6f113b45aebb5a6c794831357bc1e3a344f6d3750cc9d04d8dbda02ab75"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/17/medicion.json",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 503,
+      "sha256": "a04df4e9d992d24bb5d6d3f2280ff1afd15938b83243af0d1e949e52fc62fe59"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/17/pruebas-final.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 54204,
+      "sha256": "95f1a08cc1c39badcb5080abe25b4726fe134f326fd025d9f92c90ea6ae279a4"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/17/refutaciones-final.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 9580,
+      "sha256": "308bde21c6682d4f9da67c656febd2899c697f977d4d0648161ec1f5f2093827"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/alcance-qa-word.md",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 2430,
+      "sha256": "b38b18f0e7a20d4230ca943dd897bca57683ff8f2c48b64d4126dff9b607c687"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/control-final.json",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 2751,
+      "sha256": "30ac3e33bfa39f67e65a8961f61d28d991e7a0463d32db1f89959785cd6f3902"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/controles-root.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 1439,
+      "sha256": "13e800e11d72e5c55bc497318d853d93cfd9591f71891665115a4f1fc9cac0dc"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/empaquetado.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 1096,
+      "sha256": "c028371a8fedc314769e3a8d74df17b03236c264746baaf142bbb856b843ec5f"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/manifiesto-entrega.json",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 44686,
+      "sha256": "4f1697c7cf94432e2a0490ff158ef26ee47fea8bf11955bb95ff8bbe1a75bd28"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/qa-excel.json",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 357,
+      "sha256": "72bea2ebb2906f803f69c4a4d5331c0b46dfee6bad3fa96d6bc342843ae7c107"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/qa-word.json",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 36508,
+      "sha256": "94cd7f1828122922072b569ea2e1a9b6907db974eecb26320078c308c6397345"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/evidencia-original/revision-independiente.md",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 11318,
+      "sha256": "8d0b2b05db203e27a325a85363f5bbcb6082fe3e1a9f385bcdef332383ea7a22"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/16/concurrencia-detalle/A.stderr.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/16/concurrencia-detalle/A.stdout.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 3,
+      "sha256": "5a0a2b76858bf8cc147613f783d84cd22c0047d142ba0d9ce13fcedf953b57ed"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/16/concurrencia-detalle/B.stderr.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 731,
+      "sha256": "2e62ae7f6f40ba10f02f0598a7ed65f967813c13d513bb666f35a678764e60b1"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/16/concurrencia-detalle/B.stdout.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/16/concurrencia-detalle/schema.stderr.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/16/concurrencia-detalle/schema.stdout.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 3,
+      "sha256": "654ee9da442fa353f59f11beb688fc7f76c8de62a6c18b2a181fdde2a27cc3ef"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/16/concurrencia-detalle/tests.stderr.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 39346,
+      "sha256": "b694b157734391fbd613685099456dd96b8557d172bcf1cf27cc353f4a2234ed"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/16/concurrencia-detalle/tests.stdout.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 910,
+      "sha256": "5a40190b52e98ba2e91a7ff2164b6021d4c6e84f81a033295949febd103d1947"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/16/concurrencia.json",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 1256,
+      "sha256": "3eaa5a27867abd2a1abfebefd326f41bc253c965faccf459cbb1f60242f63f3c"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/16/esquema.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 7157,
+      "sha256": "f7bce6f113b45aebb5a6c794831357bc1e3a344f6d3750cc9d04d8dbda02ab75"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/16/pruebas.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 54204,
+      "sha256": "95f1a08cc1c39badcb5080abe25b4726fe134f326fd025d9f92c90ea6ae279a4"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/16/refutaciones.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 9580,
+      "sha256": "308bde21c6682d4f9da67c656febd2899c697f977d4d0648161ec1f5f2093827"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/17/concurrencia-detalle/A.stderr.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/17/concurrencia-detalle/A.stdout.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 3,
+      "sha256": "5a0a2b76858bf8cc147613f783d84cd22c0047d142ba0d9ce13fcedf953b57ed"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/17/concurrencia-detalle/B.stderr.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 731,
+      "sha256": "2e62ae7f6f40ba10f02f0598a7ed65f967813c13d513bb666f35a678764e60b1"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/17/concurrencia-detalle/B.stdout.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/17/concurrencia-detalle/schema.stderr.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/17/concurrencia-detalle/schema.stdout.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 3,
+      "sha256": "654ee9da442fa353f59f11beb688fc7f76c8de62a6c18b2a181fdde2a27cc3ef"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/17/concurrencia-detalle/tests.stderr.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 39346,
+      "sha256": "b694b157734391fbd613685099456dd96b8557d172bcf1cf27cc353f4a2234ed"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/17/concurrencia-detalle/tests.stdout.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 910,
+      "sha256": "5a40190b52e98ba2e91a7ff2164b6021d4c6e84f81a033295949febd103d1947"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/17/concurrencia.json",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 1255,
+      "sha256": "24fddf3097af550790dbfa8ba43842fa988df3bce2a8490a2dee79962ad9d66e"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/17/esquema.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 7157,
+      "sha256": "f7bce6f113b45aebb5a6c794831357bc1e3a344f6d3750cc9d04d8dbda02ab75"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/17/pruebas.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 54204,
+      "sha256": "95f1a08cc1c39badcb5080abe25b4726fe134f326fd025d9f92c90ea6ae279a4"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/pg-resultados/17/refutaciones.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 9580,
+      "sha256": "308bde21c6682d4f9da67c656febd2899c697f977d4d0648161ec1f5f2093827"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/reproduccion-consola.txt",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 15890,
+      "sha256": "a1c602ee23b8a0d0b9defccabc561f489569737e1f0ded2c61b3a7a491198a07"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/reproducir.py",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 3808,
+      "sha256": "a6e8713d6e05e0f32ba5b6807a909ef1f1a24411382160b41911818897db004c"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/resultado-reproduccion.json",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 389,
+      "sha256": "cddb0a06c18c42ea0ffe828fa74176371441e6b6c7ee7c9f47a355543123ceec"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/VERIFICACION_TECNICA_REV6/run_pg.py",
+      "grupo": "anexo_tecnico_existente",
+      "bytes": 3227,
+      "sha256": "9c87b9a33cb49b5ce6a83a346ca7413497882fcc0e39653b87c6ffbc6be38b5f"
+    },
+    {
+      "ruta_cowork_station": "reconciliacion-rev5-adrian-2026-10-13/tests-stage/arnes_concurrencia_RN147.py",
+      "grupo": "antecedente_no_seleccionado",
+      "bytes": 8754,
+      "sha256": "6ca30ef14b387d3b149fd7fc16d7e61be6c390966aeabd64a5d3328028d0a028"
+    }
+  ]
+}

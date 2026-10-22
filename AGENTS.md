@@ -16,6 +16,10 @@ conservar Trigger.dev y Auth administrada el 2026-10-04. El 2026-10-12 eligió
 Render para el backend, en lugar de Vercel, y PostgreSQL 17; ver
 [decisiones del 04/10](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-04.md) y
 [del 12/10](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-12.md).
+ACT-R6-07, aprobado por Diego el 2026-10-18: frontend Next.js 16/TypeScript con
+Turbopack en desarrollo y producción. Versión instalada, política de parche y
+validaciones pendientes en el
+[OS AI](docs/equipo/sistema-operativo-ia.md#act-r6-07-nextjs-16-y-turbopack).
 Adaptación L3/Go, validación del despliegue y frontera de workflows pendientes.
 El inventario/excepción Auth/KMS y la integración de identidad/autorización
 siguen en diseño. Mínimo económico 1,45 aprobado; garantía aún por decidir.
