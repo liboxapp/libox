@@ -2,8 +2,8 @@
 title: C1 — borrador de operación y recuperación
 status: borrador
 tags: [r0, c1, l3-v8]
-updated: 2026-09-30
-description: Propuesta para L3 §12–14, calendario cuantificado y aceptación pendiente de ejecución.
+updated: 2026-10-22
+description: Propuesta para L3 §12–14 con API y worker Go, calendario cuantificado y aceptación pendiente de ejecución.
 ---
 
 # Operación propuesta para L3 V8
@@ -11,19 +11,25 @@ description: Propuesta para L3 §12–14, calendario cuantificado y aceptación 
 Este borrador desarrolla §12–14. Las cifras son objetivos propuestos, no resultados
 medidos ni garantías del proveedor. [Comparativa](proveedores.md).
 
-## Monolito modular TypeScript
+## Monolito modular Go
 
-Next.js App Router contiene interfaz y adaptadores HTTP; módulos de órdenes,
-pagos, boletos, sorteo y liquidaciones exponen operaciones de dominio. El proveedor
-de workflows invoca esos módulos mediante adaptadores del mismo repositorio.
+**Nota del 2026-10-22:** esta sección describía un monolito TypeScript; se alinea
+con D-10 y las [decisiones del 12/10](decisiones-2026-10-12.md).
+
+API y worker Go son servicios separados de una misma imagen, alojados en Render,
+que comparten módulos de órdenes, pagos, boletos, sorteo y liquidaciones.
+Next.js/TypeScript contiene la interfaz, en Vercel Pro. Trigger.dev se conserva
+en evaluación; su frontera con el worker Go sigue por definir y este borrador no
+asigna aún el ejecutor de cada trabajo.
 No duplicar las reglas en endpoints, jobs o cliente. PostgreSQL mantiene autoridad
 sobre dinero e inventario. Los puertos de cobro y pago al organizador son distintos;
 ASS-001 no se resuelve escogiendo un proveedor de infraestructura.
 
-Los importes de dominio se mantienen exactos como BIGINT/bigint; la representación
-JSON debe cerrarse en [contratos](contratos.md). No se convierte a punto flotante.
-Runtime y dependencias se fijarán en D1 contra el Next.js instalado y soportado;
-este borrador no introduce una versión de Node sin comprobar compatibilidad.
+Los importes se mantienen exactos como BIGINT en DB, int64 con control de overflow
+en Go (C-06) y bigint donde opere TypeScript; la representación JSON debe cerrarse
+en [contratos](contratos.md). No se convierte a punto flotante. Versiones de Go,
+Node/Next.js y dependencias se fijan en D1; este borrador no elige bibliotecas
+ni entrega el portado de los bloques críticos heredados.
 
 ## Calendario y outbox
 
@@ -38,7 +44,7 @@ Inventario de L3 V7 §12.6: 30 trabajos. En un mes de 30 días:
 | Cada 10 segundos |1 |259.200 |
 | **Total** |**30** |**657.060** |
 
-Propuesta: 29 schedules en Trigger; un ticker de Supabase Cron cada 10 s llama un
+Propuesta del 30/09, pendiente de la frontera Trigger.dev/worker Go: 29 schedules en Trigger; un ticker de Supabase Cron cada 10 s llama un
 endpoint privado de dispatcher. La opción está documentada: Cron admite segundos,
 HTTP y SQL; recomienda como máximo 8 jobs concurrentes y 10 minutos por job.
 No ejecutar los 30 jobs como funciones largas en Cron.
@@ -58,8 +64,7 @@ durable de negocio. La cadencia no garantiza entrega durante una caída.
 [HTTP programado y Vault](https://supabase.com/docs/guides/functions/schedule-functions),
 [pg_net](https://github.com/supabase/pg_net).
 
-No usar cron Vercel para prometer 10 s: Pro tiene intervalo mínimo de un minuto.
-[Vercel Cron](https://vercel.com/docs/cron-jobs/usage-and-pricing).
+Vercel aloja solo el frontend; su cron no interviene en el calendario del backend.
 
 Los reintentos llevan deadline de negocio, backoff acotado y alarma. El timeout de
 un intento no cancela efectos del PSP ni autoriza generar otra clave de cobro.
