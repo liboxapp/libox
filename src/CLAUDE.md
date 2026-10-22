@@ -1,12 +1,13 @@
 # CLAUDE.md — Application code rules
 
-> **Freeze activo hasta D1.** TypeScript ya fue ratificado el 2026-09-29.
+> **Freeze activo hasta D1.** Go sustituye a TypeScript en el backend (D-10).
 > Faltan L3 V8 y la transición revisada del freeze; no crear ni extender código.
 > El estado vigente está en el [programa de R0](../docs/superpowers/specs/2026-09-25-habilitar-r0-design.md).
-> La regla antigua conserva el bloqueo, aunque su texto aún diga ASS-002 abierto.
 
-La aplicación será un monolito modular TypeScript con Next.js App Router y
-PostgreSQL; endpoints delgados que invocan módulos de dominio.
+El backend será un monolito modular Go: API y worker separados comparten
+módulos de dominio y conservan el trabajo pendiente en PostgreSQL. Next.js 16 con
+TypeScript y Turbopack queda en el frontend (ACT-R6-07); los comandos npm
+siguientes pertenecen al scaffold y no comprueban el backend Go, aún pendiente.
 
 The root [CLAUDE.md](../CLAUDE.md) is the wiki/operations guide and wins on
 naming (**Libox**), conversation language (Spanish), and the no-AI-co-author
@@ -75,18 +76,21 @@ en DB, idempotencia por intento y webhooks autenticados, durables y deduplicados
 Los nombres canónicos son `psp_events` y `event_outbox`; C1/C2 resuelve sus defectos
 sin sustituirlos por convenciones de proveedores. No generar código en las
 [cinco zonas humanas](../.claude/rules/zonas-sin-ia.md), aunque la tarea se presente
-como migración, refactor o adaptación a TypeScript.
+como migración, refactor o adaptación a Go u otro lenguaje.
 
 ## Stack y rate limiting
 
-**Ratificado:** TypeScript, Next.js App Router, monolito modular, PostgreSQL
-gestionado y workflows administrados. Scalar para documentación de API.
+**Ratificado:** Go para API y worker, alojados en Render; Next.js 16/TypeScript
+con Turbopack en el frontend, sobre Vercel Pro; Supabase Pro con PostgreSQL 17 y
+Supabase Auth; Trigger.dev conservado en evaluación; Scalar para documentación de
+API. Ver las [decisiones del 04/10](../docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-04.md)
+y [del 12/10](../docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-12.md).
 
-**A confirmar en C1:** Drizzle, Supabase, Inngest y los proveedores de auth,
-almacenamiento y rate limiting. La especificación previa de rate limiting sirve
-como antecedente; no impone hoy Upstash, Vercel WAF ni un fallo abierto universal.
-C1 debe concretar identidad, límites por operación, excepciones y modo de fallo.
-No introducir dependencias para esas decisiones antes de cerrarlas.
+**Pendiente:** herramientas y CI Go en D1; región, conexiones, despliegue y
+secretos en Render; frontera entre Trigger.dev y el worker Go; migración completa
+en PostgreSQL 17. Los límites por operación, excepciones y modo de fallo del rate
+limiting requieren validación. Drizzle no queda elegido por figurar en un
+antecedente. No introducir dependencias antes del cierre documental y D1.
 
 L3 V8 incorporará las decisiones y contratos. Los ADR Z son históricos; no abrir
 nuevos ADR en `docs/decisions/`. Seguir el control de cambios del corpus.
