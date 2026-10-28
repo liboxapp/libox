@@ -2,7 +2,7 @@
 title: C1 — borrador de operación y recuperación
 status: borrador
 tags: [r0, c1, l3-v8]
-updated: 2026-10-22
+updated: 2026-10-28
 description: Propuesta para L3 §12–14 con API y worker Go, calendario cuantificado y aceptación pendiente de ejecución.
 ---
 
@@ -18,9 +18,10 @@ con D-10 y las [decisiones del 12/10](decisiones-2026-10-12.md).
 
 API y worker Go son servicios separados de una misma imagen, alojados en Render,
 que comparten módulos de órdenes, pagos, boletos, sorteo y liquidaciones.
-Next.js/TypeScript contiene la interfaz, en Vercel Pro. Trigger.dev se conserva
-en evaluación; su frontera con el worker Go sigue por definir y este borrador no
-asigna aún el ejecutor de cada trabajo.
+Next.js/TypeScript contiene la interfaz, en Vercel Pro. Frontera fijada el 28/10
+([decisión](decisiones-2026-10-28.md)): el worker Go ejecuta todo trabajo crítico
+y el sistema funciona completo sin Trigger.dev, que queda para trabajos no
+críticos, sin lógica de dominio propia y retirables sin tocar el núcleo.
 No duplicar las reglas en endpoints, jobs o cliente. PostgreSQL mantiene autoridad
 sobre dinero e inventario. Los puertos de cobro y pago al organizador son distintos;
 ASS-001 no se resuelve escogiendo un proveedor de infraestructura.
@@ -44,7 +45,9 @@ Inventario de L3 V7 §12.6: 30 trabajos. En un mes de 30 días:
 | Cada 10 segundos |1 |259.200 |
 | **Total** |**30** |**657.060** |
 
-Propuesta del 30/09, pendiente de la frontera Trigger.dev/worker Go: 29 schedules en Trigger; un ticker de Supabase Cron cada 10 s llama un
+**Superada el 28/10** para los trabajos críticos, que ejecuta el worker Go desde
+`scheduled_jobs` en PostgreSQL (rev6, RN-266). Se conserva como antecedente la
+propuesta del 30/09: 29 schedules en Trigger; un ticker de Supabase Cron cada 10 s llama un
 endpoint privado de dispatcher. La opción está documentada: Cron admite segundos,
 HTTP y SQL; recomienda como máximo 8 jobs concurrentes y 10 minutos por job.
 No ejecutar los 30 jobs como funciones largas en Cron.
