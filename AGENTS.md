@@ -26,8 +26,9 @@ siguen en diseño. Mínimo económico 1,45 aprobado; garantía del sorteo sustit
 (bajo el mínimo se cancela; [registro](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-27.md)).
 Toda operación debe ser auditable, con mayor detalle en las sensibles.
 Supabase Pro + Trigger.dev + Vercel Pro (frontend) confirmados en C1; la
-migración completa en PostgreSQL 17 sigue por validar. Canon L3 V8 y
-levantamiento del freeze pendientes.
+migración completa en PostgreSQL 17 sigue por validar. Emisión conjunta
+(L3 V22, numeración rev6; [decisión del 28/10](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-28.md))
+y levantamiento del freeze pendientes.
 Detalle: [decisión C1](docs/superpowers/specs/2026-09-30-r0-c1-design.md).
 Lee el [programa de R0](docs/superpowers/specs/2026-09-25-habilitar-r0-design.md).
 La mención de ASS-002 abierto en la regla antigua no revoca la ratificación.

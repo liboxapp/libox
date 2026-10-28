@@ -2,7 +2,7 @@
 title: Programa para habilitar R0 — diseño
 status: borrador
 tags: [libox, r0, harness, programa, spec]
-updated: 2026-10-12
+updated: 2026-10-28
 description: Programa aprobado por Diego para resolver la auditoría del harness (SY-01 a SY-16) y los defectos del canon, y dejar R0 listo para arrancar sobre el backend Go decidido en D-10. Streams, decisiones, secuencia y criterio de éxito.
 ---
 
@@ -81,6 +81,10 @@ Cada sub-proyecto tiene su propio plan de implementación y su propio PR.
 | A5 | `outline-kb-cli` con versión fijada y actions fijadas por SHA. Marketplace de terceros con versión fijada. `outline-skills` limitada a lectura y sin `--api-key` en los ejemplos. Títulos de PR tratados como datos no confiables en el digest. Confirmación humana en `libox-registrar-hallazgo`. Metadata, conteos y docstrings al día | SY-14, SY-15, SY-16 | CI verde con las versiones fijadas |
 
 ### Stream C — Canon L3 V8 (empieza tras A1)
+
+**Nota del 2026-10-28:** el nombre «L3 V8» se retira. Rige la numeración de rev6 y
+la emisión es L3 V22, que fusiona este borrador. Ver la
+[decisión del 28/10](c1-l3-v8/decisiones-2026-10-28.md).
 
 - **C1.** Registrar los hallazgos por CD-07 y preparar el borrador de L3 V8:
   - **§0.3 con el stack ratificado** (D-01), Next.js 16 en lugar de 14, y Scalar (D-07).

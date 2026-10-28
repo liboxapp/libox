@@ -2,7 +2,7 @@
 title: Sistema operativo de IA — cómo trabaja Claude Code en Libox
 status: vigente
 tags: [equipo, claude-code, hooks, skills, agentes, memoria]
-updated: 2026-10-18
+updated: 2026-10-28
 description: Manual humano de la capa operativa de IA del repo — qué carga Claude, qué hace cumplir el harness, qué skills y agentes existen, cómo se orquesta y cómo se extiende.
 ---
 
@@ -104,7 +104,7 @@ Si algo valioso aparece en la memoria personal, se promueve a `docs/` por PR.
 ## Capa `dev` pendiente (C2/D1)
 
 El backend es Go (D-10) y el frontend TypeScript con
-[ACT-R6-07](#act-r6-07-nextjs-16-y-turbopack). Tras emitir L3 V8, el PR de D1 retira
+[ACT-R6-07](#act-r6-07-nextjs-16-y-turbopack). Tras la emisión conjunta (L3 V22, [decisión del 28/10](../superpowers/specs/c1-l3-v8/decisiones-2026-10-28.md)) y el acta, el PR de D1 retira
 `.claude/rules/src-congelado.md` y las constantes `FROZEN_*` de `guard_edit.py`, actualiza
 `src/CLAUDE.md` y añade agentes `ejecutor-feature`, `tester` y `depurador` más una rule de
 desarrollo para `src/`. Este trabajo del harness no levanta el freeze.
