@@ -3,7 +3,7 @@ title: C1 — decisión de Diego del 28 de octubre
 status: aprobado
 tags: [r0, c1, decisiones, l3, openapi, numeracion]
 updated: 2026-10-28
-description: Numeración de rev6, fusión de C1 en L3 V22 con OpenAPI 2.0 como base, frontera Trigger.dev/worker Go, eliminación de settlement_hold_days y subcasos de H22-10.
+description: Numeración de rev6, fusión de C1 en L3 V22 con OpenAPI 2.0 como base, frontera Trigger.dev/worker Go, eliminación de settlement_hold_days, subcasos de H22-10 y valores de reputación.
 ---
 
 # Decisión del 28 de octubre de 2026
@@ -97,6 +97,28 @@ separación de firmantes y adjudicadores en todas las salas y ambos órdenes
 - Estas cuatro reglas están en la excepción de zona del 13/10: Claude puede
   redactar su código y Diego confirma cada cambio. El cierre exige que la
   refutación imprima NO REPRODUCIDO y la batería siga verde en PostgreSQL 16 y 17.
+
+## Reputación (punto 8 del 04/10)
+
+El 04/10 Diego conservó el frente de reputación sin valores concretos. Rev6,
+posterior, los define en PRD V22 §21 y §5.8.4: niveles N0–N3 con requisitos,
+puntuación y penalizaciones; vigencia del evento de 12 meses; suspensión de
+la capacidad de publicar tras tres eventos en 12 meses; recuperación por
+proporción, sin borrado; y apelación con evidencia y plazo fijo. Por el
+criterio de decisión posterior, **se adoptan**. No consta decisión de Adrián
+posterior a rev6.
+
+Diego fija el mismo día los tres valores que rev6 nombra sin cifra:
+
+- **Apelación:** el organizador apela dentro de 10 días hábiles desde la
+  notificación; `ADMIN_LEGAL_COMPLIANCE` resuelve en 10 días hábiles y no
+  puede ser quien registró el evento.
+- **Umbral de RN-14-duodevicies:** si más del 20 % de los sorteos del
+  organizador en 12 meses se cancela por inviabilidad, no asciende de nivel.
+  Valor inicial en `market_config`, revisable con datos de F0.
+- **Revisión tras reincidencia:** `ADMIN_RISK` revisa en 5 días hábiles y
+  levanta o mantiene la suspensión con motivo registrado; su decisión se
+  apela por la misma vía.
 
 ## Qué queda pendiente
 
