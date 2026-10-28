@@ -22,7 +22,8 @@ validaciones pendientes en el
 [OS AI](docs/equipo/sistema-operativo-ia.md#act-r6-07-nextjs-16-y-turbopack).
 Adaptación L3/Go, validación del despliegue y frontera de workflows pendientes.
 El inventario/excepción Auth/KMS y la integración de identidad/autorización
-siguen en diseño. Mínimo económico 1,45 aprobado; garantía aún por decidir.
+siguen en diseño. Mínimo económico 1,45 aprobado; garantía del sorteo sustituida el 27/10
+(bajo el mínimo se cancela; [registro](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-27.md)).
 Toda operación debe ser auditable, con mayor detalle en las sensibles.
 Supabase Pro + Trigger.dev + Vercel Pro (frontend) confirmados en C1; la
 migración completa en PostgreSQL 17 sigue por validar. Canon L3 V8 y

@@ -17,7 +17,8 @@ Ver la [adaptación a Go](docs/superpowers/specs/2026-10-02-r0-backend-go-design
 
 Diego ratificó el 04/10 conservar Trigger.dev, Auth administrada, mínimo 1,45,
 auditabilidad general con mayor detalle sensible y US$250/mes. La garantía
-requiere revisar escenarios. El 12/10 eligió Render para alojar el backend Go,
+del sorteo quedó sustituida el 27/10: bajo el mínimo se cancela
+([registro](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-27.md)). El 12/10 eligió Render para alojar el backend Go,
 en lugar de Vercel, y PostgreSQL 17. Aplicar los registros
 [del 04/10](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-04.md) y
 [del 12/10](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-12.md), con sus pendientes,

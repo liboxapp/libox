@@ -2,7 +2,7 @@
 title: C1 — estado de entrega y dependencias
 status: borrador
 tags: [r0, c1, seguimiento]
-updated: 2026-10-12
+updated: 2026-10-27
 description: Entregas C1, reconciliación Cowork y aportes pendientes, distinguiendo integración documental, emisión y operación real.
 ---
 
@@ -18,7 +18,9 @@ conservar Trigger.dev, Auth administrada, mínimo 1,45, auditabilidad general
 con más detalle sensible y techo de infraestructura US$250/mes. Ver [registro y límites](decisiones-2026-10-04.md).
 Después, Diego eligió la **garantía del sorteo desde la primera entrega (B)** y
 **subió el suelo del rango a 1,45×**; ambos con parámetros y aportes humanos
-pendientes ([escenarios](escenarios-t1-garantia.md)).
+pendientes ([escenarios](escenarios-t1-garantia.md)). **El 27/10 la garantía
+quedó sustituida** por la regla del 05/10 de rev6: bajo el mínimo se cancela
+([decisión del 27/10](decisiones-2026-10-27.md)).
 
 **Decisiones del 2026-10-12:** Render aloja el backend Go (API y worker) y
 PostgreSQL 17 pasa a elegido. Región, conexiones, worker separado, despliegue,
@@ -60,8 +62,8 @@ financieras del producto. SQL y artefactos mantienen estado de borrador.
   tablas operativas a reportería: resolver antes de usar datos reales.
 - T1: mínimo, premio y condiciones fijados antes de publicar, sin cambios tras la
   primera compra. Múltiplo de mínimo 1,45 aprobado el 04/10; fórmula completa,
-  costes/caja y premio siguen pendientes. Bajo mínimo, el organizador puede
-  cubrir la brecha con la garantía del sorteo (B); sin cobertura, se cancela.
+  costes/caja y premio siguen pendientes. Bajo mínimo se cancela y reembolsa;
+  la garantía B quedó sustituida el 27/10.
   Suelo del rango en 1,45×: hallazgo para PRD §1.3.2 / INV-40.
 - [P-C](plantilla-documentos-pc.md): plantilla preparada, Diego coordina con el
   abogado; lista y fecha pendientes. Revisar en cada avance de C1.

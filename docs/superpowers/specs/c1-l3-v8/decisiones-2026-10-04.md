@@ -2,7 +2,7 @@
 title: C1 — decisiones de Diego del 4 de octubre
 status: aprobado
 tags: [r0, c1, decisiones, go, auditoria, viabilidad]
-updated: 2026-10-04
+updated: 2026-10-27
 description: Ratificaciones de Vercel, Trigger.dev, Auth administrada, mínimo y suelo de 1,45, garantía del sorteo (B), auditoría y presupuesto, con límites y pendientes explícitos.
 ---
 
@@ -52,6 +52,9 @@ una habilitación con dinero real. Las validaciones legales siguen
 [LEGAL→ABOGADO].
 
 ## Garantía del sorteo: opción B
+
+**Sustituida el 2026-10-27** por la regla del 05/10 de rev6: bajo el mínimo se
+cancela y reembolsa. Ver la [decisión del 27/10](decisiones-2026-10-27.md).
 
 Tras revisar los [escenarios](escenarios-t1-garantia.md), Diego eligió el 04/10
 la **opción B**: la garantía del sorteo se habilita desde la primera entrega. La
