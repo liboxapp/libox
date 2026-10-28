@@ -3,7 +3,7 @@ title: C1 — decisión de Diego del 28 de octubre
 status: aprobado
 tags: [r0, c1, decisiones, l3, openapi, numeracion]
 updated: 2026-10-28
-description: La numeración de rev6 rige; la próxima L3 es V22 y fusiona el borrador C1; el OpenAPI 2.0 de C1 es la base del contrato.
+description: La numeración de rev6 rige; L3 V22 fusiona el borrador C1; el OpenAPI 2.0 de C1 es la base del contrato; frontera Trigger.dev/worker Go por criticidad.
 ---
 
 # Decisión del 28 de octubre de 2026
@@ -35,6 +35,24 @@ del inventario de documentación: dos líneas de L3 con numeración incompatible
    revocación), y se emite como OpenAPI V18.
 5. **El gate de D1 pasa a ser** la emisión conjunta (L3 V22 y documentos
    asociados) y el acta de aceptación (ACT-R6-01), en lugar de «emitir L3 V8».
+
+## Frontera entre Trigger.dev y el worker Go
+
+Respuesta de Diego del mismo día. Completa el punto 2 del 04/10 («conservar
+Trigger.dev y evaluarlo en los primeros meses») y HOST-05 de la
+[aceptación técnica Go](aceptacion-tecnica-go.md). No consta una decisión
+posterior de Adrián; rev6 nunca incluyó Trigger.dev.
+
+- **El worker Go ejecuta todo trabajo crítico:** dinero, sorteo, liquidación,
+  reservas y retenciones, outbox y conciliación diaria (R6-15). El trabajo
+  pendiente vive en PostgreSQL (`scheduled_jobs`, RN-266) y la ejecución única
+  por sorteo la garantiza el worker. **El sistema funciona completo sin
+  Trigger.dev.**
+- **Trigger.dev queda para trabajos no críticos:** correos, notificaciones,
+  reportes y limpieza. Invoca operaciones de Go, no contiene lógica de dominio
+  ni estado propio y se puede retirar sin tocar el núcleo.
+- Se evalúa en los primeros meses con funcionalidad, fiabilidad, carga de
+  mantenimiento y coste, dentro del techo de US$250/mes.
 
 ## Qué queda pendiente
 

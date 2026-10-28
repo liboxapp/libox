@@ -2,7 +2,7 @@
 title: C1 — aceptación técnica del backend Go
 status: borrador
 tags: [r0, c1, aceptacion, go, render, pruebas]
-updated: 2026-10-12
+updated: 2026-10-28
 description: Casos de aceptación de arquitectura Go, alojamiento en Render, semilla, privilegios, ledger y revisión; definidos y pendientes de ejecución.
 ---
 
@@ -34,7 +34,7 @@ cerrarse antes de dinero real. Se conservan F1–F7 y la
 El outbox no confía en memoria ni en una llamada HTTP como prueba de persistencia.
 La ejecución única patrimonial se verifica en PostgreSQL y el PSP real/sandbox;
 ninguna promesa del proveedor sustituye esos invariantes. Quién ejecuta cada
-trabajo (worker Go o Trigger.dev) sigue la frontera pendiente de HOST-05.
+trabajo sigue la frontera fijada el 28/10 en HOST-05.
 
 ## Render y Trigger.dev — validaciones del 12/10
 
@@ -48,7 +48,7 @@ a Diego y esta ficha no la anticipa.
 | HOST-02 · región y PostgreSQL | Región de Render que cumple la exigencia de región de §0.3 del [candidato L3](LIBOX_ESPECIFICACION_TECNICA_L3_V8_DRAFT.md) respecto de Supabase; TLS, credenciales por componente y pool acotado; conexión directa o pooler en modo sesión si el ejecutor usa LISTEN/NOTIFY. Carga y reconexión no agotan conexiones | Región seleccionada, latencias medidas, presupuesto de conexiones (API, worker, Supabase, migraciones, despliegues) y prueba con Supabase gestionado |
 | HOST-03 · secretos | Ubicación confirmada en Render de los secretos de `libox_api` y `libox_worker`, con rotación de 90 días; credencial AWS exclusiva y rotada para KMS. La API no obtiene la clave de la semilla; el worker la usa sin exponerla en logs, respuestas o imágenes | Inventario de permisos, denegación desde la API, ensayo de rotación y revisión de telemetría/artefactos |
 | HOST-04 · costo y capacidad | Costo integral bajo el techo de US$250/mes, con objetivo de US$215 antes de impuestos y alertas: Render (API y worker), Vercel Pro, Trigger.dev, Supabase/PITR, KMS, copias, correo, límites, observabilidad, tráfico y tributos/margen | Tarifas verificadas al decidir, tamaños/consumo medidos y escenarios normal/pico/reintentos/sin ventas |
-| HOST-05 · frontera con Trigger.dev | Trigger.dev se conserva y se evalúa en los primeros meses (punto 2 del 04/10). La frontera con el worker Go queda definida sin duplicar lógica de dominio ni perder estado | Funcionalidades, fiabilidad, carga de mantenimiento y costo con evidencia de uso; integración con Go y ensayo de reintento/recuperación documentados |
+| HOST-05 · frontera con Trigger.dev | Frontera por criticidad, fijada el 28/10 ([decisión](decisiones-2026-10-28.md)): el worker Go ejecuta dinero, sorteo, liquidación, reservas, outbox y conciliación, y el sistema funciona sin Trigger.dev; Trigger.dev solo para trabajos no críticos, sin lógica de dominio y retirables. Se evalúa en los primeros meses (punto 2 del 04/10) | Funcionalidades, fiabilidad, carga de mantenimiento y costo con evidencia de uso; integración con Go y ensayo de reintento/recuperación documentados |
 
 Los logs de la plataforma no sustituyen la auditoría de negocio aprobada el 04/10.
 Los escenarios antiguos de [proveedores](proveedores.md) no prueban el costo del
