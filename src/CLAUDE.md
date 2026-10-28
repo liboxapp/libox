@@ -1,7 +1,7 @@
 # CLAUDE.md — Application code rules
 
 > **Freeze activo hasta D1.** Go sustituye a TypeScript en el backend (D-10).
-> Faltan L3 V8 y la transición revisada del freeze; no crear ni extender código.
+> Faltan la emisión conjunta (L3 V22), el acta y la transición del freeze; no crear ni extender código.
 > El estado vigente está en el [programa de R0](../docs/superpowers/specs/2026-09-25-habilitar-r0-design.md).
 
 El backend será un monolito modular Go: API y worker separados comparten
@@ -92,7 +92,7 @@ en PostgreSQL 17. Los límites por operación, excepciones y modo de fallo del r
 limiting requieren validación. Drizzle no queda elegido por figurar en un
 antecedente. No introducir dependencias antes del cierre documental y D1.
 
-L3 V8 incorporará las decisiones y contratos. Los ADR Z son históricos; no abrir
+L3 V22 incorporará las decisiones y contratos ([decisión del 28/10](../docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-28.md)). Los ADR Z son históricos; no abrir
 nuevos ADR en `docs/decisions/`. Seguir el control de cambios del corpus.
 
 ## Frontend design

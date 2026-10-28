@@ -2,7 +2,7 @@
 title: C1 — estado de entrega y dependencias
 status: borrador
 tags: [r0, c1, seguimiento]
-updated: 2026-10-27
+updated: 2026-10-28
 description: Entregas C1, reconciliación Cowork y aportes pendientes, distinguiendo integración documental, emisión y operación real.
 ---
 
@@ -25,6 +25,9 @@ quedó sustituida** por la regla del 05/10 de rev6: bajo el mínimo se cancela
 **Decisiones del 2026-10-12:** Render aloja el backend Go (API y worker) y
 PostgreSQL 17 pasa a elegido. Región, conexiones, worker separado, despliegue,
 secretos y coste siguen por validar. Ver [registro y límites](decisiones-2026-10-12.md).
+
+**Nota del 28/10:** el candidato «L3 V8» se fusiona en L3 V22 con la numeración
+de rev6, y su OpenAPI 2.0 es la base del contrato ([decisión](decisiones-2026-10-28.md)).
 
 **C1 sigue abierto.** Hay un candidato completo de L3 V8, un contrato ampliado y
 un overlay SQL no crítico verificable. El candidato incorpora ahora el alcance de

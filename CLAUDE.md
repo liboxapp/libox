@@ -8,7 +8,7 @@ Guía para Claude Code en este repositorio. Es un puntero: la verdad vive en `do
 peruana. El repo contiene (1) el **corpus canónico** en `docs/linea-base/`, gobernado por el
 Registro Maestro V6 (si un documento no figura en su §1, no rige) y verificado por
 `verify_corpus.py` (CD-10: cero fallos), y (2) un scaffold Next.js en `src/` que está
-**congelado** hasta completar L3 V8 y la transición de D1. El backend es **Go**
+**congelado** hasta la emisión conjunta (L3 V22, numeración rev6, [decisión del 28/10](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-28.md)), el acta y la transición de D1. El backend es **Go**
 (D-10, 2026-10-02), monolito modular; el frontend sigue en Next.js y TypeScript.
 Ver la [adaptación a Go](docs/superpowers/specs/2026-10-02-r0-backend-go-design.md) y el
 [programa de R0](docs/superpowers/specs/2026-09-25-habilitar-r0-design.md).
@@ -63,7 +63,7 @@ algo por hecho. Detalle en `docs/equipo/sistema-operativo-ia.md#orquestación-fa
 **ASS-001** (custodia del dinero) sigue abierta. **ASS-002** se ratificó
 a TypeScript (doc 20 de Outline, revisión 23); **D-10 la sustituye para el backend
 por Go** (2026-10-02), pendiente de registrar en el doc 20. Falta trasladarla al canon
-L3 V8 y completar D1. Supabase Pro y Vercel Pro (frontend) fueron confirmados el 2026-09-30;
+(L3 V22) y completar D1. Supabase Pro y Vercel Pro (frontend) fueron confirmados el 2026-09-30;
 conservar Trigger.dev quedó ratificado el 2026-10-04, y Render para el backend Go y
 PostgreSQL 17, el 2026-10-12 ([registro](docs/superpowers/specs/c1-l3-v8/decisiones-2026-10-12.md)).
 ACT-R6-07, aprobado el 2026-10-18: frontend Next.js 16/TypeScript con Turbopack en
