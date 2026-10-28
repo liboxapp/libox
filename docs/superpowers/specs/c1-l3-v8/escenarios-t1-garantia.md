@@ -2,7 +2,7 @@
 title: C1 — escenarios para decidir la garantía de T1
 status: borrador
 tags: [c1, t1, garantia, escenarios, viabilidad]
-updated: 2026-10-04
+updated: 2026-10-27
 description: Comparación didáctica de cancelación y cobertura con mínimo 1,45, separando ventas, garantía, comisión y entrega del premio.
 ---
 
@@ -85,6 +85,10 @@ financiero adicional y no asegura la comisión mínima buscada con el múltiplo.
 Esta recomendación no se adoptó: Diego eligió **B** el 04/10.
 
 ## Cierre de la decisión
+
+**Nota del 2026-10-27:** B quedó sustituida por la regla del 05/10 de rev6; bajo
+el mínimo se cancela y reembolsa. Ver la [decisión del 27/10](decisiones-2026-10-27.md).
+Este análisis se conserva como antecedente.
 
 **Decidido: B** (Diego, 2026-10-04), con el nombre **garantía del sorteo**. Falta
 fijar ventana, aportante, fórmula de cobertura, custodia, devolución, ejecución,

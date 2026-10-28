@@ -2,7 +2,7 @@
 title: LIBOX Especificación Técnica L3 V8 — borrador DRAFT-8 (no emitido)
 status: borrador
 tags: [r0, c1, l3-v8, linea-base, borrador]
-updated: 2026-10-12
+updated: 2026-10-27
 description: Candidato L3 no emitido sobre V7, con alcance de reconciliación Cowork en §0.8, decisiones técnicas de semilla, privilegios y ledger en §0.9 y aportes pendientes para C1, C2 y D1/R1.
 ---
 
@@ -394,7 +394,9 @@ heredados ya cumplan las reglas. Sigue pendiente la consolidación por sección.
    con importe, tickets, precio y versión aprobada fijada antes de publicar.
    Contar pagos válidos, excluir impagados/gratuitos/anulados y demostrar caja
    disponible. BR-09/KPI deben admitir respaldo por fianza sin llamarlo ingreso.
-3. **Garantía del sorteo** (antes "fianza"). Aprobada el 04/10 desde la primera
+3. **Garantía del sorteo** (antes "fianza"). **Sustituida el 27/10** por la regla
+   de rev6: bajo el mínimo se cancela ([decisión](decisiones-2026-10-27.md)).
+   Texto anterior, como antecedente: aprobada el 04/10 desde la primera
    entrega (B); `VIABILITY_FAILED` y `VIABILITY_GAP` dejan de ser solo propuesta.
    Antes de operarla, declarar plazo, fondos acreditados, actor,
    custodia, T-19/20/21, devolución, incumplimiento, cancelación y sobrantes.

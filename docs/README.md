@@ -2,7 +2,7 @@
 title: Libox — Índice del wiki
 status: vigente
 tags: [libox, wiki, indice, linea-base]
-updated: 2026-10-18
+updated: 2026-10-27
 description: Índice del canon del repo, trabajo C1/R0 y reconciliación de documentación recibida en Cowork.
 ---
 
@@ -19,8 +19,9 @@ Los borradores y archivos recibidos en Cowork no adquieren vigencia automáticam
 Su integración se sigue en [C1](superpowers/specs/c1-l3-v8/estado-c1.md).
 Las [decisiones del 04/10](superpowers/specs/c1-l3-v8/decisiones-2026-10-04.md)
 registran conservación de Trigger.dev, Auth administrada, mínimo 1,45, auditoría
-general y presupuesto. La garantía se revisa mediante
-[escenarios](superpowers/specs/c1-l3-v8/escenarios-t1-garantia.md). Las
+general y presupuesto. La garantía del sorteo quedó
+[sustituida el 27/10](superpowers/specs/c1-l3-v8/decisiones-2026-10-27.md): bajo el
+mínimo se cancela. Las
 [decisiones del 12/10](superpowers/specs/c1-l3-v8/decisiones-2026-10-12.md) eligen
 Render para el backend Go, en lugar de Vercel, y PostgreSQL 17.
 

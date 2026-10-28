@@ -2,7 +2,7 @@
 title: C1 — decisiones pendientes y planificación tras Cowork
 status: borrador
 tags: [r0, c1, decisiones, backlog]
-updated: 2026-10-04
+updated: 2026-10-27
 description: Deltas sobre acuerdos C1, valores sin ratificar y dependencias de las nueve historias nuevas del backlog recibido.
 ---
 
@@ -20,7 +20,7 @@ No convierten «queda» en valores de plazos/reputación ni en dictámenes recib
 
 | Tema | Acuerdo / problema verificado | Trabajo de decisión y dueño |
 |---|---|---|
-| T1 bajo mínimo | C1 ordena cancelar/reembolsar; Cowork permite continuar por garantía | **Decidido 04/10: garantía del sorteo desde la primera entrega (B).** Faltan plazo, aportante, fórmula, custodia, devolución y ejecución; reflejarla en bases/checkout. ASS-001 bloquea el uso con dinero real [LEGAL→ABOGADO] |
+| T1 bajo mínimo | C1 ordena cancelar/reembolsar; Cowork permite continuar por garantía | ~~Decidido 04/10: garantía del sorteo desde la primera entrega (B).~~ **Sustituida el 27/10:** bajo el mínimo se cancela y reembolsa, como rev6 ([decisión](decisiones-2026-10-27.md)) |
 | Premio completo y respaldo | El nuevo piso pretende garantizar entrega, no solo devolución; valoración no garantiza disponibilidad del bien | Definir obligación, costes cubiertos, sustitución/adquisición y figura de custodia; Diego, contabilidad y abogado |
 | Parámetros de mínimo | Fuente proponía PE 1,25; Diego fijó 1,45 el 04/10 | Completar fórmula, fuente de valoración, redondeo, caja y owner de configuración; no confundir el múltiplo con comisión; Diego y contabilidad |
 | Ventanas de venta | `end_at` general; máximo de mercado sin valor; mínimo 24 h contradice Flash T5 de 15–240 min | Definir ubicación JSON y validación por tipo/mercado; Diego. Sin máximo no publicar; no inventar duración de un mes |
