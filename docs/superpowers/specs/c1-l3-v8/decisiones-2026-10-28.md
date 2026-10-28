@@ -3,7 +3,7 @@ title: C1 — decisión de Diego del 28 de octubre
 status: aprobado
 tags: [r0, c1, decisiones, l3, openapi, numeracion]
 updated: 2026-10-28
-description: La numeración de rev6 rige; L3 V22 fusiona el borrador C1; el OpenAPI 2.0 de C1 es la base del contrato; frontera Trigger.dev/worker Go por criticidad.
+description: Numeración de rev6, fusión de C1 en L3 V22 con OpenAPI 2.0 como base, frontera Trigger.dev/worker Go por criticidad y eliminación de settlement_hold_days.
 ---
 
 # Decisión del 28 de octubre de 2026
@@ -53,6 +53,21 @@ posterior de Adrián; rev6 nunca incluyó Trigger.dev.
   ni estado propio y se puede retirar sin tocar el núcleo.
 - Se evalúa en los primeros meses con funcionalidad, fiabilidad, carga de
   mantenimiento y coste, dentro del techo de US$250/mes.
+
+## `settlement_hold_days` se elimina (C-14)
+
+Respuesta de Diego del mismo día. La clave `deadlines.settlement_hold_days: 7`
+de L3 V21 §10.1 era la ventana contada desde la atestación de la lectura de
+RN-103 derogada el 13/10 (opción C). No la lee el esquema V20 ni ningún gate
+(Registro V24, H22-04). No consta decisión posterior de Adrián.
+
+- **Se elimina de L3 §10.1 en V22.**
+- Las ventanas de liquidación y de reserva salen solo del catálogo de
+  [R6-11](../../../desarrollo/r611-catalogo-plazos-reservas.md): G4 desde el último pago
+  aprobado y la reserva de RN-104 desde la última acreditación vigente de
+  todos los ganadores.
+- Cierra la parte de H22-04 que correspondía a Diego. El plazo concreto del
+  catálogo sigue pendiente de las condiciones del PSP (ACT-R6-03).
 
 ## Qué queda pendiente
 
