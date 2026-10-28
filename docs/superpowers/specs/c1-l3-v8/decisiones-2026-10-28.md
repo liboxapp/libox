@@ -3,7 +3,7 @@ title: C1 — decisión de Diego del 28 de octubre
 status: aprobado
 tags: [r0, c1, decisiones, l3, openapi, numeracion]
 updated: 2026-10-28
-description: Numeración de rev6, fusión de C1 en L3 V22 con OpenAPI 2.0 como base, frontera Trigger.dev/worker Go por criticidad y eliminación de settlement_hold_days.
+description: Numeración de rev6, fusión de C1 en L3 V22 con OpenAPI 2.0 como base, frontera Trigger.dev/worker Go, eliminación de settlement_hold_days y subcasos de H22-10.
 ---
 
 # Decisión del 28 de octubre de 2026
@@ -68,6 +68,35 @@ RN-103 derogada el 13/10 (opción C). No la lee el esquema V20 ni ningún gate
   todos los ganadores.
 - Cierra la parte de H22-04 que correspondía a Diego. El plazo concreto del
   catálogo sigue pendiente de las condiciones del PSP (ACT-R6-03).
+
+## Subcasos de H22-10
+
+Respuestas de Diego del mismo día a lo que los seis cierres del 13/10 no
+cubrían (Registro V24 §5.2, «decisión de Diego por cada uno»). Huecos
+verificados en el esquema V20. No consta decisión posterior de Adrián. La
+separación de firmantes y adjudicadores en todas las salas y ambos órdenes
+(INC-08) ya se decidió el 18/10 en R6-14.
+
+| Regla | Definición para L3 V22 |
+|---|---|
+| RN-147 | `orders.quantity` es inmutable tras crear la orden; cambiarla exige otra orden |
+| RN-147 | El contrato exige reintentar la transacción completa ante un fallo de serialización (40001) |
+| RN-147 | `max_concentration_bp` se copia de `concentration.max_bp` de la configuración congelada al publicar y queda inmutable |
+| RN-147 | **El límite se aplica por persona natural verificada**, sumando sus cuentas; sin identidad verificada, por cuenta |
+| INV-25 | La renuncia se vincula a la versión vigente del documento de renuncia (módulo legal) |
+| INV-25 | `signed_at` es sello del servidor: lo fija la base y descarta el valor que envíe la aplicación |
+| INV-25 | **La inelegibilidad se acredita con un expediente de cumplimiento de causa tipificada** (AML, edad, residencia, incompatibilidad u otra catalogada), no solo con `aml_cases` |
+| INV-01 | `published_at` es inmutable una vez fijado |
+| INV-36 | Cada línea respeta el debe y el haber de su `transaction_types` |
+| INV-36 | **La base calcula el IGV** desde la tasa de la configuración congelada y rechaza el asiento que no cuadre, con una regla de redondeo explícita en L3 V22 |
+
+- La regla de redondeo y el emisor del comprobante quedan sujetos a L-05 y a la
+  validación del contador. [LEGAL→ABOGADO]
+- El límite por persona depende de la verificación de identidad (Truora en
+  evaluación); sin ella rige el límite por cuenta.
+- Estas cuatro reglas están en la excepción de zona del 13/10: Claude puede
+  redactar su código y Diego confirma cada cambio. El cierre exige que la
+  refutación imprima NO REPRODUCIDO y la batería siga verde en PostgreSQL 16 y 17.
 
 ## Qué queda pendiente
 
