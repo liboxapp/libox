@@ -48,6 +48,8 @@ y la [decisión de stack](docs/superpowers/specs/2026-10-02-stack-go-frontend-ts
   La revisión humana obligatoria está suspendida hasta reactivación explícita
   de Diego: `.claude/rules/revision-humana.md`. Mantener CI y revisión automatizada.
 - **Claims legales** marcados `[LEGAL→ABOGADO]` hasta ratificación del abogado.
+- **Avance documental:** mantener al día su detalle en Outline con el avance de Diego y de
+  Adrián. Ver [la regla](docs/equipo/avance-documental.md).
 - **Git:** rama por cambio, Conventional Commits en español, correo `@liboxapp.com`, PR con
   `/libox-pr`, `main` protegido. Ver `.claude/rules/git.md` y `CONTRIBUTING.md`.
 
