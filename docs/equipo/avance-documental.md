@@ -12,6 +12,12 @@ Instrucción de Diego del 2026-11-03. El estado vigente del avance vive en
 [Outline](https://liboxapp.getoutline.com/doc/avance-de-la-documentacion-porcentaje-y-detalle-Bpedb0vtyx)
 (id `ee76cb53-4070-46d6-958f-9d560901f3f0`). Se mantiene al día con el avance de Diego y de Adrián.
 
+Desde el 2026-11-27 tiene una vista corta, el
+[Tablero rápido](https://liboxapp.getoutline.com/doc/tablero-rapido-avance-de-la-documentacion-AId9nRWpv2)
+(id `40f6372f-db05-4023-abe8-925b85481291`), pensada para leerse de un vistazo: cifras en una
+línea, un solo siguiente paso y pendientes en casillas. Se actualiza en la misma sesión que el
+documento completo. Si no coinciden, manda el completo.
+
 ## Cuándo se actualiza
 
 En la misma sesión, antes de cerrar el turno, cuando ocurra cualquiera de estos hechos:
