@@ -2,7 +2,7 @@
 title: Avance de la documentación
 status: vigente
 tags: [equipo, documentacion, avance]
-updated: 2026-11-03
+updated: 2026-11-27
 description: Regla para mantener al día en Outline el porcentaje y el detalle del avance documental de Diego y de Adrián.
 ---
 
@@ -24,6 +24,18 @@ En la misma sesión, antes de cerrar el turno, cuando ocurra cualquiera de estos
 
 Al empezar una sesión de trabajo documental, revisar en Outline si Adrián publicó, editó o
 comentó algo desde la última fila de la bitácora, y registrarlo. Si no se puede comprobar, decirlo.
+
+## Decisiones de Adrián
+
+Instrucción de Diego del 2026-11-27: Adrián deja constancia de sus decisiones con comentarios en
+el documento de avance, uno por decisión: identificador, estado (decidida, condicionada o
+pregunta), texto y condición.
+
+- Leer los comentarios nuevos de ese documento al empezar cada sesión documental.
+- Registrar cada uno en la tabla y en la bitácora con autor y fecha del comentario.
+- Responder en el mismo hilo qué se registró. No resolver el comentario: lo resuelven Diego o
+  Adrián cuando la decisión queda integrada en rev7.
+- Un comentario que no deja claro el estado se registra como pregunta, no como decisión.
 
 ## Cómo se actualiza
 
